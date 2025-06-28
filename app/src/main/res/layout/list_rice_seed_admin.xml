@@ -32,19 +32,19 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_variety_name"
+                    android:id="@+id/tv_variety_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NSIC Rc 760 SR"
+                    android:text="######"
                     android:textColor="@color/green"
                     android:textSize="20sp"
                     android:fontFamily="@font/poppins__semibold" />
 
                 <TextView
-                    android:id="@+id/text_category"
+                    android:id="@+id/tv_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="National"
+                    android:text="#####"
                     android:textColor="@color/green"
                     android:textSize="16sp"
                     android:fontFamily="@font/poppins__medium" />
@@ -58,7 +58,7 @@
                 android:layout_gravity="top">
 
                 <ImageView
-                    android:id="@+id/icon_delete"
+                    android:id="@+id/iv_delete"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:src="@drawable/ic_delete"
@@ -66,7 +66,7 @@
                     android:contentDescription="Delete Icon" />
 
                 <ImageView
-                    android:id="@+id/icon_edit"
+                    android:id="@+id/iv_edit"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:src="@drawable/ic_edit"
