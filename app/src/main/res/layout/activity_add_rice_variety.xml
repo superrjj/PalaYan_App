@@ -146,7 +146,7 @@
                     android:id="@+id/txtYearRelease"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:inputType="text"
+                    android:inputType="number"
                     android:textSize="13sp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -235,7 +235,7 @@
                             android:fontFamily="@font/poppins__medium" />
 
                         <EditText
-                            android:id="@+id/txtMaturityEnd"
+                            android:id="@+id/txtPlantHeight"
                             android:layout_width="170dp"
                             android:layout_height="50dp"
                             android:inputType="number"
@@ -335,7 +335,7 @@
                     android:id="@+id/txtLocation"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:textSize="13sp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -361,7 +361,7 @@
                     android:background="@drawable/custom_input"
                     android:fontFamily="@font/poppins__medium"
                     android:hint="Environment"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:textSize="13sp" />
@@ -379,7 +379,7 @@
                     android:id="@+id/txtSeason"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:textSize="13sp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -401,7 +401,7 @@
                     android:id="@+id/txtPlantingMethod"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:textSize="13sp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"

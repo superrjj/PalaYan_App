@@ -17,7 +17,7 @@ public class RiceVariety {
     public String plantingMethod;
 
     public RiceVariety() {
-
+        // Required for Firebase
     }
 
     public RiceVariety(String rice_seed_id, String varietyName, String releaseName, String breedingCode, String yearRelease,
