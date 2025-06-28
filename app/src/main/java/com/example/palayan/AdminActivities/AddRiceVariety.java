@@ -10,10 +10,12 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class AddRiceVariety extends AppCompatActivity {
 
@@ -51,6 +53,7 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private void addVariety() {
+        // Validate required field
         String name = varietyName.getText().toString().trim();
         if (name.isEmpty()) {
             Toast.makeText(this, "Variety Name is required", Toast.LENGTH_SHORT).show();
@@ -59,26 +62,27 @@ public class AddRiceVariety extends AppCompatActivity {
 
         String id = databaseVarieties.push().getKey();
 
-        RiceVariety variety = new RiceVariety(
-                id,
-                name,
-                releaseName.getText().toString(),
-                breedingCode.getText().toString(),
-                yearRelease.getText().toString(),
-                breederOrigin.getText().toString(),
-                maturityDays.getText().toString(),
-                plantHeight.getText().toString(),
-                averageYield.getText().toString(),
-                maxYield.getText().toString(),
-                location.getText().toString(),
-                environment.getText().toString(),
-                season.getText().toString(),
-                plantingMethod.getText().toString()
-        );
+        // Store data in correct order
+        Map<String, Object> variety = new LinkedHashMap<>();
+        variety.put("rice_seed_id", id);
+        variety.put("varietyName", name);
+        variety.put("releaseName", releaseName.getText().toString().trim());
+        variety.put("breedingCode", breedingCode.getText().toString().trim());
+        variety.put("yearRelease", yearRelease.getText().toString().trim());
+        variety.put("breederOrigin", breederOrigin.getText().toString().trim());
+        variety.put("maturityDays", maturityDays.getText().toString().trim());
+        variety.put("plantHeight", plantHeight.getText().toString().trim());
+        variety.put("averageYield", averageYield.getText().toString().trim());
+        variety.put("maxYield", maxYield.getText().toString().trim());
+        variety.put("location", location.getText().toString().trim());
+        variety.put("environment", environment.getText().toString().trim());
+        variety.put("season", season.getText().toString().trim());
+        variety.put("plantingMethod", plantingMethod.getText().toString().trim());
 
+        // Save to Firebase
         databaseVarieties.child(id).setValue(variety)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Rice Variety added.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Rice Variety added successfully", Toast.LENGTH_SHORT).show();
                     finish();
                 })
                 .addOnFailureListener(e ->
