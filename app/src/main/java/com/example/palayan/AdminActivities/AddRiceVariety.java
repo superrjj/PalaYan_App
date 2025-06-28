@@ -28,5 +28,7 @@ public class AddRiceVariety extends AppCompatActivity {
             }
         });
 
+        //Add ng code for the adding rice variety
+
     }
 }
