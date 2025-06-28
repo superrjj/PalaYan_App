@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/semi_white"
+    tools:context=".AdminActivities.AddRiceVariety">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/green"
+            android:elevation="4dp"
+            app:title=""
+            app:contentInsetStart="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="2dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins__medium"/>
+
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Variety Name*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+               <EditText
+                   android:id="@+id/txtVarietyName"
+                   android:layout_width="match_parent"
+                   android:layout_height="50dp"
+                   android:inputType="text"
+                   android:textSize="13sp"
+                   android:paddingStart="12dp"
+                   android:paddingEnd="12dp"
+                   android:layout_marginBottom="5dp"
+                   android:hint="Variety Name"
+                   android:background="@drawable/custom_input"
+                   android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Release Name*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtReleaseName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="13sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Release Name"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Breeding Code*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtBreedingCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="13sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Breeding Code"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Year Release*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtYearRelease"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="13sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Year Release"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Breeder/Origin*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtBreederOrigin"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="13sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Breeder/Origin"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Maturity (days)*"
+                            android:textColor="@color/green"
+                            android:textSize="13sp"
+                            android:paddingBottom="5dp"
+                            android:fontFamily="@font/poppins__medium" />
+
+                        <EditText
+                            android:id="@+id/txtMaturity"
+                            android:layout_width="170dp"
+                            android:layout_height="50dp"
+                            android:inputType="number"
+                            android:textSize="13sp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:layout_marginBottom="5dp"
+                            android:hint="Maturity Days"
+                            android:background="@drawable/custom_input"
+                            android:fontFamily="@font/poppins__medium" />
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Plant Height (cm)*"
+                            android:textColor="@color/green"
+                            android:textSize="13sp"
+                            android:paddingBottom="5dp"
+                            android:fontFamily="@font/poppins__medium" />
+
+                        <EditText
+                            android:id="@+id/txtMaturityEnd"
+                            android:layout_width="170dp"
+                            android:layout_height="50dp"
+                            android:inputType="number"
+                            android:textSize="13sp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:layout_marginBottom="5dp"
+                            android:hint="Plant Height"
+                            android:background="@drawable/custom_input"
+                            android:fontFamily="@font/poppins__medium" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Average yield(t/h)*"
+                            android:textColor="@color/green"
+                            android:textSize="13sp"
+                            android:paddingBottom="5dp"
+                            android:fontFamily="@font/poppins__medium" />
+
+                        <EditText
+                            android:id="@+id/txtAverageYield"
+                            android:layout_width="170dp"
+                            android:layout_height="50dp"
+                            android:inputType="number"
+                            android:textSize="13sp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:layout_marginBottom="5dp"
+                            android:hint="Average Yield"
+                            android:background="@drawable/custom_input"
+                            android:fontFamily="@font/poppins__medium" />
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Max. Yield (t/h)*"
+                            android:textColor="@color/green"
+                            android:textSize="13sp"
+                            android:paddingBottom="5dp"
+                            android:fontFamily="@font/poppins__medium" />
+
+                        <EditText
+                            android:id="@+id/txtMaxYield"
+                            android:layout_width="170dp"
+                            android:layout_height="50dp"
+                            android:inputType="number"
+                            android:textSize="13sp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:layout_marginBottom="5dp"
+                            android:hint="Max Yield"
+                            android:background="@drawable/custom_input"
+                            android:fontFamily="@font/poppins__medium" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium" />
+
+
+                <EditText
+                    android:id="@+id/txtLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="number"
+                    android:textSize="13sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Location"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Environment*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium" />
+
+                <EditText
+                    android:id="@+id/txtEnvironment"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"
+                    android:hint="Environment"
+                    android:inputType="number"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Season*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium" />
+
+                <EditText
+                    android:id="@+id/txtSeason"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="number"
+                    android:textSize="13sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Season"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Planting Method*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium" />
+
+                <EditText
+                    android:id="@+id/txtPlantingMethod"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="number"
+                    android:textSize="13sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="50dp"
+                    android:hint="Planting Method"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium" />
+
+             <Button
+                 android:id="@+id/btnAddVariety"
+                 android:layout_width="match_parent"
+                 android:layout_height="50dp"
+                 android:background="@drawable/button_solid"
+                 android:text="ADD VARIETY"
+                 android:textSize="15sp"
+                 android:textColor="@color/white"
+                 android:fontFamily="@font/poppins__semibold"/>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>

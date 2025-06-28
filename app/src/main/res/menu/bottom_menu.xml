@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bot_nav_home"
+        android:title="Home"
+        android:icon="@drawable/ic_home"/>
+
+    <item
+        android:id="@+id/bot_nav_rice"
+        android:title="Rice Seeds"
+        android:icon="@drawable/ic_rice"/>
+
+    <item
+        android:id="@+id/bot_nav_pest_disease"
+        android:title="Pest and Disease"
+        android:icon="@drawable/ic_pest_disease"/>
+
+</menu>

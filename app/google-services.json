@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "215972469336",
+    "project_id": "palayan-app",
+    "storage_bucket": "palayan-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215972469336:android:1e1ecbadaa7782adae482d",
+        "android_client_info": {
+          "package_name": "com.example.palayan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzLNH2cMs0tsT7nIHZ-HLrI1k4m2W7Yfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    tools:context=".AdminActivities.AdminFragment.AdminDashboardFragment">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:gravity="center_horizontal"
+       android:orientation="vertical">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:paddingTop="30dp"
+           android:gravity="center">
+
+           <GridLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:columnCount="4"
+               android:alignmentMode="alignMargins"
+               android:useDefaultMargins="true">
+
+               <!-- Card 1: Rice Varieties -->
+               <androidx.cardview.widget.CardView
+                   android:layout_width="90dp"
+                   android:layout_height="100dp"
+                   app:cardCornerRadius="10dp"
+                   app:cardElevation="4dp"
+                   app:cardBackgroundColor="@color/white">
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:orientation="vertical"
+                       android:gravity="center"
+                       android:padding="6dp">
+
+                       <TextView
+                           android:id="@+id/tv_riceSeeds"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="5"
+                           android:textSize="28sp"
+                           android:textColor="@color/dark_green"
+                           android:fontFamily="@font/poppins__semibold" />
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Rice Seeds"
+                           android:textSize="13sp"
+                           android:textColor="@color/dark_green"
+                           android:fontFamily="@font/poppins__semibold" />
+                   </LinearLayout>
+               </androidx.cardview.widget.CardView>
+
+               <!-- Card 2: Pest Management -->
+               <androidx.cardview.widget.CardView
+                   android:layout_width="90dp"
+                   android:layout_height="100dp"
+                   app:cardCornerRadius="10dp"
+                   app:cardElevation="4dp"
+                   app:cardBackgroundColor="@color/white">
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:orientation="vertical"
+                       android:gravity="center"
+                       android:padding="6dp">
+
+                       <TextView
+                           android:id="@+id/tv_pests"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="1"
+                           android:textSize="28sp"
+                           android:textColor="@color/dark_orange"
+                           android:fontFamily="@font/poppins__semibold" />
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Pests"
+                           android:textSize="13sp"
+                           android:textColor="@color/dark_orange"
+                           android:fontFamily="@font/poppins__semibold" />
+                   </LinearLayout>
+               </androidx.cardview.widget.CardView>
+
+               <!-- Card 3: Disease Management -->
+               <androidx.cardview.widget.CardView
+                   android:layout_width="90dp"
+                   android:layout_height="100dp"
+                   app:cardCornerRadius="10dp"
+                   app:cardElevation="4dp"
+                   app:cardBackgroundColor="@color/white">
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:orientation="vertical"
+                       android:gravity="center"
+                       android:padding="6dp">
+
+                       <TextView
+                           android:id="@+id/tv_disease"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="1"
+                           android:textSize="28sp"
+                           android:textColor="@color/dark_red"
+                           android:fontFamily="@font/poppins__semibold" />
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Diseases"
+                           android:textSize="13sp"
+                           android:textColor="@color/dark_red"
+                           android:fontFamily="@font/poppins__semibold" />
+                   </LinearLayout>
+               </androidx.cardview.widget.CardView>
+
+               <!-- Card 4: Admin Accounts -->
+               <androidx.cardview.widget.CardView
+                   android:layout_width="90dp"
+                   android:layout_height="100dp"
+                   app:cardCornerRadius="10dp"
+                   app:cardElevation="4dp"
+                   app:cardBackgroundColor="@color/white">
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:orientation="vertical"
+                       android:gravity="center"
+                       android:padding="6dp">
+
+                       <TextView
+                           android:id="@+id/tv_accounts"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="2"
+                           android:textSize="28sp"
+                           android:textColor="@color/dark_blue"
+                           android:fontFamily="@font/poppins__semibold" />
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Accounts"
+                           android:textSize="13sp"
+                           android:textColor="@color/dark_blue"
+                           android:fontFamily="@font/poppins__semibold" />
+                   </LinearLayout>
+               </androidx.cardview.widget.CardView>
+
+           </GridLayout>
+       </LinearLayout>
+
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:paddingTop="30dp"
+           android:paddingHorizontal="10dp">
+
+           <androidx.cardview.widget.CardView
+               android:id="@+id/cv_rice_varieties"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:cardCornerRadius="15dp"
+               app:cardUseCompatPadding="true"
+               app:cardElevation="4dp"
+               app:cardBackgroundColor="@color/light_green"
+               android:clickable="true"
+               app:cardPreventCornerOverlap="true">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:gravity="center_vertical"
+                   android:padding="16dp"
+                   android:baselineAligned="false">
+
+
+                   <ImageView
+                       android:layout_width="40dp"
+                       android:layout_height="40dp"
+                       android:src="@drawable/ic_rice_logo"
+                       android:contentDescription="Rice Icon"
+                       android:layout_marginEnd="12dp"/>
+
+
+                   <LinearLayout
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:orientation="vertical">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Rice Varieties"
+                           android:textSize="16sp"
+                           android:textStyle="bold"
+                           android:textColor="@color/dark_green"
+                           android:fontFamily="@font/poppins__semibold"/>
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Manage local rice variety data"
+                           android:textSize="13sp"
+                           android:textColor="@color/dark_green"
+                           android:fontFamily="@font/poppins__medium"/>
+                   </LinearLayout>
+
+
+                   <ImageView
+                       android:layout_width="24dp"
+                       android:layout_height="24dp"
+                       android:src="@drawable/ic_arrow_right"
+                       android:contentDescription="Arrow"
+                       app:tint="@color/dark_green"/>
+               </LinearLayout>
+           </androidx.cardview.widget.CardView>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:paddingHorizontal="10dp">
+
+           <androidx.cardview.widget.CardView
+               android:id="@+id/cv_pest_management"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:clickable="true"
+               app:cardCornerRadius="15dp"
+               app:cardUseCompatPadding="true"
+               app:cardElevation="4dp"
+               app:cardBackgroundColor="@color/light_orange"
+               app:cardPreventCornerOverlap="true">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:gravity="center_vertical"
+                   android:padding="16dp"
+                   android:baselineAligned="false">
+
+
+                   <ImageView
+                       android:layout_width="40dp"
+                       android:layout_height="40dp"
+                       android:src="@drawable/ic_pest_logo"
+                       android:contentDescription="Rice Icon"
+                       android:layout_marginEnd="12dp"/>
+
+
+                   <LinearLayout
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:orientation="vertical">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Pest Management"
+                           android:textSize="16sp"
+                           android:textStyle="bold"
+                           android:textColor="@color/dark_orange"
+                           android:fontFamily="@font/poppins__semibold"/>
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Manage local rice pest data"
+                           android:textSize="13sp"
+                           android:textColor="@color/dark_orange"
+                           android:fontFamily="@font/poppins__medium"/>
+                   </LinearLayout>
+
+
+                   <ImageView
+                       android:layout_width="24dp"
+                       android:layout_height="24dp"
+                       android:src="@drawable/ic_arrow_right"
+                       android:contentDescription="Arrow"
+                       app:tint="@color/dark_orange"/>
+               </LinearLayout>
+           </androidx.cardview.widget.CardView>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:paddingHorizontal="10dp">
+
+           <androidx.cardview.widget.CardView
+               android:id="@+id/cv_disease_management"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:clickable="true"
+               app:cardCornerRadius="15dp"
+               app:cardUseCompatPadding="true"
+               app:cardElevation="4dp"
+               app:cardBackgroundColor="@color/light_red"
+               app:cardPreventCornerOverlap="true">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:gravity="center_vertical"
+                   android:padding="16dp"
+                   android:baselineAligned="false">
+
+
+                   <ImageView
+                       android:layout_width="40dp"
+                       android:layout_height="40dp"
+                       android:src="@drawable/ic_disease_logo"
+                       android:contentDescription="Rice Icon"
+                       android:layout_marginEnd="12dp"/>
+
+
+                   <LinearLayout
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:orientation="vertical">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Disease Management"
+                           android:textSize="16sp"
+                           android:textStyle="bold"
+                           android:textColor="@color/dark_red"
+                           android:fontFamily="@font/poppins__semibold"/>
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Manage local rice disease data"
+                           android:textSize="13sp"
+                           android:textColor="@color/dark_red"
+                           android:fontFamily="@font/poppins__medium"/>
+                   </LinearLayout>
+
+
+                   <ImageView
+                       android:layout_width="24dp"
+                       android:layout_height="24dp"
+                       android:src="@drawable/ic_arrow_right"
+                       android:contentDescription="Arrow"
+                       app:tint="@color/dark_red"/>
+               </LinearLayout>
+           </androidx.cardview.widget.CardView>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:paddingHorizontal="10dp">
+
+           <androidx.cardview.widget.CardView
+               android:id="@+id/cv_accounts"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:clickable="true"
+               app:cardCornerRadius="15dp"
+               app:cardUseCompatPadding="true"
+               app:cardElevation="4dp"
+               app:cardBackgroundColor="@color/light_blue"
+               app:cardPreventCornerOverlap="true">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:gravity="center_vertical"
+                   android:padding="16dp"
+                   android:baselineAligned="false">
+
+
+                   <ImageView
+                       android:layout_width="40dp"
+                       android:layout_height="40dp"
+                       android:src="@drawable/ic_account_logo"
+                       android:contentDescription="Rice Icon"
+                       android:layout_marginEnd="12dp"/>
+
+
+                   <LinearLayout
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:orientation="vertical">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Accounts"
+                           android:textSize="16sp"
+                           android:textStyle="bold"
+                           android:textColor="@color/dark_blue"
+                           android:fontFamily="@font/poppins__semibold"/>
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Manage accounts data"
+                           android:textSize="13sp"
+                           android:textColor="@color/dark_blue"
+                           android:fontFamily="@font/poppins__medium"/>
+                   </LinearLayout>
+
+
+                   <ImageView
+                       android:layout_width="24dp"
+                       android:layout_height="24dp"
+                       android:src="@drawable/ic_arrow_right"
+                       android:contentDescription="Arrow"
+                       app:tint="@color/dark_blue"/>
+               </LinearLayout>
+           </androidx.cardview.widget.CardView>
+       </LinearLayout>
+
+   </LinearLayout>
+
+</ScrollView>
