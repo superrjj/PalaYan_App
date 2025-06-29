@@ -29,7 +29,7 @@
         android:textSize="14sp"
         android:gravity="center"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="30dp" />
 
     <Button
         android:id="@+id/btnOkay"
@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:text="OKAY"
         android:fontFamily="@font/poppins__semibold"
-        android:backgroundTint="@color/green"
+        android:textSize="14sp"
+        android:background="@drawable/button_solid"
         android:textColor="@android:color/white"/>
 </LinearLayout>

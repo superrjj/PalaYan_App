@@ -21,7 +21,7 @@ public class CustomDialogFragment extends DialogFragment {
     public static CustomDialogFragment newInstance(
             String title,
             String message,
-            String sub_message,
+            String subMessage,
             int iconResId,
             String confirmText,
             DialogInterface.OnClickListener onConfirm
@@ -30,7 +30,7 @@ public class CustomDialogFragment extends DialogFragment {
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putString("message", message);
-        args.putString("sub_message", sub_message);
+        args.putString("sub_message", subMessage);
         args.putInt("iconResId", iconResId);
         args.putString("confirmText", confirmText);
         fragment.setArguments(args);
@@ -49,6 +49,7 @@ public class CustomDialogFragment extends DialogFragment {
 
         TextView title = view.findViewById(R.id.dialog_title);
         TextView message = view.findViewById(R.id.dialog_message);
+        TextView subMessage = view.findViewById(R.id.dialog_sub_message);
         ImageView icon = view.findViewById(R.id.dialog_icon);
         Button cancel = view.findViewById(R.id.btnCancel);
         Button confirm = view.findViewById(R.id.btnConfirm);
@@ -57,9 +58,9 @@ public class CustomDialogFragment extends DialogFragment {
         if (args != null) {
             title.setText(args.getString("title"));
             message.setText(args.getString("message"));
+            subMessage.setText(args.getString("sub_message"));
             icon.setImageResource(args.getInt("iconResId"));
-            confirm.setText(args.getString("confirmText"));
-            confirm.setBackgroundColor(ContextCompat.getColor(requireContext(), args.getInt("confirmColorRes")));
+
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -76,7 +77,4 @@ public class CustomDialogFragment extends DialogFragment {
 
         return dialog;
     }
-
-
-
 }

@@ -69,6 +69,8 @@ public class ViewRiceVareties extends AppCompatActivity {
                     }
                 }
                 adapter.notifyDataSetChanged();
+
+
             }
 
             @Override
