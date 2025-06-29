@@ -21,8 +21,9 @@ public class AddRiceVariety extends AppCompatActivity {
             maturityDays, plantHeight, averageYield, maxYield, location,
             environment, season, plantingMethod;
 
-    private Button btnAddVariety;
+    private Button btnAddVariety, btnUpdate;
     private DatabaseReference databaseVarieties;
+    private boolean isEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +49,39 @@ public class AddRiceVariety extends AppCompatActivity {
         environment = findViewById(R.id.txtEnvironment);
         season = findViewById(R.id.txtSeason);
         plantingMethod = findViewById(R.id.txtPlantingMethod);
+
         btnAddVariety = findViewById(R.id.btnAddVariety);
+        btnUpdate = findViewById(R.id.btnUpdateVariety);
+
+        btnAddVariety.setVisibility(View.VISIBLE);
+        btnUpdate.setVisibility(View.GONE);
 
         btnAddVariety.setOnClickListener(view -> addVariety());
+
+        //check if editing the details of rice
+        if (getIntent().getBooleanExtra("isEdit", false)) {
+            isEditMode = true;
+            btnAddVariety.setVisibility(View.GONE);
+            btnUpdate.setVisibility(View.VISIBLE);
+
+            //to pre-fill fields
+            varietyName.setText(getIntent().getStringExtra("varietyName"));
+            varietyName.setEnabled(false); // Cannot edit ID
+            releaseName.setText(getIntent().getStringExtra("releaseName"));
+            breedingCode.setText(getIntent().getStringExtra("breedingCode"));
+            yearRelease.setText(getIntent().getStringExtra("yearRelease"));
+            breederOrigin.setText(getIntent().getStringExtra("breederOrigin"));
+            maturityDays.setText(String.valueOf(getIntent().getIntExtra("maturityDays", 0)));
+            plantHeight.setText(String.valueOf(getIntent().getIntExtra("plantHeight", 0)));
+            averageYield.setText(String.valueOf(getIntent().getDoubleExtra("averageYield", 0)));
+            maxYield.setText(String.valueOf(getIntent().getDoubleExtra("maxYield", 0)));
+            location.setText(getIntent().getStringExtra("location"));
+            environment.setText(getIntent().getStringExtra("environment"));
+            season.setText(getIntent().getStringExtra("season"));
+            plantingMethod.setText(getIntent().getStringExtra("plantingMethod"));
+
+            btnUpdate.setOnClickListener(view -> updateVariety());
+        }
     }
 
     private void addVariety() {
@@ -69,7 +100,7 @@ public class AddRiceVariety extends AppCompatActivity {
 
             RiceVariety variety = new RiceVariety(
                     id,
-                    varietyName.getText().toString().trim(),
+                    id,
                     releaseName.getText().toString().trim(),
                     breedingCode.getText().toString().trim(),
                     yearRelease.getText().toString().trim(),
@@ -82,7 +113,7 @@ public class AddRiceVariety extends AppCompatActivity {
                     environment.getText().toString().trim(),
                     season.getText().toString().trim(),
                     plantingMethod.getText().toString().trim(),
-                    false // not archived
+                    false // Not archived
             );
 
             databaseVarieties.child(id).setValue(variety)
@@ -96,6 +127,47 @@ public class AddRiceVariety extends AppCompatActivity {
 
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Enter valid numbers for Maturity, Height, and Yields", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void updateVariety() {
+        String id = getIntent().getStringExtra("rice_seed_id");
+
+        try {
+            int maturity = Integer.parseInt(maturityDays.getText().toString().trim());
+            int height = Integer.parseInt(plantHeight.getText().toString().trim());
+            double avgYield = Double.parseDouble(averageYield.getText().toString().trim());
+            double maxYieldVal = Double.parseDouble(maxYield.getText().toString().trim());
+
+            RiceVariety updatedVariety = new RiceVariety(
+                    id,
+                    varietyName.getText().toString().trim(),
+                    releaseName.getText().toString().trim(),
+                    breedingCode.getText().toString().trim(),
+                    yearRelease.getText().toString().trim(),
+                    breederOrigin.getText().toString().trim(),
+                    maturity,
+                    height,
+                    avgYield,
+                    maxYieldVal,
+                    location.getText().toString().trim(),
+                    environment.getText().toString().trim(),
+                    season.getText().toString().trim(),
+                    plantingMethod.getText().toString().trim(),
+                    false
+            );
+
+            databaseVarieties.child(id).setValue(updatedVariety)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Variety updated!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                    );
+
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid input for numbers", Toast.LENGTH_LONG).show();
         }
     }
 }

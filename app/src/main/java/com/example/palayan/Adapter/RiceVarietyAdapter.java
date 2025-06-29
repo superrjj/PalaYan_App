@@ -1,6 +1,7 @@
 package com.example.palayan.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.palayan.AdminActivities.AddRiceVariety;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.google.firebase.database.FirebaseDatabase;
@@ -56,9 +58,25 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
                     );
         });
 
-        holder.btnEdit.setOnClickListener(v ->
-                Toast.makeText(context, "Edit clicked for " + variety.breedingCode, Toast.LENGTH_SHORT).show()
-        );
+        holder.btnEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(context, AddRiceVariety.class);
+            intent.putExtra("isEdit", true);
+            intent.putExtra("rice_seed_id", variety.rice_seed_id);
+            intent.putExtra("varietyName", variety.varietyName);
+            intent.putExtra("releaseName", variety.releaseName);
+            intent.putExtra("breedingCode", variety.breedingCode);
+            intent.putExtra("yearRelease", variety.yearRelease);
+            intent.putExtra("breederOrigin", variety.breederOrigin);
+            intent.putExtra("maturityDays", variety.maturityDays);
+            intent.putExtra("plantHeight", variety.plantHeight);
+            intent.putExtra("averageYield", variety.averageYield);
+            intent.putExtra("maxYield", variety.maxYield);
+            intent.putExtra("location", variety.location);
+            intent.putExtra("environment", variety.environment);
+            intent.putExtra("season", variety.season);
+            intent.putExtra("plantingMethod", variety.plantingMethod);
+            context.startActivity(intent);
+        });
     }
 
     @Override

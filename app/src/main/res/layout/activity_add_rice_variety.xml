@@ -418,7 +418,19 @@
                  android:text="ADD VARIETY"
                  android:textSize="15sp"
                  android:textColor="@color/white"
+                 android:layout_marginBottom="10dp"
                  android:fontFamily="@font/poppins__semibold"/>
+
+                <Button
+                    android:id="@+id/btnUpdateVariety"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_solid"
+                    android:backgroundTint="@color/dark_blue"
+                    android:text="UPDATE VARIETY"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins__semibold"/>
 
             </LinearLayout>
 
