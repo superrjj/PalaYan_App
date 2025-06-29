@@ -7,23 +7,23 @@ public class RiceVariety {
     public String breedingCode;
     public String yearRelease;
     public String breederOrigin;
-    public String maturityDays;
-    public String plantHeight;
-    public String averageYield;
-    public String maxYield;
+    public int maturityDays;
+    public int plantHeight;
+    public double averageYield;
+    public double maxYield;
     public String location;
     public String environment;
     public String season;
     public String plantingMethod;
+    public Boolean archived;
 
     public RiceVariety() {
-        // Required for Firebase
+
     }
 
     public RiceVariety(String rice_seed_id, String varietyName, String releaseName, String breedingCode, String yearRelease,
-                       String breederOrigin, String maturityDays, String plantHeight, String averageYield, String maxYield,
-                       String location, String environment, String season, String plantingMethod) {
-
+                       String breederOrigin, int maturityDays, int plantHeight, double averageYield, double maxYield,
+                       String location, String environment, String season, String plantingMethod, Boolean archived) {
         this.rice_seed_id = rice_seed_id;
         this.varietyName = varietyName;
         this.releaseName = releaseName;
@@ -38,5 +38,6 @@ public class RiceVariety {
         this.environment = environment;
         this.season = season;
         this.plantingMethod = plantingMethod;
+        this.archived = archived;
     }
 }

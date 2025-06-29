@@ -10,16 +10,17 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 public class AddRiceVariety extends AppCompatActivity {
 
-    private EditText varietyName, releaseName, breedingCode, yearRelease, breederOrigin, maturityDays, plantHeight, averageYield, maxYield, location, environment, season, plantingMethod;
+    private EditText varietyName, releaseName, breedingCode, yearRelease, breederOrigin,
+            maturityDays, plantHeight, averageYield, maxYield, location,
+            environment, season, plantingMethod;
+
     private Button btnAddVariety;
     private DatabaseReference databaseVarieties;
 
@@ -53,40 +54,48 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private void addVariety() {
-        // Validate required field
-        String name = varietyName.getText().toString().trim();
-        if (name.isEmpty()) {
+        String id = varietyName.getText().toString().trim();
+
+        if (id.isEmpty()) {
             Toast.makeText(this, "Variety Name is required", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String id = databaseVarieties.push().getKey();
+        try {
+            int maturity = Integer.parseInt(maturityDays.getText().toString().trim());
+            int height = Integer.parseInt(plantHeight.getText().toString().trim());
+            double avgYield = Double.parseDouble(averageYield.getText().toString().trim());
+            double maxYieldVal = Double.parseDouble(maxYield.getText().toString().trim());
 
-        // Store data in correct order
-        Map<String, Object> variety = new LinkedHashMap<>();
-        variety.put("rice_seed_id", id);
-        variety.put("varietyName", name);
-        variety.put("releaseName", releaseName.getText().toString().trim());
-        variety.put("breedingCode", breedingCode.getText().toString().trim());
-        variety.put("yearRelease", yearRelease.getText().toString().trim());
-        variety.put("breederOrigin", breederOrigin.getText().toString().trim());
-        variety.put("maturityDays", maturityDays.getText().toString().trim());
-        variety.put("plantHeight", plantHeight.getText().toString().trim());
-        variety.put("averageYield", averageYield.getText().toString().trim());
-        variety.put("maxYield", maxYield.getText().toString().trim());
-        variety.put("location", location.getText().toString().trim());
-        variety.put("environment", environment.getText().toString().trim());
-        variety.put("season", season.getText().toString().trim());
-        variety.put("plantingMethod", plantingMethod.getText().toString().trim());
+            RiceVariety variety = new RiceVariety(
+                    id,
+                    varietyName.getText().toString().trim(),
+                    releaseName.getText().toString().trim(),
+                    breedingCode.getText().toString().trim(),
+                    yearRelease.getText().toString().trim(),
+                    breederOrigin.getText().toString().trim(),
+                    maturity,
+                    height,
+                    avgYield,
+                    maxYieldVal,
+                    location.getText().toString().trim(),
+                    environment.getText().toString().trim(),
+                    season.getText().toString().trim(),
+                    plantingMethod.getText().toString().trim(),
+                    false // not archived
+            );
 
-        // Save to Firebase
-        databaseVarieties.child(id).setValue(variety)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Rice Variety added successfully", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
+            databaseVarieties.child(id).setValue(variety)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Variety added successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                    );
+
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Enter valid numbers for Maturity, Height, and Yields", Toast.LENGTH_LONG).show();
+        }
     }
 }

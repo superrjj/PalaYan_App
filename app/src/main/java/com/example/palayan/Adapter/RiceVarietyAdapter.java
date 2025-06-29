@@ -46,12 +46,13 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
             FirebaseDatabase.getInstance()
                     .getReference("rice_seed_varieties")
                     .child(variety.rice_seed_id)
-                    .removeValue()
+                    .child("archived")
+                    .setValue(true)
                     .addOnSuccessListener(aVoid ->
-                            Toast.makeText(context, "Variety deleted", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Rice variety deleted.", Toast.LENGTH_SHORT).show()
                     )
                     .addOnFailureListener(e ->
-                            Toast.makeText(context, "Failed to delete", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Failed to deleted.", Toast.LENGTH_SHORT).show()
                     );
         });
 
