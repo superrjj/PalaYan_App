@@ -21,18 +21,18 @@ public class CustomDialogFragment extends DialogFragment {
     public static CustomDialogFragment newInstance(
             String title,
             String message,
+            String sub_message,
             int iconResId,
             String confirmText,
-            int confirmColorRes,
             DialogInterface.OnClickListener onConfirm
     ) {
         CustomDialogFragment fragment = new CustomDialogFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putString("message", message);
+        args.putString("sub_message", sub_message);
         args.putInt("iconResId", iconResId);
         args.putString("confirmText", confirmText);
-        args.putInt("confirmColorRes", confirmColorRes);
         fragment.setArguments(args);
         fragment.setOnConfirmListener(onConfirm);
         return fragment;

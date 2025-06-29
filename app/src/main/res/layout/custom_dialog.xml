@@ -53,6 +53,8 @@
             android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:background="@drawable/button_solid"
+            android:backgroundTint="@color/light_gray"
             android:fontFamily="@font/poppins__semibold"
             android:text="CANCEL"
             android:layout_height="wrap_content" />
@@ -61,7 +63,9 @@
             android:id="@+id/btnConfirm"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:background="@drawable/button_solid"
             android:text="CONFIRM"
+            android:textColor="@color/white"
             android:fontFamily="@font/poppins__semibold"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"/>

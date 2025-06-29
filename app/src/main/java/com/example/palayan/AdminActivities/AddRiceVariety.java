@@ -10,7 +10,10 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.palayan.CustomDialogFragment;
+import com.example.palayan.StatusDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
+import androidx.fragment.app.DialogFragment;
 import com.example.palayan.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -56,17 +59,15 @@ public class AddRiceVariety extends AppCompatActivity {
         btnAddVariety.setVisibility(View.VISIBLE);
         btnUpdate.setVisibility(View.GONE);
 
-        btnAddVariety.setOnClickListener(view -> addVariety());
+        btnAddVariety.setOnClickListener(view -> showAddConfirmationDialog());
 
-        //check if editing the details of rice
         if (getIntent().getBooleanExtra("isEdit", false)) {
             isEditMode = true;
             btnAddVariety.setVisibility(View.GONE);
             btnUpdate.setVisibility(View.VISIBLE);
 
-            //to pre-fill fields
             varietyName.setText(getIntent().getStringExtra("varietyName"));
-            varietyName.setEnabled(false); // Cannot edit ID
+            varietyName.setEnabled(false);
             releaseName.setText(getIntent().getStringExtra("releaseName"));
             breedingCode.setText(getIntent().getStringExtra("breedingCode"));
             yearRelease.setText(getIntent().getStringExtra("yearRelease"));
@@ -84,13 +85,26 @@ public class AddRiceVariety extends AppCompatActivity {
         }
     }
 
-    private void addVariety() {
+    private void showAddConfirmationDialog() {
         String id = varietyName.getText().toString().trim();
 
         if (id.isEmpty()) {
             Toast.makeText(this, "Variety Name is required", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        CustomDialogFragment.newInstance(
+                "Add Rice Variety",
+                "Are you sure you want to add \"" + id + "\"?",
+                "This rice variety will be added to the application and made available for selection and reporting",
+                R.drawable.ic_rice_logo,
+                "ADD",
+                (dialog, which) -> addVarietyToDatabase()
+        ).show(getSupportFragmentManager(), "AddConfirmDialog");
+    }
+
+    private void addVarietyToDatabase() {
+        String id = varietyName.getText().toString().trim();
 
         try {
             int maturity = Integer.parseInt(maturityDays.getText().toString().trim());
@@ -113,14 +127,11 @@ public class AddRiceVariety extends AppCompatActivity {
                     environment.getText().toString().trim(),
                     season.getText().toString().trim(),
                     plantingMethod.getText().toString().trim(),
-                    false // Not archived
+                    false
             );
 
             databaseVarieties.child(id).setValue(variety)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Variety added successfully!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    })
+                    .addOnSuccessListener(aVoid -> showSuccessDialog(id))
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show()
                     );
@@ -128,6 +139,16 @@ public class AddRiceVariety extends AppCompatActivity {
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Enter valid numbers for Maturity, Height, and Yields", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void showSuccessDialog(String name) {
+        StatusDialogFragment.newInstance(
+                        "Rice Variety Added",
+                        name + " has been successfully added.",
+                        R.drawable.ic_success,
+                        R.color.green
+                ).setOnDismissListener(() -> finish())
+                .show(getSupportFragmentManager(), "SuccessDialog");
     }
 
     private void updateVariety() {
