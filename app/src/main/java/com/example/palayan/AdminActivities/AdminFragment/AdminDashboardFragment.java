@@ -2,45 +2,66 @@ package com.example.palayan.AdminActivities.AdminFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.palayan.AdminActivities.ViewRiceVarieties;
-import com.example.palayan.R;
-
+import com.example.palayan.databinding.FragmentAdminDashboardBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class AdminDashboardFragment extends Fragment {
 
-   private CardView cv_rice_seeds;
+    private FragmentAdminDashboardBinding root;
+    private DatabaseReference riceVarietyRef;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.fragment_admin_dashboard, container, false);
+        root = FragmentAdminDashboardBinding.inflate(inflater, container, false);
+        return root.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        cv_rice_seeds = view.findViewById(R.id.cv_rice_varieties);
+        riceVarietyRef = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
 
-        cv_rice_seeds.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //realtime listener to count rice seeds that are not archived
+        riceVarietyRef.orderByChild("archived").equalTo(false)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        long count = snapshot.getChildrenCount();
+                        root.tvRiceSeedCount.setText(String.valueOf(count));
+                    }
 
-                Intent intent = new Intent(getActivity(), ViewRiceVarieties.class);
-                startActivity(intent);
-            }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getContext(), "Failed to load count", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        //on card click, navigate to RiceVariety list
+        root.cvRiceVarieties.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ViewRiceVarieties.class);
+            startActivity(intent);
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        root = null;
     }
+}
