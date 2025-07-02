@@ -10,13 +10,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.palayan.AdminActivities.AddRiceVariety;
-import com.example.palayan.CustomDialogFragment;
+import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
-import com.example.palayan.StatusDialogFragment;
+import com.example.palayan.RiceVarietyInformation;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
@@ -45,6 +46,12 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
         holder.variety_name.setText(variety.varietyName);
         holder.location.setText(variety.location);
         holder.release_year.setText(variety.yearRelease);
+
+        holder.cvRiceVariety.setOnClickListener(v -> {
+            Intent intent = new Intent(context, RiceVarietyInformation.class);
+            intent.putExtra("rice_seed_id", variety.rice_seed_id);
+            context.startActivity(intent);
+        });
 
 
 
@@ -104,14 +111,17 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
     public static class VarietyViewHolder extends RecyclerView.ViewHolder {
         TextView variety_name, location, release_year;
         ImageView btnDelete, btnEdit;
+        CardView cvRiceVariety;
 
         public VarietyViewHolder(@NonNull View itemView) {
             super(itemView);
             variety_name = itemView.findViewById(R.id.tv_variety_name);
             location = itemView.findViewById(R.id.tv_location);
             release_year = itemView.findViewById(R.id.tv_release_year);
+            cvRiceVariety = itemView.findViewById(R.id.cvRiceVarieties);
             btnDelete = itemView.findViewById(R.id.iv_delete);
             btnEdit = itemView.findViewById(R.id.iv_edit);
+
         }
     }
 }

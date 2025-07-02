@@ -324,6 +324,29 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="No. of Tillers*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium" />
+
+
+                <EditText
+                    android:id="@+id/txtTillers"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="number"
+                    android:textSize="13sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="No. of Tillers"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Location*"
                     android:textColor="@color/green"
                     android:textSize="13sp"

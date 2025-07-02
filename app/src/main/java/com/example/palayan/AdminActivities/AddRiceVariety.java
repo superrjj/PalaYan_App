@@ -2,16 +2,13 @@ package com.example.palayan.AdminActivities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.palayan.CustomDialogFragment;
-import com.example.palayan.StatusDialogFragment;
+import com.example.palayan.Dialog.CustomDialogFragment;
+import com.example.palayan.Dialog.StatusDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddRiceVarietyBinding;
@@ -55,6 +52,7 @@ public class AddRiceVariety extends AppCompatActivity {
             root.txtPlantHeight.setText(String.valueOf(getIntent().getIntExtra("plantHeight", 0)));
             root.txtAverageYield.setText(String.valueOf(getIntent().getDoubleExtra("averageYield", 0)));
             root.txtMaxYield.setText(String.valueOf(getIntent().getDoubleExtra("maxYield", 0)));
+            root.txtTillers.setText(String.valueOf(getIntent().getIntExtra("tillers", 0)));
             root.txtLocation.setText(getIntent().getStringExtra("location"));
             root.txtEnvironment.setText(getIntent().getStringExtra("environment"));
             root.txtSeason.setText(getIntent().getStringExtra("season"));
@@ -102,6 +100,7 @@ public class AddRiceVariety extends AppCompatActivity {
         try {
             int maturity = Integer.parseInt(root.txtMaturity.getText().toString().trim());
             int height = Integer.parseInt(root.txtPlantHeight.getText().toString().trim());
+            int tillers = Integer.parseInt(root.txtTillers.getText().toString().trim());
             double avgYield = Double.parseDouble(root.txtAverageYield.getText().toString().trim());
             double maxYieldVal = Double.parseDouble(root.txtMaxYield.getText().toString().trim());
 
@@ -116,6 +115,7 @@ public class AddRiceVariety extends AppCompatActivity {
                     height,
                     avgYield,
                     maxYieldVal,
+                    tillers,
                     root.txtLocation.getText().toString().trim(),
                     root.txtEnvironment.getText().toString().trim(),
                     root.txtSeason.getText().toString().trim(),
@@ -140,6 +140,7 @@ public class AddRiceVariety extends AppCompatActivity {
         try {
             int maturity = Integer.parseInt(root.txtMaturity.getText().toString().trim());
             int height = Integer.parseInt(root.txtPlantHeight.getText().toString().trim());
+            int tillers = Integer.parseInt(root.txtTillers.getText().toString().trim());
             double avgYield = Double.parseDouble(root.txtAverageYield.getText().toString().trim());
             double maxYieldVal = Double.parseDouble(root.txtMaxYield.getText().toString().trim());
 
@@ -154,6 +155,7 @@ public class AddRiceVariety extends AppCompatActivity {
                     height,
                     avgYield,
                     maxYieldVal,
+                    tillers,
                     root.txtLocation.getText().toString().trim(),
                     root.txtEnvironment.getText().toString().trim(),
                     root.txtSeason.getText().toString().trim(),

@@ -11,6 +11,7 @@ public class RiceVariety {
     public int plantHeight;
     public double averageYield;
     public double maxYield;
+    public int tillers;
     public String location;
     public String environment;
     public String season;
@@ -22,7 +23,7 @@ public class RiceVariety {
     }
 
     public RiceVariety(String rice_seed_id, String varietyName, String releaseName, String breedingCode, String yearRelease,
-                       String breederOrigin, int maturityDays, int plantHeight, double averageYield, double maxYield,
+                       String breederOrigin, int maturityDays, int plantHeight, double averageYield, double maxYield, int tillers,
                        String location, String environment, String season, String plantingMethod, Boolean archived) {
         this.rice_seed_id = rice_seed_id;
         this.varietyName = varietyName;
@@ -31,6 +32,7 @@ public class RiceVariety {
         this.yearRelease = yearRelease;
         this.breederOrigin = breederOrigin;
         this.maturityDays = maturityDays;
+        this.tillers = tillers;
         this.plantHeight = plantHeight;
         this.averageYield = averageYield;
         this.maxYield = maxYield;

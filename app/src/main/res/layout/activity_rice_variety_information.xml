@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/semi_white"
-    tools:context=".Adapter.RiceVarietyInformation">
+    tools:context=".RiceVarietyInformation">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -83,8 +83,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="####"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
+                            android:textColor="@color/green"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/poppins__semibold"/>
 
@@ -94,6 +95,7 @@
                             android:layout_height="wrap_content"
                             android:text="####"
                             android:textSize="14sp"
+                            android:textColor="@color/green"
                             android:layout_alignParentEnd="true"
                             android:fontFamily="@font/poppins__medium"/>
 
@@ -109,6 +111,7 @@
                             android:layout_height="wrap_content"
                             android:text="####"
                             android:textSize="16sp"
+                            android:textColor="@color/green"
                             android:textStyle="bold"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/poppins__semibold"/>
@@ -119,6 +122,7 @@
                             android:layout_height="wrap_content"
                             android:text="####"
                             android:textSize="16sp"
+                            android:textColor="@color/green"
                             android:layout_centerInParent="true"
                             android:fontFamily="@font/poppins__medium"/>
 
@@ -128,6 +132,7 @@
                             android:layout_height="wrap_content"
                             android:text="####"
                             android:textSize="14sp"
+                            android:textColor="@color/green"
                             android:layout_alignParentEnd="true"
                             android:fontFamily="@font/poppins__medium"/>
 
