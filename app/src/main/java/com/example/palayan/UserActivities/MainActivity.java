@@ -1,4 +1,4 @@
-package com.example.palayan;
+package com.example.palayan.UserActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.widget.ProgressBar;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.palayan.UserActivities.UserDashboard;
+import com.example.palayan.R;
 
 public class MainActivity extends AppCompatActivity {
 

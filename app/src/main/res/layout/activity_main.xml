@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center_vertical"
     android:background="@color/semi_white"
-    tools:context=".MainActivity">
+    tools:context=".UserActivities.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

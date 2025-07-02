@@ -3,7 +3,6 @@ package com.example.palayan.AdminActivities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -22,28 +21,26 @@ import com.google.firebase.database.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewRiceVareties extends AppCompatActivity {
+public class ViewRiceVarieties extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private List<RiceVariety> varietyList;
     private RiceVarietyAdapter adapter;
     private DatabaseReference databaseVarieties;
+    private ValueEventListener riceVarietyListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_view_rice_vareties);
+        setContentView(R.layout.activity_view_rice_varieties);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FloatingActionButton fabAdd = findViewById(R.id.fab_add);
-        fabAdd.setOnClickListener(view -> {
-            Intent intent = new Intent(ViewRiceVareties.this, AddRiceVariety.class);
-            startActivity(intent);
-        });
+        fabAdd.setOnClickListener(v -> startActivity(new Intent(this, AddRiceVariety.class)));
 
         ImageView ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(v -> onBackPressed());
@@ -54,29 +51,48 @@ public class ViewRiceVareties extends AppCompatActivity {
         adapter = new RiceVarietyAdapter(varietyList, this);
         recyclerView.setAdapter(adapter);
 
+        //setup the database for retrieving data from firebase
         databaseVarieties = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
+    }
 
-        databaseVarieties.addValueEventListener(new ValueEventListener() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        attachFirebaseListener(); // Always fetch fresh data when activity starts
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (databaseVarieties != null && riceVarietyListener != null) {
+            databaseVarieties.removeEventListener(riceVarietyListener);
+        }
+    }
+
+    private void attachFirebaseListener() {
+        riceVarietyListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 varietyList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    RiceVariety variety = postSnapshot.getValue(RiceVariety.class);
-                    if (variety != null) {
-                        varietyList.add(variety);
-                    } else {
-                        Log.w("FirebaseData", "Null variety for: " + postSnapshot.getKey());
+                    try {
+                        RiceVariety variety = postSnapshot.getValue(RiceVariety.class);
+                        if (variety != null) {
+                            varietyList.add(variety);
+                        }
+                    } catch (Exception e) {
+                        Log.e("FirebaseData", "Error parsing variety", e);
                     }
                 }
                 adapter.notifyDataSetChanged();
-
-
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(ViewRiceVareties.this, "Failed to load data.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewRiceVarieties.this, "Failed to load data.", Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+
+        databaseVarieties.addValueEventListener(riceVarietyListener);
     }
 }

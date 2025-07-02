@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.palayan.AdminActivities.ViewRiceVareties;
+import com.example.palayan.AdminActivities.ViewRiceVarieties;
 import com.example.palayan.R;
 
 
@@ -37,7 +37,7 @@ public class AdminDashboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(getActivity(), ViewRiceVareties.class);
+                Intent intent = new Intent(getActivity(), ViewRiceVarieties.class);
                 startActivity(intent);
             }
         });

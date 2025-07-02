@@ -13,7 +13,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.palayan.AdminActivities.AdminFragment.AdminDashboardFragment;
-import com.example.palayan.MainActivity;
+import com.example.palayan.UserActivities.MainActivity;
 import com.example.palayan.R;
 import com.google.android.material.navigation.NavigationView;
 
