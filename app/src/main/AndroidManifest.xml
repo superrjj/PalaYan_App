@@ -17,13 +17,16 @@
         android:theme="@style/Theme.PalaYan"
         tools:targetApi="31">
         <activity
+            android:name=".Adapter.RiceVarietyInformation"
+            android:exported="false" />
+        <activity
             android:name=".AdminActivities.AddRiceVariety"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".AdminActivities.ViewRiceVarieties"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".AdminActivities.AdminDashboard"
             android:exported="false"
