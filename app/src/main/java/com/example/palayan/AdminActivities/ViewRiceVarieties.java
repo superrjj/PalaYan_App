@@ -74,7 +74,7 @@ public class ViewRiceVarieties extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        attachFirebaseListener(); // Always fetch fresh data when activity starts
+        attachFirebaseListener(); //always fetch fresh data when activity starts to stay realtime updated
     }
 
     @Override

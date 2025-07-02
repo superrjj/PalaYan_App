@@ -19,6 +19,7 @@
         android:text="Pest Added"
         android:fontFamily="@font/poppins__semibold"
         android:textStyle="bold"
+        android:textColor="@color/green"
         android:textSize="18sp"
         android:layout_marginTop="12dp" />
 
@@ -29,6 +30,7 @@
         android:text="Green Leaf Hopper has been successfully added."
         android:textSize="14sp"
         android:gravity="center"
+        android:textColor="@color/black"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="30dp" />
 

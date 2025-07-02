@@ -7,12 +7,11 @@
     tools:context=".TabFragment.AllFragment">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="All Seeds List"
-        android:textColor="#008200"
-        android:textSize="16sp"/>
+ <androidx.recyclerview.widget.RecyclerView
+     android:id="@+id/rvAllRiceSeed"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     tools:listitem="@layout/list_rice_seed"/>
 
 
 </LinearLayout>

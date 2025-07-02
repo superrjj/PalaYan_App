@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.palayan.AdminActivities.AddRiceVariety;
@@ -47,41 +48,42 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
         holder.location.setText(variety.location);
         holder.release_year.setText(variety.yearRelease);
 
+        // Show variety info
         holder.cvRiceVariety.setOnClickListener(v -> {
             Intent intent = new Intent(context, RiceVarietyInformation.class);
             intent.putExtra("rice_seed_id", variety.rice_seed_id);
             context.startActivity(intent);
         });
 
-
-
+        // Delete
         holder.btnDelete.setOnClickListener(v -> {
-            CustomDialogFragment.newInstance(
-                    "Delete Rice Variety",
-                    "Are you sure you want to delete \"" + variety.varietyName + "\"?",
-                    "All data associated with this rice may be permanently removed or become inaccessible.",
-                    R.drawable.ic_warning,
-                    "DELETE",
-                    (dialog, which) -> {
-                        FirebaseDatabase.getInstance()
-                                .getReference("rice_seed_varieties")
-                                .child(variety.rice_seed_id)
-                                .child("archived")
-                                .setValue(true)
-                                .addOnSuccessListener(aVoid -> {
-                                    //toast to confirm deletion
-                                    Toast.makeText(context, "Deleted \"" + variety.varietyName + "\"", Toast.LENGTH_SHORT).show();
-
-                                })
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(context, "Failed to delete.", Toast.LENGTH_SHORT).show()
-                                );
-                    }
-            ).show(((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager(), "DeleteConfirmDialog");
+            if (context instanceof FragmentActivity) {
+                CustomDialogFragment.newInstance(
+                        "Delete Rice Variety",
+                        "Are you sure you want to delete \"" + variety.varietyName + "\"?",
+                        "All data associated with this rice may be permanently removed or become inaccessible.",
+                        R.drawable.ic_warning,
+                        "DELETE",
+                        (dialog, which) -> {
+                            FirebaseDatabase.getInstance()
+                                    .getReference("rice_seed_varieties")
+                                    .child(variety.rice_seed_id)
+                                    .child("archived")
+                                    .setValue(true)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(context, "Deleted \"" + variety.varietyName + "\"", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(context, "Failed to delete: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                ).show(((FragmentActivity) context).getSupportFragmentManager(), "DeleteConfirmDialog");
+            } else {
+                Toast.makeText(context, "Cannot show dialog. Invalid context.", Toast.LENGTH_SHORT).show();
+            }
         });
 
-
-
+        // Edit
         holder.btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, AddRiceVariety.class);
             intent.putExtra("isEdit", true);
@@ -94,6 +96,7 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
             intent.putExtra("maturityDays", variety.maturityDays);
             intent.putExtra("plantHeight", variety.plantHeight);
             intent.putExtra("averageYield", variety.averageYield);
+            intent.putExtra("tillers", variety.tillers);
             intent.putExtra("maxYield", variety.maxYield);
             intent.putExtra("location", variety.location);
             intent.putExtra("environment", variety.environment);
@@ -121,7 +124,6 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
             cvRiceVariety = itemView.findViewById(R.id.cvRiceVarieties);
             btnDelete = itemView.findViewById(R.id.iv_delete);
             btnEdit = itemView.findViewById(R.id.iv_edit);
-
         }
     }
 }

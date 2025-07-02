@@ -123,7 +123,8 @@
                             android:text="####"
                             android:textSize="16sp"
                             android:textColor="@color/green"
-                            android:layout_centerInParent="true"
+                            android:paddingStart="5dp"
+                            android:layout_toEndOf="@id/txtReleaseName"
                             android:fontFamily="@font/poppins__medium"/>
 
                         <TextView
@@ -171,6 +172,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="####"
+                                android:textColor="@color/green"
                                 android:textSize="30sp"
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins__medium"/>
@@ -207,6 +209,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="####"
+                                android:textColor="@color/green"
                                 android:textSize="30sp"
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins__medium"/>
@@ -250,6 +253,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="####"
+                                android:textColor="@color/green"
                                 android:textSize="30sp"
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins__medium"/>
@@ -286,6 +290,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="####"
+                                android:textColor="@color/green"
                                 android:textSize="30sp"
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins__medium"/>
@@ -330,6 +335,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="####"
+                                android:textColor="@color/green"
                                 android:textSize="30sp"
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins__medium"/>

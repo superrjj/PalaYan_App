@@ -2,65 +2,82 @@ package com.example.palayan.TabFragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.palayan.Adapter.RiceVarietyAdapter;
+import com.example.palayan.Adapter.UserRiceVarietyAdapter;
+import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
+import com.example.palayan.databinding.FragmentAllBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AllFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class AllFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AllFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AllFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AllFragment newInstance(String param1, String param2) {
-        AllFragment fragment = new AllFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private FragmentAllBinding root;
+    private List<RiceVariety> riceVarietyList;
+    private UserRiceVarietyAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all, container, false);
+        root = FragmentAllBinding.inflate(inflater, container, false);
+
+        riceVarietyList = new ArrayList<>();
+        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext());
+
+
+        root.rvAllRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
+        root.rvAllRiceSeed.setAdapter(adapter);
+
+        loadAllRiceVarieties();
+
+        return root.getRoot();
     }
+
+    private void loadAllRiceVarieties() {
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
+        ref.orderByChild("archived").equalTo(false)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        riceVarietyList.clear();
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            RiceVariety variety = data.getValue(RiceVariety.class);
+                            if (variety != null) {
+                                riceVarietyList.add(variety);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("FirebaseError", error.getMessage());
+                    }
+                });
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        root = null;
+    }
+
 }
