@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.palayan.CustomDialogFragment;
 import com.example.palayan.StatusDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
-import androidx.fragment.app.DialogFragment;
 import com.example.palayan.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -81,7 +80,10 @@ public class AddRiceVariety extends AppCompatActivity {
             season.setText(getIntent().getStringExtra("season"));
             plantingMethod.setText(getIntent().getStringExtra("plantingMethod"));
 
-            btnUpdate.setOnClickListener(view -> updateVariety());
+            btnUpdate.setOnClickListener(view -> {
+                String id = getIntent().getStringExtra("rice_seed_id");
+                showUpdateConfirmationDialog(id);
+            });
         }
     }
 
@@ -101,6 +103,17 @@ public class AddRiceVariety extends AppCompatActivity {
                 "ADD",
                 (dialog, which) -> addVarietyToDatabase()
         ).show(getSupportFragmentManager(), "AddConfirmDialog");
+    }
+
+    private void showUpdateConfirmationDialog(String id) {
+        CustomDialogFragment.newInstance(
+                "Update Rice Variety",
+                "Are you sure you want to update \"" + id + "\"?",
+                "The changes will be saved and take effect immediately.",
+                R.drawable.ic_edit,
+                "UPDATE",
+                (dialog, which) -> updateVariety()
+        ).show(getSupportFragmentManager(), "UpdateConfirmDialog");
     }
 
     private void addVarietyToDatabase() {
@@ -131,7 +144,7 @@ public class AddRiceVariety extends AppCompatActivity {
             );
 
             databaseVarieties.child(id).setValue(variety)
-                    .addOnSuccessListener(aVoid -> showSuccessDialog(id))
+                    .addOnSuccessListener(aVoid -> showSuccessDialog("added", id))
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show()
                     );
@@ -139,16 +152,6 @@ public class AddRiceVariety extends AppCompatActivity {
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Enter valid numbers for Maturity, Height, and Yields", Toast.LENGTH_LONG).show();
         }
-    }
-
-    private void showSuccessDialog(String name) {
-        StatusDialogFragment.newInstance(
-                        "Rice Variety Added",
-                        name + " has been successfully added.",
-                        R.drawable.ic_success,
-                        R.color.green
-                ).setOnDismissListener(() -> finish())
-                .show(getSupportFragmentManager(), "SuccessDialog");
     }
 
     private void updateVariety() {
@@ -179,10 +182,7 @@ public class AddRiceVariety extends AppCompatActivity {
             );
 
             databaseVarieties.child(id).setValue(updatedVariety)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Variety updated!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    })
+                    .addOnSuccessListener(aVoid -> showSuccessDialog("updated", id))
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
                     );
@@ -190,5 +190,18 @@ public class AddRiceVariety extends AppCompatActivity {
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid input for numbers", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void showSuccessDialog(String action, String name) {
+        String title = "Rice Variety " + (action.equals("updated") ? "Updated" : "Added");
+        String message = name + " has been successfully " + action + ".";
+
+        StatusDialogFragment.newInstance(
+                        title,
+                        message,
+                        R.drawable.ic_success,
+                        R.color.green
+                ).setOnDismissListener(() -> finish())
+                .show(getSupportFragmentManager(), "SuccessDialog");
     }
 }

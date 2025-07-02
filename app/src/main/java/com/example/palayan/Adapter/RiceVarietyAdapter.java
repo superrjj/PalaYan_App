@@ -13,8 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.palayan.AdminActivities.AddRiceVariety;
+import com.example.palayan.CustomDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
+import com.example.palayan.StatusDialogFragment;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
@@ -42,21 +44,35 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
 
         holder.variety_name.setText(variety.varietyName);
         holder.release_name.setText(variety.location);
-        holder.variety_description.setText("Tap to see description");
+
+
 
         holder.btnDelete.setOnClickListener(v -> {
-            FirebaseDatabase.getInstance()
-                    .getReference("rice_seed_varieties")
-                    .child(variety.rice_seed_id)
-                    .child("archived")
-                    .setValue(true)
-                    .addOnSuccessListener(aVoid ->
-                            Toast.makeText(context, "Rice variety deleted.", Toast.LENGTH_SHORT).show()
-                    )
-                    .addOnFailureListener(e ->
-                            Toast.makeText(context, "Failed to deleted.", Toast.LENGTH_SHORT).show()
-                    );
+            CustomDialogFragment.newInstance(
+                    "Delete Rice Variety",
+                    "Are you sure you want to delete \"" + variety.varietyName + "\"?",
+                    "All data associated with this rice may be permanently removed or become inaccessible.",
+                    R.drawable.ic_warning,
+                    "DELETE",
+                    (dialog, which) -> {
+                        FirebaseDatabase.getInstance()
+                                .getReference("rice_seed_varieties")
+                                .child(variety.rice_seed_id)
+                                .child("archived")
+                                .setValue(true)
+                                .addOnSuccessListener(aVoid -> {
+                                    //toast to confirm deletion
+                                    Toast.makeText(context, "Deleted \"" + variety.varietyName + "\"", Toast.LENGTH_SHORT).show();
+
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(context, "Failed to delete.", Toast.LENGTH_SHORT).show()
+                                );
+                    }
+            ).show(((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager(), "DeleteConfirmDialog");
         });
+
+
 
         holder.btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, AddRiceVariety.class);

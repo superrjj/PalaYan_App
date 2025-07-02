@@ -77,7 +77,7 @@ public class ViewRiceVarieties extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     try {
                         RiceVariety variety = postSnapshot.getValue(RiceVariety.class);
-                        if (variety != null) {
+                        if (variety != null && !variety.archived) {
                             varietyList.add(variety);
                         }
                     } catch (Exception e) {

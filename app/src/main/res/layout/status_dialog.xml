@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pest Added"
+        android:fontFamily="@font/poppins__semibold"
         android:textStyle="bold"
         android:textSize="18sp"
         android:layout_marginTop="12dp" />
