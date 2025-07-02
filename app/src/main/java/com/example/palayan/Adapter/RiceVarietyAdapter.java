@@ -43,7 +43,8 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
         RiceVariety variety = list.get(position);
 
         holder.variety_name.setText(variety.varietyName);
-        holder.release_name.setText(variety.location);
+        holder.location.setText(variety.location);
+        holder.release_year.setText(variety.yearRelease);
 
 
 
@@ -101,14 +102,14 @@ public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.
     }
 
     public static class VarietyViewHolder extends RecyclerView.ViewHolder {
-        TextView variety_name, release_name, variety_description;
+        TextView variety_name, location, release_year;
         ImageView btnDelete, btnEdit;
 
         public VarietyViewHolder(@NonNull View itemView) {
             super(itemView);
             variety_name = itemView.findViewById(R.id.tv_variety_name);
-            release_name = itemView.findViewById(R.id.tv_location);
-            variety_description = itemView.findViewById(R.id.tv_description);
+            location = itemView.findViewById(R.id.tv_location);
+            release_year = itemView.findViewById(R.id.tv_release_year);
             btnDelete = itemView.findViewById(R.id.iv_delete);
             btnEdit = itemView.findViewById(R.id.iv_edit);
         }

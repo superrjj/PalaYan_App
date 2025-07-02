@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvRiceVarieties"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -12,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="105dp"
+        android:layout_height="110dp"
         android:orientation="vertical"
         android:padding="5dp">
 
@@ -37,8 +38,9 @@
                     android:layout_height="wrap_content"
                     android:text="######"
                     android:textColor="@color/green"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/poppins__semibold" />
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/poppins__medium" />
 
                 <TextView
                     android:id="@+id/tv_location"
@@ -46,8 +48,18 @@
                     android:layout_height="wrap_content"
                     android:text="#####"
                     android:textColor="@color/green"
-                    android:textSize="16sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/poppins__medium" />
+
+                <TextView
+                    android:id="@+id/tv_release_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="#####"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins__medium" />
+
             </LinearLayout>
 
 
@@ -59,16 +71,16 @@
 
                 <ImageView
                     android:id="@+id/iv_delete"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/ic_delete"
                     android:padding="6dp"
                     android:contentDescription="Delete Icon" />
 
                 <ImageView
                     android:id="@+id/iv_edit"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/ic_edit"
                     android:padding="6dp"
                     android:contentDescription="Edit Icon" />
@@ -85,7 +97,7 @@
             android:gravity="end"
             android:textColor="@color/green"
             android:textSize="14sp"
-            android:fontFamily="@font/poppins__italic"
+            android:fontFamily="@font/poppins__mediumitalic"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp" />
     </LinearLayout>

@@ -3,9 +3,11 @@ package com.example.palayan.AdminActivities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.palayan.Adapter.RiceVarietyAdapter;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
+import com.example.palayan.databinding.ActivityViewRiceVarietiesBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.*;
 
@@ -23,8 +26,9 @@ import java.util.List;
 
 public class ViewRiceVarieties extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    private ActivityViewRiceVarietiesBinding root;
     private List<RiceVariety> varietyList;
+    private List<RiceVariety> fullVarietyList;
     private RiceVarietyAdapter adapter;
     private DatabaseReference databaseVarieties;
     private ValueEventListener riceVarietyListener;
@@ -32,27 +36,39 @@ public class ViewRiceVarieties extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_view_rice_varieties);
+        root = ActivityViewRiceVarietiesBinding.inflate(getLayoutInflater());
+        setContentView(root.getRoot());
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(root.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FloatingActionButton fabAdd = findViewById(R.id.fab_add);
-        fabAdd.setOnClickListener(v -> startActivity(new Intent(this, AddRiceVariety.class)));
+        root.fabAdd.setOnClickListener(v -> startActivity(new Intent(this, AddRiceVariety.class)));
+        root.ivBack.setOnClickListener(v -> onBackPressed());
 
-        ImageView ivBack = findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(v -> onBackPressed());
-
-        recyclerView = findViewById(R.id.recycleViewer_RiceVarieties);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        root.recycleViewerRiceVarieties.setLayoutManager(new LinearLayoutManager(this));
         varietyList = new ArrayList<>();
+        fullVarietyList = new ArrayList<>();
         adapter = new RiceVarietyAdapter(varietyList, this);
-        recyclerView.setAdapter(adapter);
+        root.recycleViewerRiceVarieties.setAdapter(adapter);
 
         //setup the database for retrieving data from firebase
         databaseVarieties = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
+
+        root.svSearchBar.setQueryHint("Search rice variety...");
+        root.svSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                filterList(s);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                filterList(s);
+                return true;
+            }
+        });
+
     }
 
     @Override
@@ -79,12 +95,14 @@ public class ViewRiceVarieties extends AppCompatActivity {
                         RiceVariety variety = postSnapshot.getValue(RiceVariety.class);
                         if (variety != null && !variety.archived) {
                             varietyList.add(variety);
+                            fullVarietyList.add(variety);
                         }
                     } catch (Exception e) {
                         Log.e("FirebaseData", "Error parsing variety", e);
                     }
                 }
                 adapter.notifyDataSetChanged();
+                root.tvNoData.setVisibility(varietyList.isEmpty() ? View.VISIBLE : View.GONE);
             }
 
             @Override
@@ -94,5 +112,24 @@ public class ViewRiceVarieties extends AppCompatActivity {
         };
 
         databaseVarieties.addValueEventListener(riceVarietyListener);
+    }
+
+    private void filterList(String query) {
+        List<RiceVariety> filteredList = new ArrayList<>();
+        String lowerQuery = query.toLowerCase();
+
+        for (RiceVariety item : fullVarietyList) {
+            if ((item.varietyName != null && item.varietyName.toLowerCase().contains(lowerQuery)) ||
+                    (item.location != null && item.location.toLowerCase().contains(lowerQuery)) ||
+                    (item.yearRelease != null && item.yearRelease.toLowerCase().contains(lowerQuery))) {
+                filteredList.add(item);
+            }
+            varietyList.clear();
+            varietyList.addAll(filteredList);
+            adapter.notifyDataSetChanged();
+
+            root.tvNoData.setVisibility(varietyList.isEmpty() ? View.VISIBLE : View.GONE);
+
+        }
     }
 }

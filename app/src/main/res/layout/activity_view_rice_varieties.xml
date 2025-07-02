@@ -106,4 +106,16 @@
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/green"
         app:tint="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tv_no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No rice variety found"
+        android:textSize="18sp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:fontFamily="@font/poppins__semibold"/>
+
 </FrameLayout>
