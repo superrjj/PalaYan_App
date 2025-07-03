@@ -246,7 +246,7 @@
            android:paddingHorizontal="10dp">
 
            <androidx.cardview.widget.CardView
-               android:id="@+id/cv_pest_management"
+               android:id="@+id/cvPest"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:clickable="true"
@@ -315,7 +315,7 @@
            android:paddingHorizontal="10dp">
 
            <androidx.cardview.widget.CardView
-               android:id="@+id/cv_disease_management"
+               android:id="@+id/cvDisease"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:clickable="true"
@@ -384,7 +384,7 @@
            android:paddingHorizontal="10dp">
 
            <androidx.cardview.widget.CardView
-               android:id="@+id/cv_accounts"
+               android:id="@+id/cvAccounts"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:clickable="true"

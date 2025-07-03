@@ -17,6 +17,12 @@
         android:theme="@style/Theme.PalaYan"
         tools:targetApi="31">
         <activity
+            android:name=".AdminActivities.AddPest"
+            android:exported="false" />
+        <activity
+            android:name=".AdminActivities.ViewPest"
+            android:exported="false" />
+        <activity
             android:name=".RiceVarietyInformation"
             android:exported="false" />
         <activity
@@ -35,7 +41,7 @@
             android:name=".UserActivities.UserDashboard"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".UserActivities.MainActivity"
             android:exported="true"

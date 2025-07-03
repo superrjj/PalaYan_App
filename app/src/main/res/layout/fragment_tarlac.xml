@@ -10,7 +10,7 @@
         android:id="@+id/rvTarlacRiceSeed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_rice_seed" />
+        tools:listitem="@layout/list_rice_seed_user" />
 
 
     <TextView

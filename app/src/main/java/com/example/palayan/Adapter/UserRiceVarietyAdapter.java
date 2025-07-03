@@ -30,7 +30,7 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_rice_seed, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.list_rice_seed_user, parent, false);
         return new UserViewHolder(view);
     }
 
