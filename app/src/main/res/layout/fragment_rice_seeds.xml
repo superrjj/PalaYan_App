@@ -46,6 +46,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:tabIndicatorHeight="0dp"
+        app:tabRippleColor="@android:color/transparent"
         app:tabGravity="center"
         app:tabMode="scrollable" />
 

@@ -38,6 +38,8 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
         root.rvTarlacRiceSeed.setAdapter(adapter);
 
         loadTarlacData();
+        root.tvNoData.setVisibility(View.GONE);
+
 
         return root.getRoot();
     }
@@ -88,8 +90,10 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
         riceVarietyList.addAll(filteredList);
         adapter.notifyDataSetChanged();
 
-        if (root != null) {
-            root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
+        if (riceVarietyList.isEmpty()) {
+            root.tvNoData.setVisibility(View.VISIBLE);
+        } else {
+            root.tvNoData.setVisibility(View.GONE);
         }
     }
 }
