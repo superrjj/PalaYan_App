@@ -18,13 +18,16 @@
         tools:targetApi="31">
         <activity
             android:name=".AdminActivities.AddPest"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".AdminActivities.ViewPest"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".RiceVarietyInformation"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".AdminActivities.AddRiceVariety"
             android:exported="false"

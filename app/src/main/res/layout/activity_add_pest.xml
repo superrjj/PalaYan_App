@@ -1,10 +1,294 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/semi_white"
     tools:context=".AdminActivities.AddPest">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/green"
+            android:elevation="4dp"
+            app:title=""
+            app:contentInsetStart="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="2dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins__medium"/>
+
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/imageUploadFrame"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:background="@drawable/image_border">
+
+                <ImageView
+                    android:id="@+id/ivUploadImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Upload Image" />
+
+                <TextView
+                    android:id="@+id/tvTapToUpload"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Tap to upload photo"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins__semibold"
+                    android:background="#40FFFFFF" />
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Pest Name*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtPestName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Pest Name"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Scientific Name*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtScientificName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Scientific Name"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Description*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:maxLines="5"
+                    android:gravity="top|start"
+                    android:paddingTop="5dp"
+                    android:lines="5"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Description"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Symptoms*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtSymptoms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:maxLines="5"
+                    android:gravity="top|start"
+                    android:paddingTop="5dp"
+                    android:lines="5"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Symptoms"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Cause*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtCause"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:maxLines="5"
+                    android:gravity="top|start"
+                    android:paddingTop="5dp"
+                    android:lines="5"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Cause"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Treatments*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium" />
+
+
+                <EditText
+                    android:id="@+id/txtTreatments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:maxLines="5"
+                    android:gravity="top|start"
+                    android:paddingTop="5dp"
+                    android:lines="5"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="30dp"
+                    android:hint="Treatments"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+
+                <Button
+                    android:id="@+id/btnAddPest"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_solid"
+                    android:text="ADD PEST"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/poppins__semibold"/>
+
+                <Button
+                    android:id="@+id/btnUpdatePest"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_solid"
+                    android:backgroundTint="@color/dark_blue"
+                    android:text="UPDATE PEST"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins__semibold"/>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>

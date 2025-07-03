@@ -19,6 +19,7 @@ public class ViewPest extends AppCompatActivity {
         setContentView(root.getRoot());
 
         root.fabAdd.setOnClickListener(v -> startActivity(new Intent(this, AddPest.class)));
+        root.ivBack.setOnClickListener(v -> onBackPressed());
 
     }
 }
