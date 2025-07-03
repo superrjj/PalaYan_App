@@ -42,4 +42,68 @@ public class RiceVariety {
         this.plantingMethod = plantingMethod;
         this.archived = archived;
     }
+
+    public String getRice_seed_id() {
+        return rice_seed_id;
+    }
+
+    public String getVarietyName() {
+        return varietyName;
+    }
+
+    public String getReleaseName() {
+        return releaseName;
+    }
+
+    public String getBreedingCode() {
+        return breedingCode;
+    }
+
+    public String getYearRelease() {
+        return yearRelease;
+    }
+
+    public String getBreederOrigin() {
+        return breederOrigin;
+    }
+
+    public int getMaturityDays() {
+        return maturityDays;
+    }
+
+    public int getPlantHeight() {
+        return plantHeight;
+    }
+
+    public double getAverageYield() {
+        return averageYield;
+    }
+
+    public double getMaxYield() {
+        return maxYield;
+    }
+
+    public int getTillers() {
+        return tillers;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public String getPlantingMethod() {
+        return plantingMethod;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
 }

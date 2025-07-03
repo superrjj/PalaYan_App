@@ -6,11 +6,21 @@
     android:padding="16dp"
     tools:context=".TabFragment.TarlacFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTarlacRiceSeed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/list_rice_seed"/>
+
     <TextView
+        android:id="@+id/tvNoData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tarlac Province Seeds"
-        android:textColor="#008200"
-        android:textSize="16sp"/>
+        android:text="No rice variety found"
+        android:textSize="18sp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:fontFamily="@font/poppins__semibold"/>
 
 </LinearLayout>

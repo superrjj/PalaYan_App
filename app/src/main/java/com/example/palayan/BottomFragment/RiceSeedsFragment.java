@@ -7,29 +7,29 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.palayan.Helper.SearchQuery.SearchableFragment;
 import com.example.palayan.R;
 import com.example.palayan.TabFragment.AllFragment;
 import com.example.palayan.TabFragment.TarlacFragment;
+import com.example.palayan.databinding.FragmentRiceSeedsBinding;
 import com.google.android.material.tabs.TabLayout;
 
 public class RiceSeedsFragment extends Fragment {
 
-    private TabLayout tabLayout;
+    private FragmentRiceSeedsBinding root;
+    private Fragment currentFragment;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_rice_seeds, container, false);
-        tabLayout = view.findViewById(R.id.tabLayout);
+        root = FragmentRiceSeedsBinding.inflate(inflater, container, false);
 
         setupCustomTabs();
-        loadFragment(new AllFragment()); //default fragment
+        loadFragment(new AllFragment()); // default
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        root.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 updateTabView(tab, true);
@@ -46,27 +46,41 @@ public class RiceSeedsFragment extends Fragment {
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                //No need to input code here
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
+
+        root.svSearchBar.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (currentFragment instanceof SearchableFragment) {
+                    ((SearchableFragment) currentFragment).filter(query);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (currentFragment instanceof SearchableFragment) {
+                    ((SearchableFragment) currentFragment).filter(newText);
+                }
+                return true;
             }
         });
 
-        return view;
+        return root.getRoot();
     }
 
     private void setupCustomTabs() {
         String[] tabTitles = {"All", "Tarlac Province"};
         for (String title : tabTitles) {
-            TabLayout.Tab tab = tabLayout.newTab();
+            TabLayout.Tab tab = root.tabLayout.newTab();
             View customView = LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
             TextView tabText = customView.findViewById(R.id.tabText);
             tabText.setText(title);
             tab.setCustomView(customView);
-            tabLayout.addTab(tab);
+            root.tabLayout.addTab(tab);
         }
-
-        //highlight first tab as selected initially
-        updateTabView(tabLayout.getTabAt(0), true);
+        updateTabView(root.tabLayout.getTabAt(0), true);
     }
 
     private void updateTabView(TabLayout.Tab tab, boolean selected) {
@@ -79,6 +93,15 @@ public class RiceSeedsFragment extends Fragment {
         getChildFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
+                .runOnCommit(() -> {
+                    currentFragment = fragment;
+
+                    // Reapply current query to new fragment
+                    String currentQuery = root.svSearchBar.getQuery().toString();
+                    if (fragment instanceof SearchableFragment) {
+                        ((SearchableFragment) fragment).filter(currentQuery);
+                    }
+                })
                 .commit();
     }
 }
