@@ -79,6 +79,8 @@ public class RiceSeedsFragment extends Fragment {
             tabText.setText(title);
             tab.setCustomView(customView);
             root.tabLayout.addTab(tab);
+            root.tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
         }
         updateTabView(root.tabLayout.getTabAt(0), true);
     }

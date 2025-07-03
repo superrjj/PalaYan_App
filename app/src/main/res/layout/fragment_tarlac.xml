@@ -12,11 +12,12 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/list_rice_seed" />
 
+
     <TextView
         android:id="@+id/tvNoData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No rice variety found"
+        android:text="No data found"
         android:textSize="18sp"
         android:textColor="@android:color/darker_gray"
         android:layout_gravity="center"

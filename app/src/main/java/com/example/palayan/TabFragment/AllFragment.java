@@ -40,8 +40,6 @@ public class AllFragment extends Fragment implements SearchableFragment {
         root.rvAllRiceSeed.setAdapter(adapter);
 
         databaseRef = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
-        root.tvNoData.setVisibility(View.GONE);
-
 
         return root.getRoot();
     }
@@ -106,13 +104,9 @@ public class AllFragment extends Fragment implements SearchableFragment {
         riceVarietyList.addAll(filteredList);
         adapter.notifyDataSetChanged();
 
-
-        if (riceVarietyList.isEmpty()) {
-            root.tvNoData.setVisibility(View.VISIBLE);
-        } else {
-            root.tvNoData.setVisibility(View.GONE);
+        if (root != null) {
+            root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
         }
-
     }
 
     @Override
