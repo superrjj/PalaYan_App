@@ -1,94 +1,97 @@
 package com.example.palayan.AdminActivities;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.palayan.databinding.ActivityAddAdminAccountBinding;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class AddAdminAccount extends AppCompatActivity {
 
     private ActivityAddAdminAccountBinding root;
     private FirebaseFirestore firestore;
+    private ArrayAdapter<String> roleAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         root = ActivityAddAdminAccountBinding.inflate(getLayoutInflater());
         setContentView(root.getRoot());
-        EdgeToEdge.enable(this);
 
         firestore = FirebaseFirestore.getInstance();
 
-        // Load role items to spinner
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                com.example.palayan.R.array.roles_array,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        root.spRole.setAdapter(adapter);
+        // Spinner for role
+        String[] roles = {"Main Admin", "Data Manager"};
+        roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, roles);
+        root.spRole.setAdapter(roleAdapter);
 
-        // Create Button click listener
-        root.btnCreate.setOnClickListener(v -> createAdminAccount());
+        // Create button
+        root.btnCreate.setOnClickListener(v -> addAdminAccount());
     }
 
-    private void createAdminAccount() {
+    private void addAdminAccount() {
         String fullName = root.txtFullName.getText().toString().trim();
         String username = root.txtUsername.getText().toString().trim();
         String password = root.txtPassword.getText().toString().trim();
         String role = root.spRole.getSelectedItem().toString();
-        String secOne = root.txtSecOne.getText().toString().trim();
-        String secTwo = root.txtSecTwo.getText().toString().trim();
+        String security1 = root.txtSecOne.getText().toString().trim();
+        String security2 = root.txtSecTwo.getText().toString().trim();
 
         if (fullName.isEmpty() || username.isEmpty() || password.isEmpty()
-                || role.equals("Select Role") || secOne.isEmpty() || secTwo.isEmpty()) {
-            Toast.makeText(this, "Please complete all fields.", Toast.LENGTH_SHORT).show();
+                || security1.isEmpty() || security2.isEmpty()) {
+            Toast.makeText(this, "Please fill all required fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Fetch latest userId, then add 1
+        // Prepare data
+        HashMap<String, Object> account = new HashMap<>();
+        account.put("fullName", fullName);
+        account.put("username", username);
+        account.put("password", password);
+        account.put("role", role);
+        account.put("security1", security1);
+        account.put("security2", security2);
+        account.put("status", "Active");
+
+        // Get the last used userId
         firestore.collection("accounts")
-                .orderBy("userId", Query.Direction.DESCENDING)
+                .orderBy("userId", com.google.firebase.firestore.Query.Direction.DESCENDING)
                 .limit(1)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int nextUserId = 1;
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        int lastUserId = queryDocumentSnapshots.getDocuments().get(0).getLong("userId").intValue();
-                        nextUserId = lastUserId + 1;
+                        DocumentSnapshot lastDoc = queryDocumentSnapshots.getDocuments().get(0);
+                        Long lastId = lastDoc.getLong("userId");
+                        if (lastId != null) {
+                            nextUserId = lastId.intValue() + 1;
+                        }
                     }
 
-                    Map<String, Object> account = new HashMap<>();
-                    account.put("userId", nextUserId);
-                    account.put("fullName", fullName);
-                    account.put("username", username);
-                    account.put("password", password);
-                    account.put("role", role);
-                    account.put("securityOne", secOne);
-                    account.put("securityTwo", secTwo);
-                    account.put("status", "Active");
 
+                    account.put("userId", nextUserId);
+
+                    // Add to Firestore with custom doc ID
                     firestore.collection("accounts")
-                            .add(account)
-                            .addOnSuccessListener(documentReference -> {
-                                Toast.makeText(this, "Account created successfully.", Toast.LENGTH_SHORT).show();
+                            .document(String.valueOf(nextUserId))
+                            .set(account)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(this, "Admin account created.", Toast.LENGTH_SHORT).show();
                                 finish();
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(this, "Failed to create account.", Toast.LENGTH_SHORT).show();
                             });
-
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to fetch latest userId.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to fetch user ID: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 }

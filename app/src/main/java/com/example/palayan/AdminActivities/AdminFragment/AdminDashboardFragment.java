@@ -40,36 +40,41 @@ public class AdminDashboardFragment extends Fragment {
 
         firestore = FirebaseFirestore.getInstance();
 
-        // Firestore realtime listener to count non-archived rice seed varieties
+        // Get the role from the bundle
+        String userRole = getArguments() != null ? getArguments().getString("userRole") : "";
+
+        // Enable/disable based on role
+        if (userRole.equals("Data Manager")) {
+            root.cvAccounts.setEnabled(false); // disable View Accounts card
+            root.cvAccounts.setAlpha(0.5f);    // visually gray it out (optional)
+        } else {
+            root.cvAccounts.setEnabled(true);
+        }
+
+        // Firestore realtime listener to count rice seeds
         riceVarietyListener = firestore.collection("rice_seed_varieties")
                 .whereEqualTo("archived", false)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Toast.makeText(getContext(), "Failed to load count: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Toast.makeText(getContext(), "Failed to load count: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                        if (snapshots != null) {
-                            long count = snapshots.size();
-                            root.tvRiceSeedCount.setText(String.valueOf(count));
-                        }
+                    if (snapshots != null) {
+                        long count = snapshots.size();
+                        root.tvRiceSeedCount.setText(String.valueOf(count));
                     }
                 });
 
-        // On card click, navigate to RiceVariety list
         root.cvRiceVarieties.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ViewRiceVarieties.class);
-            startActivity(intent);
+            startActivity(new Intent(getActivity(), ViewRiceVarieties.class));
         });
 
         root.cvPest.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ViewPest.class);
-            startActivity(intent);
+            startActivity(new Intent(getActivity(), ViewPest.class));
         });
 
-        root.cvAccounts.setOnClickListener(v ->{
+        root.cvAccounts.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), ViewAccounts.class));
         });
     }

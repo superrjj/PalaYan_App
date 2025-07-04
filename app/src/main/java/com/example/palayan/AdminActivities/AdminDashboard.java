@@ -40,17 +40,23 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        if (navView == null) {
-            Toast.makeText(this, "Navigation view is null", Toast.LENGTH_SHORT).show();
-        }
+        // GET the user role sent from UserDashboard
+        String userRole = getIntent().getStringExtra("userRole");
 
-        // Default fragment shown
         if (savedInstanceState == null) {
+            // Put the role in a bundle
+            Bundle bundle = new Bundle();
+            bundle.putString("userRole", userRole);
+
+            // Set bundle to fragment
+            AdminDashboardFragment fragment = new AdminDashboardFragment();
+            fragment.setArguments(bundle);
+
+            // Load fragment
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new AdminDashboardFragment())
+                    .replace(R.id.fragment_container, fragment)
                     .commit();
         }
-
 
     }
 

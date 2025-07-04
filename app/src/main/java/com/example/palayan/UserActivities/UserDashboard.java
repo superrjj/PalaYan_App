@@ -32,15 +32,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-
 public class UserDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNav;
     private ImageView logo;
     private FirebaseFirestore firestore;
-
 
     private final long HOLD_DURATION = 3000;
     private final Handler handler = new Handler();
@@ -53,7 +50,6 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         setContentView(R.layout.activity_user_dashboard);
 
         firestore = FirebaseFirestore.getInstance();
-
 
         // Toolbar setup
         Toolbar toolBar = findViewById(R.id.toolbar);
@@ -145,7 +141,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         return true;
     }
 
-    //admin login popup
+    // Admin login popup dialog
     private void showAdminLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.admin_login_dialog, null);
@@ -167,6 +163,26 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 return;
             }
 
+            // Check hardcoded accounts first
+            if (username.equals("Admin2025") && password.equals("AdminDATarlac")) {
+                Toast.makeText(this, "Login Successful as Main Admin", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
+                intent.putExtra("userRole", "Main Admin");
+                startActivity(intent);
+                dialog.dismiss();
+                return;
+            }
+
+            if (username.equals("Admin2025") && password.equals("Admin1234")) {
+                Toast.makeText(this, "Login Successful as Main Admin", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
+                intent.putExtra("userRole", "Main Admin");
+                startActivity(intent);
+                dialog.dismiss();
+                return;
+            }
+
+            // Check Firestore accounts if not predefined
             firestore.collection("accounts")
                     .whereEqualTo("username", username)
                     .whereEqualTo("password", password)
@@ -176,9 +192,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             String role = queryDocumentSnapshots.getDocuments().get(0).getString("role");
 
                             Toast.makeText(this, "Login Successful as " + role, Toast.LENGTH_SHORT).show();
-
                             Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
-                            intent.putExtra("userRole", role);  // pass role to dashboard
+                            intent.putExtra("userRole", role);
                             startActivity(intent);
                             dialog.dismiss();
 
@@ -190,10 +205,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                         Toast.makeText(this, "Login failed.", Toast.LENGTH_SHORT).show();
                     });
         });
-
     }
 
-    // Back press behavior with drawer open
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
