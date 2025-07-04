@@ -14,7 +14,12 @@ import com.example.palayan.Adapter.UserRiceVarietyAdapter;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.Helper.SearchQuery.SearchableFragment;
 import com.example.palayan.databinding.FragmentAllBinding;
-import com.google.firebase.database.*;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +30,8 @@ public class AllFragment extends Fragment implements SearchableFragment {
     private List<RiceVariety> riceVarietyList;
     private List<RiceVariety> fullList;
     private UserRiceVarietyAdapter adapter;
-    private DatabaseReference databaseRef;
-    private ValueEventListener listener;
+    private FirebaseFirestore firestore;
+    private ListenerRegistration listenerRegistration;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +44,7 @@ public class AllFragment extends Fragment implements SearchableFragment {
         root.rvAllRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
         root.rvAllRiceSeed.setAdapter(adapter);
 
-        databaseRef = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
+        firestore = FirebaseFirestore.getInstance();
 
         return root.getRoot();
     }
@@ -53,38 +58,39 @@ public class AllFragment extends Fragment implements SearchableFragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (listener != null) {
-            databaseRef.removeEventListener(listener);
+        if (listenerRegistration != null) {
+            listenerRegistration.remove();
         }
     }
 
     private void attachListener() {
-        listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                riceVarietyList.clear();
-                fullList.clear();
+        listenerRegistration = firestore.collection("rice_seed_varieties")
+                .whereEqualTo("archived", false)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@NonNull QuerySnapshot snapshots, FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.e("Firestore", "Error: " + e.getMessage());
+                            return;
+                        }
 
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    RiceVariety variety = data.getValue(RiceVariety.class);
-                    if (variety != null && !Boolean.TRUE.equals(variety.archived)) {
-                        riceVarietyList.add(variety);
-                        fullList.add(variety);
+                        riceVarietyList.clear();
+                        fullList.clear();
+
+                        for (QueryDocumentSnapshot document : snapshots) {
+                            RiceVariety variety = document.toObject(RiceVariety.class);
+                            if (variety != null) {
+                                riceVarietyList.add(variety);
+                                fullList.add(variety);
+                            }
+                        }
+
+                        adapter.notifyDataSetChanged();
+                        if (root != null) {
+                            root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
+                        }
                     }
-                }
-
-                adapter.notifyDataSetChanged();
-                root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "Error: " + error.getMessage());
-            }
-        };
-
-        databaseRef.addValueEventListener(listener);
+                });
     }
 
     @Override

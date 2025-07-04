@@ -19,7 +19,7 @@ import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.example.palayan.RiceVarietyInformation;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -27,10 +27,12 @@ public class AdminRiceVarietyAdapter extends RecyclerView.Adapter<AdminRiceVarie
 
     private List<RiceVariety> list;
     private Context context;
+    private FirebaseFirestore firestore;
 
     public AdminRiceVarietyAdapter(List<RiceVariety> list, Context context) {
         this.list = list;
         this.context = context;
+        this.firestore = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -55,7 +57,7 @@ public class AdminRiceVarietyAdapter extends RecyclerView.Adapter<AdminRiceVarie
             context.startActivity(intent);
         });
 
-        // Delete
+        // Delete action (archive by setting archived: true)
         holder.btnDelete.setOnClickListener(v -> {
             if (context instanceof FragmentActivity) {
                 CustomDialogFragment.newInstance(
@@ -65,11 +67,9 @@ public class AdminRiceVarietyAdapter extends RecyclerView.Adapter<AdminRiceVarie
                         R.drawable.ic_warning,
                         "DELETE",
                         (dialog, which) -> {
-                            FirebaseDatabase.getInstance()
-                                    .getReference("rice_seed_varieties")
-                                    .child(variety.rice_seed_id)
-                                    .child("archived")
-                                    .setValue(true)
+                            firestore.collection("rice_seed_varieties")
+                                    .document(variety.rice_seed_id)
+                                    .update("archived", true)
                                     .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(context, "Deleted \"" + variety.varietyName + "\"", Toast.LENGTH_SHORT).show();
                                     })
@@ -83,7 +83,7 @@ public class AdminRiceVarietyAdapter extends RecyclerView.Adapter<AdminRiceVarie
             }
         });
 
-        // Edit
+        // Edit action — open AddRiceVariety Activity in edit mode
         holder.btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, AddRiceVariety.class);
             intent.putExtra("isEdit", true);

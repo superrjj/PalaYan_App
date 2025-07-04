@@ -40,17 +40,17 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
         holder.varietyName.setText(variety.varietyName);
         holder.location.setText(variety.location);
 
+        // Combine breeder origin and year release (or fallback text if null)
         String origin = variety.breederOrigin != null ? variety.breederOrigin : "Unknown";
         String year = variety.yearRelease != null ? variety.yearRelease : "N/A";
         holder.breederYear.setText(origin + ", " + year);
 
-        holder.cvRiceDetails.setOnClickListener(v ->{
+        // Go to RiceVarietyInformation Activity on item click
+        holder.cvRiceDetails.setOnClickListener(v -> {
             Intent intent = new Intent(context, RiceVarietyInformation.class);
             intent.putExtra("rice_seed_id", variety.rice_seed_id);
             context.startActivity(intent);
         });
-
-
     }
 
     @Override
@@ -68,7 +68,6 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
             location = itemView.findViewById(R.id.txtLocation);
             breederYear = itemView.findViewById(R.id.txtBreederYearRelease);
             cvRiceDetails = itemView.findViewById(R.id.cvUserRiceView);
-
         }
     }
 }

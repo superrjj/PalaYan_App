@@ -12,9 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.palayan.Adapter.UserRiceVarietyAdapter;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.Helper.SearchQuery.SearchableFragment;
-
 import com.example.palayan.databinding.FragmentTarlacBinding;
-import com.google.firebase.database.*;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,8 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
     private List<RiceVariety> riceVarietyList;
     private List<RiceVariety> fullList;
     private UserRiceVarietyAdapter adapter;
+    private FirebaseFirestore firestore;
+    private ListenerRegistration listenerRegistration;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,24 +43,27 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
         root.rvTarlacRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
         root.rvTarlacRiceSeed.setAdapter(adapter);
 
+        firestore = FirebaseFirestore.getInstance();
+
         loadTarlacData();
         root.tvNoData.setVisibility(View.GONE);
-
 
         return root.getRoot();
     }
 
     private void loadTarlacData() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
-        ref.orderByChild("archived").equalTo(false)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+        listenerRegistration = firestore.collection("rice_seed_varieties")
+                .whereEqualTo("archived", false)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    public void onEvent(@NonNull QuerySnapshot snapshots, FirebaseFirestoreException e) {
+                        if (e != null) return;
+
                         riceVarietyList.clear();
                         fullList.clear();
 
-                        for (DataSnapshot data : snapshot.getChildren()) {
-                            RiceVariety variety = data.getValue(RiceVariety.class);
+                        for (QueryDocumentSnapshot doc : snapshots) {
+                            RiceVariety variety = doc.toObject(RiceVariety.class);
                             if (variety != null && variety.location != null &&
                                     variety.location.toLowerCase().contains("tarlac")) {
                                 riceVarietyList.add(variety);
@@ -67,10 +76,15 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
                             root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
                         }
                     }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
                 });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (listenerRegistration != null) {
+            listenerRegistration.remove();
+        }
     }
 
     @Override

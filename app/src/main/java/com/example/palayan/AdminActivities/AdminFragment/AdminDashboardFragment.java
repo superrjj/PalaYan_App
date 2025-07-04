@@ -14,16 +14,17 @@ import androidx.fragment.app.Fragment;
 import com.example.palayan.AdminActivities.ViewPest;
 import com.example.palayan.AdminActivities.ViewRiceVarieties;
 import com.example.palayan.databinding.FragmentAdminDashboardBinding;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class AdminDashboardFragment extends Fragment {
 
     private FragmentAdminDashboardBinding root;
-    private DatabaseReference riceVarietyRef;
+    private FirebaseFirestore firestore;
+    private ListenerRegistration riceVarietyListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,39 +37,45 @@ public class AdminDashboardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        riceVarietyRef = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
+        firestore = FirebaseFirestore.getInstance();
 
-        //realtime listener to count rice seeds that are not archived
-        riceVarietyRef.orderByChild("archived").equalTo(false)
-                .addValueEventListener(new ValueEventListener() {
+        // Firestore realtime listener to count non-archived rice seed varieties
+        riceVarietyListener = firestore.collection("rice_seed_varieties")
+                .whereEqualTo("archived", false)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        long count = snapshot.getChildrenCount();
-                        root.tvRiceSeedCount.setText(String.valueOf(count));
-                    }
+                    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Toast.makeText(getContext(), "Failed to load count: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getContext(), "Failed to load count", Toast.LENGTH_SHORT).show();
+                        if (snapshots != null) {
+                            long count = snapshots.size();
+                            root.tvRiceSeedCount.setText(String.valueOf(count));
+                        }
                     }
                 });
 
-        //on card click, navigate to RiceVariety list
+        // On card click, navigate to RiceVariety list
         root.cvRiceVarieties.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ViewRiceVarieties.class);
             startActivity(intent);
         });
 
-        root.cvPest.setOnClickListener(v ->{
+        root.cvPest.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ViewPest.class);
             startActivity(intent);
         });
-
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // detach listener to prevent memory leak
+        if (riceVarietyListener != null) {
+            riceVarietyListener.remove();
+        }
         root = null;
     }
 }

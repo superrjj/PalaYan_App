@@ -12,13 +12,12 @@ import com.example.palayan.Dialog.StatusDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddRiceVarietyBinding;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AddRiceVariety extends AppCompatActivity {
 
     private ActivityAddRiceVarietyBinding root;
-    private DatabaseReference databaseVarieties;
+    private FirebaseFirestore firestore;
     private boolean isEditMode = false;
 
     @Override
@@ -30,7 +29,7 @@ public class AddRiceVariety extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(v -> onBackPressed());
 
-        databaseVarieties = FirebaseDatabase.getInstance().getReference("rice_seed_varieties");
+        firestore = FirebaseFirestore.getInstance();
 
         root.btnAddVariety.setVisibility(View.VISIBLE);
         root.btnUpdateVariety.setVisibility(View.GONE);
@@ -123,7 +122,9 @@ public class AddRiceVariety extends AppCompatActivity {
                     false
             );
 
-            databaseVarieties.child(id).setValue(variety)
+            firestore.collection("rice_seed_varieties")
+                    .document(id)
+                    .set(variety)
                     .addOnSuccessListener(aVoid -> showSuccessDialog("added", id))
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show()
@@ -163,7 +164,9 @@ public class AddRiceVariety extends AppCompatActivity {
                     false
             );
 
-            databaseVarieties.child(id).setValue(updatedVariety)
+            firestore.collection("rice_seed_varieties")
+                    .document(id)
+                    .set(updatedVariety)
                     .addOnSuccessListener(aVoid -> showSuccessDialog("updated", id))
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
