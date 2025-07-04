@@ -43,7 +43,7 @@
             android:layout_height="80dp"
             android:layout_gravity="bottom"
             android:background="@color/white"
-            app:itemIconSize="35dp"
+            app:itemIconSize="28dp"
             app:itemIconTint="@color/green"
             app:itemTextColor="@color/green"
             app:itemTextAppearanceActive="@style/BottomNavTextStyle"

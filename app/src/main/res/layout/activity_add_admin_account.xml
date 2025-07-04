@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/semi_white"
+    tools:context=".AdminActivities.AddAdminAccount">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/green"
+            android:elevation="4dp"
+            app:title=""
+            app:contentInsetStart="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins__medium"/>
+
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Full Name*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Full Name"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Username*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Username"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Password*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="Password"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Role*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <Spinner
+                    android:id="@+id/spRole"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/custom_input"
+                    android:theme="@style/InputLabel"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:spinnerMode="dropdown"
+                    android:layout_marginBottom="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="What city where you born in?*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <EditText
+                    android:id="@+id/txtSecOne"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="City"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What is your childhood nickname?*"
+                    android:textColor="@color/green"
+                    android:textSize="13sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium" />
+
+
+                <EditText
+                    android:id="@+id/txtSecTwo"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="number"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="30dp"
+                    android:hint="Nickname"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"/>
+
+
+
+                <Button
+                    android:id="@+id/btnCreate"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_solid"
+                    android:text="CREATE"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/poppins__semibold"/>
+
+                <Button
+                    android:id="@+id/btnUpdateAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_solid"
+                    android:backgroundTint="@color/dark_blue"
+                    android:text="UPDATE ACCOUNT"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/poppins__semibold"/>
+
+                <Button
+                    android:id="@+id/btnDeleteAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_solid"
+                    android:backgroundTint="@color/dark_red"
+                    android:text="DELETE ACCOUNT"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins__semibold"/>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>

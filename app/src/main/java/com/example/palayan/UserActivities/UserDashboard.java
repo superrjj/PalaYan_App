@@ -30,12 +30,17 @@ import com.example.palayan.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 public class UserDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNav;
     private ImageView logo;
+    private FirebaseFirestore firestore;
+
 
     private final long HOLD_DURATION = 3000;
     private final Handler handler = new Handler();
@@ -46,6 +51,9 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_user_dashboard);
+
+        firestore = FirebaseFirestore.getInstance();
+
 
         // Toolbar setup
         Toolbar toolBar = findViewById(R.id.toolbar);
@@ -154,15 +162,35 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
-            if (username.equals("Admin2025") && password.equals("Admin1234")) {
-                Toast.makeText(this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
-                startActivity(intent);
-                dialog.dismiss();
-            } else {
-                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter credentials.", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            firestore.collection("accounts")
+                    .whereEqualTo("username", username)
+                    .whereEqualTo("password", password)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            String role = queryDocumentSnapshots.getDocuments().get(0).getString("role");
+
+                            Toast.makeText(this, "Login Successful as " + role, Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
+                            intent.putExtra("userRole", role);  // pass role to dashboard
+                            startActivity(intent);
+                            dialog.dismiss();
+
+                        } else {
+                            Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Login failed.", Toast.LENGTH_SHORT).show();
+                    });
         });
+
     }
 
     // Back press behavior with drawer open

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.palayan.AdminActivities.ViewAccounts;
 import com.example.palayan.AdminActivities.ViewPest;
 import com.example.palayan.AdminActivities.ViewRiceVarieties;
 import com.example.palayan.databinding.FragmentAdminDashboardBinding;
@@ -66,6 +67,10 @@ public class AdminDashboardFragment extends Fragment {
         root.cvPest.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ViewPest.class);
             startActivity(intent);
+        });
+
+        root.cvAccounts.setOnClickListener(v ->{
+            startActivity(new Intent(getActivity(), ViewAccounts.class));
         });
     }
 
