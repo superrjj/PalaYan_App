@@ -20,4 +20,32 @@ public class Pest {
         this.treatments = treatments;
         this.imageUrl = imageUrl;
     }
+
+    public String getPestName() {
+        return pestName;
+    }
+
+    public String getPest_id() {
+        return pest_id;
+    }
+
+    public String getScientificName() {
+        return scientificName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCause() {
+        return cause;
+    }
+
+    public String getTreatments() {
+        return treatments;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 }

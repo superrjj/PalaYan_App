@@ -23,12 +23,12 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
-public class RiceVarietyAdapter extends RecyclerView.Adapter<RiceVarietyAdapter.VarietyViewHolder> {
+public class AdminRiceVarietyAdapter extends RecyclerView.Adapter<AdminRiceVarietyAdapter.VarietyViewHolder> {
 
     private List<RiceVariety> list;
     private Context context;
 
-    public RiceVarietyAdapter(List<RiceVariety> list, Context context) {
+    public AdminRiceVarietyAdapter(List<RiceVariety> list, Context context) {
         this.list = list;
         this.context = context;
     }

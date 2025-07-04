@@ -4,21 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.palayan.Adapter.RiceVarietyAdapter;
+import com.example.palayan.Adapter.AdminRiceVarietyAdapter;
 import com.example.palayan.Helper.RiceVariety;
-import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityViewRiceVarietiesBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -29,7 +23,7 @@ public class ViewRiceVarieties extends AppCompatActivity {
     private ActivityViewRiceVarietiesBinding root;
     private List<RiceVariety> varietyList;
     private List<RiceVariety> fullVarietyList;
-    private RiceVarietyAdapter adapter;
+    private AdminRiceVarietyAdapter adapter;
     private DatabaseReference databaseVarieties;
     private ValueEventListener riceVarietyListener;
 
@@ -48,7 +42,7 @@ public class ViewRiceVarieties extends AppCompatActivity {
         root.recycleViewerRiceVarieties.setLayoutManager(new LinearLayoutManager(this));
         varietyList = new ArrayList<>();
         fullVarietyList = new ArrayList<>();
-        adapter = new RiceVarietyAdapter(varietyList, this);
+        adapter = new AdminRiceVarietyAdapter(varietyList, this);
         root.recycleViewerRiceVarieties.setAdapter(adapter);
 
         //setup the database for retrieving data from firebase
