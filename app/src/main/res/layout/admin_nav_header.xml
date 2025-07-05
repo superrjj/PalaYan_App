@@ -9,7 +9,7 @@
     android:layout_height="230dp">
 
     <TextView
-        android:id="@+id/tv_initialsName"
+        android:id="@+id/tvInitialName"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:gravity="center"
@@ -22,7 +22,7 @@
         android:layout_marginTop="16dp"/>
 
     <TextView
-        android:id="@+id/tv_fullName"
+        android:id="@+id/tvFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -32,7 +32,7 @@
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/tv_role"
+        android:id="@+id/tvRole"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Main Admin"

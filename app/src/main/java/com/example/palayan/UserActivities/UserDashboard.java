@@ -1,7 +1,10 @@
 package com.example.palayan.UserActivities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -141,7 +144,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         return true;
     }
 
-    // Admin login popup dialog
+    // Admin login popup dialog with internet connection check
     private void showAdminLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.admin_login_dialog, null);
@@ -155,6 +158,12 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         Button btnLogin = dialogView.findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(v -> {
+            // Check internet connection first
+            if (!isNetworkAvailable()) {
+                Toast.makeText(this, "No internet connection. Please connect and try again.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
@@ -163,18 +172,31 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 return;
             }
 
-
             firestore.collection("accounts")
                     .whereEqualTo("username", username)
                     .whereEqualTo("password", password)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
-                            // Get document ID to update lastActive
                             String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
                             String role = queryDocumentSnapshots.getDocuments().get(0).getString("role");
+                            String fullName = queryDocumentSnapshots.getDocuments().get(0).getString("fullName");
 
-                            // Update lastActive field with current server timestamp
+                            // Compute initials dynamically
+                            String initials;
+                            if (fullName != null) {
+                                String[] nameParts = fullName.split(" ");
+                                if (nameParts.length >= 2) {
+                                    initials = nameParts[0].substring(0, 1).toUpperCase() + nameParts[1].substring(0, 1).toUpperCase();
+                                } else if (nameParts.length == 1) {
+                                    initials = nameParts[0].substring(0, 1).toUpperCase();
+                                } else {
+                                    initials = "";
+                                }
+                            } else {
+                                initials = "";
+                            }
+
                             firestore.collection("accounts")
                                     .document(docId)
                                     .update("lastActive", com.google.firebase.firestore.FieldValue.serverTimestamp())
@@ -182,6 +204,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                                         Toast.makeText(this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
                                         intent.putExtra("userRole", role);
+                                        intent.putExtra("fullName", fullName);
+                                        intent.putExtra("initials", initials);
                                         startActivity(intent);
                                         dialog.dismiss();
                                     })
@@ -194,10 +218,16 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                         }
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Login failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
-
         });
+    }
+
+    // Check for internet connection
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override

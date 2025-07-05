@@ -3,6 +3,8 @@ package com.example.palayan.AdminActivities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,13 +15,15 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.palayan.AdminActivities.AdminFragment.AdminDashboardFragment;
-import com.example.palayan.UserActivities.MainActivity;
 import com.example.palayan.R;
+import com.example.palayan.UserActivities.MainActivity;
 import com.google.android.material.navigation.NavigationView;
 
 public class AdminDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
+    private NavigationView navView;
+    private TextView tvAdminInitials, tvAdminFullName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +36,7 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
 
         // Drawer setup
         drawerLayout = findViewById(R.id.admin_drawer_layout);
-        NavigationView navView = findViewById(R.id.nav_view);
+        navView = findViewById(R.id.nav_view);
         navView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolBar,
@@ -40,24 +44,34 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // GET the user role sent from UserDashboard
+        // Get data from Intent
         String userRole = getIntent().getStringExtra("userRole");
+        String fullName = getIntent().getStringExtra("fullName");
+        String initials = getIntent().getStringExtra("initials");
 
+        // Access Drawer header views
+        View headerView = navView.getHeaderView(0);
+        tvAdminInitials = headerView.findViewById(R.id.tvInitialName);
+        tvAdminFullName = headerView.findViewById(R.id.tvFullName);
+
+        // Set values to header
+        tvAdminInitials.setText(initials != null ? initials : "--");
+        tvAdminFullName.setText(fullName != null ? fullName : "Admin User");
+
+        // Load dashboard fragment and pass bundle
         if (savedInstanceState == null) {
-            // Put the role in a bundle
             Bundle bundle = new Bundle();
             bundle.putString("userRole", userRole);
+            bundle.putString("fullName", fullName);
+            bundle.putString("initials", initials);
 
-            // Set bundle to fragment
             AdminDashboardFragment fragment = new AdminDashboardFragment();
             fragment.setArguments(bundle);
 
-            // Load fragment
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         }
-
     }
 
     @Override
@@ -65,12 +79,10 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
         int id = menuItem.getItemId();
 
         if (id == R.id.nav_logout) {
-            //Palitan nalang kapag may db na
-
             Intent intent = new Intent(AdminDashboard.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish(); // Close current activity
+            finish(); // Close activity
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

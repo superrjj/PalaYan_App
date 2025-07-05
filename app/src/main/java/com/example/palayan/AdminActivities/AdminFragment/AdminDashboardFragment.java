@@ -33,6 +33,8 @@ public class AdminDashboardFragment extends Fragment {
                              Bundle savedInstanceState) {
         root = FragmentAdminDashboardBinding.inflate(inflater, container, false);
         return root.getRoot();
+
+
     }
 
     @Override
@@ -44,7 +46,7 @@ public class AdminDashboardFragment extends Fragment {
         // Get the role from the bundle
         String userRole = getArguments() != null ? getArguments().getString("userRole") : "";
 
-        // Enable/disable based on role
+        //enable/disable based on role
         if (userRole.equals("Data Manager")) {
             root.cvAccounts.setEnabled(false); // disable View Accounts card
             root.cvAccounts.setAlpha(0.5f);    // visually gray it out (optional)
