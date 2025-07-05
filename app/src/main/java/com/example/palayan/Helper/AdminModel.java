@@ -70,4 +70,44 @@ public class AdminModel {
     public String getStatus() {
         return status;
     }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setSecurityQ1(String securityQ1) {
+        this.securityQ1 = securityQ1;
+    }
+
+    public void setSecurityQ2(String securityQ2) {
+        this.securityQ2 = securityQ2;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+
+    public void setLastActive(Date lastActive) {
+        this.lastActive = lastActive;
+    }
 }

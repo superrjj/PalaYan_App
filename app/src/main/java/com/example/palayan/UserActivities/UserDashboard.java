@@ -158,9 +158,9 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         Button btnLogin = dialogView.findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(v -> {
-            // Check internet connection first
+            //check internet connection first
             if (!isNetworkAvailable()) {
-                Toast.makeText(this, "No internet connection. Please connect and try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No internet connection. Please connect to the internet.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
