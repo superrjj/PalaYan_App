@@ -2,6 +2,8 @@ package com.example.palayan.AdminActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,18 +45,30 @@ public class ViewAccounts extends AppCompatActivity {
 
     private void loadAccounts() {
         firestore.collection("accounts")
-                .whereEqualTo("archived", false)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    accountList.clear();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        AdminModel account = doc.toObject(AdminModel.class);
-                        accountList.add(account);
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Toast.makeText(ViewAccounts.this, "Failed to load accounts: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
                     }
+
+                    accountList.clear();
+
+                    if (snapshots != null) {
+                        for (QueryDocumentSnapshot doc : snapshots) {
+                            try {
+                                AdminModel account = doc.toObject(AdminModel.class);
+                                if (account != null && !account.isArchived()) {
+                                    accountList.add(account);
+                                }
+                            } catch (Exception ex) {
+                                Log.e("Firestore Data", "Error parsing account", ex);
+                            }
+                        }
+                    }
+
                     adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load accounts.", Toast.LENGTH_SHORT).show();
+                    root.tvNoData.setVisibility(accountList.isEmpty() ? View.VISIBLE : View.GONE);
                 });
+
     }
 }

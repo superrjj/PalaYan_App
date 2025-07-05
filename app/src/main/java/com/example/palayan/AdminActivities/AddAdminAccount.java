@@ -164,6 +164,7 @@ public class AddAdminAccount extends AppCompatActivity {
         account.put("security2", root.txtSecTwo.getText().toString().trim());
         account.put("status", "Active");
         account.put("lastActive", null);
+        account.put("archived", false);
         return account;
     }
 
@@ -173,11 +174,12 @@ public class AddAdminAccount extends AppCompatActivity {
         String message = fullName + " has been successfully " + action + ".";
 
         StatusDialogFragment.newInstance(
-                        title,
-                        message,
-                        R.drawable.ic_success,
-                        R.color.green
-                ).setOnDismissListener(this::finish)
+                title,
+                message,
+                R.drawable.ic_success,
+                R.color.green
+                ).setOnDismissListener(() -> finish())
                 .show(getSupportFragmentManager(), "SuccessDialog");
+
     }
 }

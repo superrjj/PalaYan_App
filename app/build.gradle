@@ -68,6 +68,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.3.0'
     implementation 'com.google.firebase:firebase-storage:20.3.0'
 
+    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+
 
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

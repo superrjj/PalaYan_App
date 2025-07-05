@@ -11,12 +11,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.palayan.AdminActivities.AddAdminAccount;
+import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Helper.AdminModel;
 import com.example.palayan.R;
-import com.example.palayan.databinding.ListAccountsBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -27,7 +28,6 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
     private Context context;
     private FirebaseFirestore firestore;
 
-
     public AdminAccountAdapter(List<AdminModel> accountList, Context context) {
         this.accountList = accountList;
         this.context = context;
@@ -36,19 +36,20 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
 
     @NonNull
     @Override
-    public AdminAccountAdapter.AccountHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+    public AccountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_accounts, parent, false);
         return new AccountHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdminAccountAdapter.AccountHolder accountHolder, int position) {
+    public void onBindViewHolder(@NonNull AccountHolder holder, int position) {
 
         AdminModel model = accountList.get(position);
-        accountHolder.tvFullName.setText(model.getFullName());
-        accountHolder.tvRole.setText(model.getRole());
-        accountHolder.tvStatus.setText(model.getStatus());
 
+        holder.tvFullName.setText(model.getFullName());
+        holder.tvRole.setText(model.getRole());
+
+        // Generate initials
         String[] nameParts = model.getFullName().split(" ");
         String initials = "";
         if (nameParts.length >= 2) {
@@ -56,50 +57,68 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
         } else if (nameParts.length == 1) {
             initials = nameParts[0].substring(0, 1).toUpperCase();
         }
-        accountHolder.tvInitialName.setText(initials);
+        holder.tvInitialName.setText(initials);
 
+        //status based on lastActive
         if (model.getLastActive() != null) {
             long lastActiveMillis = model.getLastActive().getTime();
             long currentMillis = System.currentTimeMillis();
             long diffInDays = (currentMillis - lastActiveMillis) / (1000 * 60 * 60 * 24);
 
             if (diffInDays <= 7) {
-                accountHolder.tvStatus.setText("Active");
-                accountHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
+                holder.tvStatus.setText("Active");
+                holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
             } else {
-                accountHolder.tvStatus.setText("Inactive");
-                accountHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
+                holder.tvStatus.setText("Inactive");
+                holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
             }
         } else {
-            // If no lastActive date, treat as Inactive
-            accountHolder.tvStatus.setText("Inactive");
-            accountHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
+            holder.tvStatus.setText("Inactive");
+            holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
         }
 
+        // Archive button
+        holder.ivDelete.setOnClickListener(v -> {
+            if (context instanceof FragmentActivity) {
+                CustomDialogFragment.newInstance(
+                        "Archive Account",
+                        "Are you sure you want to archive \"" + model.getFullName() + "\"?",
+                        "This account will be archived and no longer visible.",
+                        R.drawable.ic_warning,
+                        "ARCHIVE",
+                        (dialog, which) -> {
+                            int currentPosition = holder.getBindingAdapterPosition();
+                            if (currentPosition != RecyclerView.NO_POSITION) {
+                                holder.ivDelete.setEnabled(false);
 
+                                firestore.collection("accounts")
+                                        .document(String.valueOf(model.getUserId()))
+                                        .update("archived", true)
+                                        .addOnSuccessListener(unused -> {
+                                            Toast.makeText(context, "Archived " + model.getFullName(), Toast.LENGTH_SHORT).show();
 
-        accountHolder.ivDelete.setOnClickListener(v ->{
-            String userId = String.valueOf(model.getUserId());
-            firestore.collection("accounts")
-                    .document(userId)
-                    .update("archived", true)
-                    .addOnSuccessListener(unused -> {
-                        Toast.makeText(context, "Archived " + model.getFullName(), Toast.LENGTH_SHORT).show();
-                        accountList.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, accountList.size());
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(context, "Failed to archive: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                                            int updatedPosition = holder.getBindingAdapterPosition();
+                                            if (updatedPosition != RecyclerView.NO_POSITION && updatedPosition < accountList.size()) {
+                                                accountList.remove(updatedPosition);
+                                                notifyItemRemoved(updatedPosition);
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(context, "Failed to archive: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            holder.ivDelete.setEnabled(true);
+                                        });
+                            }
+                        }
+                ).show(((FragmentActivity) context).getSupportFragmentManager(), "ArchiveConfirmDialog");
+            }
         });
 
-        accountHolder.ivUpdate.setOnClickListener(v -> {
+        // Update button
+        holder.ivUpdate.setOnClickListener(v -> {
             Intent intent = new Intent(context, AddAdminAccount.class);
             intent.putExtra("userId", model.getUserId());
             context.startActivity(intent);
         });
-
     }
 
     @Override
@@ -107,15 +126,12 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
         return accountList.size();
     }
 
-    public class AccountHolder extends RecyclerView.ViewHolder{
+    public static class AccountHolder extends RecyclerView.ViewHolder {
         TextView tvFullName, tvRole, tvStatus, tvInitialName;
         ImageView ivUpdate, ivDelete;
 
-
-
         public AccountHolder(@NonNull View itemView) {
             super(itemView);
-
             tvFullName = itemView.findViewById(R.id.tvFullName);
             tvRole = itemView.findViewById(R.id.tvRole);
             tvStatus = itemView.findViewById(R.id.tvStatus);

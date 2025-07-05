@@ -159,7 +159,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             String password = etPassword.getText().toString().trim();
 
             if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter credentials.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please fill out all fields.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
