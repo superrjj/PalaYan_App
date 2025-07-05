@@ -36,8 +36,8 @@ public class AddAdminAccount extends AppCompatActivity {
 
         firestore = FirebaseFirestore.getInstance();
 
-        // Role spinner setup
-        String[] roles = {"Main Admin", "Data Manager"};
+        // Spinner with placeholder
+        String[] roles = {"Select Role", "Main Admin", "Data Manager"};
         roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, roles);
         root.spRole.setAdapter(roleAdapter);
 
@@ -74,7 +74,9 @@ public class AddAdminAccount extends AppCompatActivity {
 
                         String role = doc.getString("role");
                         int spinnerPosition = roleAdapter.getPosition(role);
-                        root.spRole.setSelection(spinnerPosition);
+                        if (spinnerPosition >= 0) {
+                            root.spRole.setSelection(spinnerPosition);
+                        }
                     }
                 })
                 .addOnFailureListener(e ->
@@ -118,6 +120,7 @@ public class AddAdminAccount extends AppCompatActivity {
 
     private void addNewAccountToDatabase() {
         HashMap<String, Object> account = collectFormInput();
+        if (account == null) return;
 
         firestore.collection("accounts")
                 .orderBy("userId", com.google.firebase.firestore.Query.Direction.DESCENDING)
@@ -145,6 +148,8 @@ public class AddAdminAccount extends AppCompatActivity {
         if (userId == -1) return;
 
         HashMap<String, Object> account = collectFormInput();
+        if (account == null) return;
+
         account.put("userId", userId);
 
         firestore.collection("accounts")
@@ -155,11 +160,26 @@ public class AddAdminAccount extends AppCompatActivity {
     }
 
     private HashMap<String, Object> collectFormInput() {
+        String fullName = root.txtFullName.getText().toString().trim();
+        String username = root.txtUsername.getText().toString().trim();
+        String password = root.txtPassword.getText().toString().trim();
+        String selectedRole = root.spRole.getSelectedItem().toString();
+
+        if (fullName.isEmpty() || username.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (selectedRole.equals("Select Role")) {
+            Toast.makeText(this, "Please select a valid role", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
         HashMap<String, Object> account = new HashMap<>();
-        account.put("fullName", root.txtFullName.getText().toString().trim());
-        account.put("username", root.txtUsername.getText().toString().trim());
-        account.put("password", root.txtPassword.getText().toString().trim());
-        account.put("role", root.spRole.getSelectedItem().toString());
+        account.put("fullName", fullName);
+        account.put("username", username);
+        account.put("password", password);
+        account.put("role", selectedRole);
         account.put("security1", root.txtSecOne.getText().toString().trim());
         account.put("security2", root.txtSecTwo.getText().toString().trim());
         account.put("status", "Active");
@@ -174,12 +194,11 @@ public class AddAdminAccount extends AppCompatActivity {
         String message = fullName + " has been successfully " + action + ".";
 
         StatusDialogFragment.newInstance(
-                title,
-                message,
-                R.drawable.ic_success,
-                R.color.green
+                        title,
+                        message,
+                        R.drawable.ic_success,
+                        R.color.green
                 ).setOnDismissListener(() -> finish())
                 .show(getSupportFragmentManager(), "SuccessDialog");
-
     }
 }

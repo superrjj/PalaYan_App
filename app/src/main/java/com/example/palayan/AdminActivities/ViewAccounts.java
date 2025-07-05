@@ -15,6 +15,7 @@ import com.example.palayan.Helper.AdminModel;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.databinding.ActivityViewAccountsBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class ViewAccounts extends AppCompatActivity {
     private AdminAccountAdapter adapter;
     private ArrayList<AdminModel> accountList;
     private ArrayList<AdminModel> fullAccountList;
+    private ListenerRegistration accountListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +38,16 @@ public class ViewAccounts extends AppCompatActivity {
         setContentView(root.getRoot());
 
         firestore = FirebaseFirestore.getInstance();
-        loadAccounts();
+
+        //initialize lists BEFORE loading accounts
         accountList = new ArrayList<>();
         fullAccountList = new ArrayList<>();
-        adapter = new AdminAccountAdapter(accountList, this);
 
+        adapter = new AdminAccountAdapter(accountList, this);
         root.rvAccounts.setLayoutManager(new LinearLayoutManager(this));
         root.rvAccounts.setAdapter(adapter);
+
+        loadAccounts();  //now safe to attach snapshot listener
 
         root.ivBack.setOnClickListener(v -> onBackPressed());
         root.fabAdd.setOnClickListener(v -> startActivity(new Intent(this, AddAdminAccount.class)));
@@ -65,7 +71,12 @@ public class ViewAccounts extends AppCompatActivity {
     }
 
     private void loadAccounts() {
-        firestore.collection("accounts")
+
+        if (accountListener != null) {
+            accountListener.remove();  // Remove existing listener before attaching new one
+        }
+
+        accountListener = firestore.collection("accounts")
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {
                         Toast.makeText(ViewAccounts.this, "Failed to load accounts: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -113,6 +124,15 @@ public class ViewAccounts extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
         root.tvNoData.setVisibility(accountList.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (accountListener != null) {
+            accountListener.remove();
+            accountListener = null;
+        }
     }
 
 }

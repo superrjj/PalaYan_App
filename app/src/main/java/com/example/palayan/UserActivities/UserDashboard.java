@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log; // ✅ ADDED
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -54,11 +55,9 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
         firestore = FirebaseFirestore.getInstance();
 
-        // Toolbar setup
         Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        // Drawer setup
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navView = findViewById(R.id.nav_view);
         navView.setNavigationItemSelectedListener(this);
@@ -68,37 +67,24 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Bottom navigation setup
         bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-
             if (id == R.id.bot_nav_home) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new HomeFragment())
-                        .commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
             } else if (id == R.id.bot_nav_rice) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new RiceSeedsFragment())
-                        .commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RiceSeedsFragment()).commit();
             } else if (id == R.id.bot_nav_pest_disease) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new PestDiseaseFragment())
-                        .commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PestDiseaseFragment()).commit();
             }
-
             return true;
         });
 
-        // Default fragment
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment())
-                    .commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
             bottomNav.setSelectedItemId(R.id.bot_nav_home);
         }
 
-        // Long-press logo in Navigation Drawer Header
         View headerView = navView.getHeaderView(0);
         logo = headerView.findViewById(R.id.img_logo);
 
@@ -112,7 +98,6 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             showAdminLoginDialog();
                         }, HOLD_DURATION);
                         return true;
-
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
                         handler.removeCallbacksAndMessages(null);
@@ -125,31 +110,22 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    // Navigation drawer menu clicks
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
-
         if (id == R.id.nav_language) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new LanguageFragment())
-                    .commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LanguageFragment()).commit();
         } else if (id == R.id.nav_guide) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new GuideFragment())
-                    .commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GuideFragment()).commit();
         }
-
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    // Admin login popup dialog with internet connection check
     private void showAdminLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.admin_login_dialog, null);
         builder.setView(dialogView);
-
         AlertDialog dialog = builder.create();
         dialog.show();
 
@@ -158,19 +134,13 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         Button btnLogin = dialogView.findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(v -> {
-            //check internet connection first
             if (!isNetworkAvailable()) {
-                Toast.makeText(this, "No internet connection. Please connect to the internet.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No internet connection.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
-
-            if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill out all fields.", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
             firestore.collection("accounts")
                     .whereEqualTo("username", username)
@@ -182,7 +152,6 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             String role = queryDocumentSnapshots.getDocuments().get(0).getString("role");
                             String fullName = queryDocumentSnapshots.getDocuments().get(0).getString("fullName");
 
-                            // Compute initials dynamically
                             String initials;
                             if (fullName != null) {
                                 String[] nameParts = fullName.split(" ");
@@ -196,6 +165,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             } else {
                                 initials = "";
                             }
+
+                            Log.d("LOGIN_ROLE_CHECK", "Fetched role: " + role); // ✅ ADDED
 
                             firestore.collection("accounts")
                                     .document(docId)
@@ -216,18 +187,14 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                         } else {
                             Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
                         }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
     }
 
-    // Check for internet connection
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo active = cm.getActiveNetworkInfo();
+        return active != null && active.isConnected();
     }
 
     @Override

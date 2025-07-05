@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -23,18 +22,16 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
 
     private DrawerLayout drawerLayout;
     private NavigationView navView;
-    private TextView tvAdminInitials, tvAdminFullName;
+    private TextView tvAdminInitials, tvAdminFullName, tvRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
-        // Toolbar setup
         Toolbar toolBar = findViewById(R.id.admin_toolbar);
         setSupportActionBar(toolBar);
 
-        // Drawer setup
         drawerLayout = findViewById(R.id.admin_drawer_layout);
         navView = findViewById(R.id.nav_view);
         navView.setNavigationItemSelectedListener(this);
@@ -44,24 +41,26 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Get data from Intent
+        // Retrieve values from intent
         String userRole = getIntent().getStringExtra("userRole");
         String fullName = getIntent().getStringExtra("fullName");
         String initials = getIntent().getStringExtra("initials");
 
-        // Access Drawer header views
+        // Access header views
         View headerView = navView.getHeaderView(0);
         tvAdminInitials = headerView.findViewById(R.id.tvInitialName);
         tvAdminFullName = headerView.findViewById(R.id.tvFullName);
+        tvRole = headerView.findViewById(R.id.tvRole);  // NEW: get tvRole from header layout
 
-        // Set values to header
+        // Set values to header views
         tvAdminInitials.setText(initials != null ? initials : "--");
         tvAdminFullName.setText(fullName != null ? fullName : "Admin User");
+        tvRole.setText(userRole != null ? userRole : "Unknown Role");  // Set role display
 
-        // Load dashboard fragment and pass bundle
+        // Load dashboard fragment and pass role and other data
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
-            bundle.putString("userRole", userRole);
+            bundle.putString("userRole", tvRole.getText().toString());  // Pass role from TextView
             bundle.putString("fullName", fullName);
             bundle.putString("initials", initials);
 
@@ -77,14 +76,12 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
-
         if (id == R.id.nav_logout) {
             Intent intent = new Intent(AdminDashboard.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish(); // Close activity
+            finish();
         }
-
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
