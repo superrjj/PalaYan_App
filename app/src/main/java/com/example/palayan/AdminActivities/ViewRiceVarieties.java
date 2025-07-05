@@ -42,23 +42,23 @@ public class ViewRiceVarieties extends AppCompatActivity {
         setSupportActionBar(root.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        // Firestore Instance
+        //firestore instance
         firestore = FirebaseFirestore.getInstance();
 
-        // FAB — Go to AddRiceVariety Activity
+        //go to the add section
         root.fabAdd.setOnClickListener(v -> startActivity(new Intent(this, AddRiceVariety.class)));
 
         // Back Button
         root.ivBack.setOnClickListener(v -> onBackPressed());
 
-        // RecyclerView Setup
+        //recyclerView for the list seed layout
         root.recycleViewerRiceVarieties.setLayoutManager(new LinearLayoutManager(this));
         varietyList = new ArrayList<>();
         fullVarietyList = new ArrayList<>();
         adapter = new AdminRiceVarietyAdapter(varietyList, this);
         root.recycleViewerRiceVarieties.setAdapter(adapter);
 
-        // SearchView Setup
+        //search view
         root.svSearchBar.setQueryHint("Search rice variety...");
         root.svSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

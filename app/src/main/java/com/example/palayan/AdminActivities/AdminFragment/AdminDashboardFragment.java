@@ -25,7 +25,8 @@ public class AdminDashboardFragment extends Fragment {
 
     private FragmentAdminDashboardBinding root;
     private FirebaseFirestore firestore;
-    private ListenerRegistration riceVarietyListener;
+    private ListenerRegistration riceVarietyListener, accountListener;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +66,21 @@ public class AdminDashboardFragment extends Fragment {
                         root.tvRiceSeedCount.setText(String.valueOf(count));
                     }
                 });
+
+        accountListener = firestore.collection("accounts")
+                .whereEqualTo("archived", false)
+                .addSnapshotListener((snapshots, e) ->{
+                    if (e != null) {
+                        Toast.makeText(getContext(), "Failed to load count: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (snapshots != null) {
+                        long count = snapshots.size();
+                        root.tvAccountCounts.setText(String.valueOf(count));
+                    }
+                });
+
 
         root.cvRiceVarieties.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), ViewRiceVarieties.class));

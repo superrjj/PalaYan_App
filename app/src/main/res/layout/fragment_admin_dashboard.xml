@@ -62,7 +62,7 @@
                    </LinearLayout>
                </androidx.cardview.widget.CardView>
 
-               <!-- Card 2: Pest Management -->
+
                <androidx.cardview.widget.CardView
                    android:layout_width="90dp"
                    android:layout_height="100dp"
@@ -96,7 +96,7 @@
                    </LinearLayout>
                </androidx.cardview.widget.CardView>
 
-               <!-- Card 3: Disease Management -->
+
                <androidx.cardview.widget.CardView
                    android:layout_width="90dp"
                    android:layout_height="100dp"
@@ -130,7 +130,7 @@
                    </LinearLayout>
                </androidx.cardview.widget.CardView>
 
-               <!-- Card 4: Admin Accounts -->
+
                <androidx.cardview.widget.CardView
                    android:layout_width="90dp"
                    android:layout_height="100dp"
@@ -146,7 +146,7 @@
                        android:padding="6dp">
 
                        <TextView
-                           android:id="@+id/tv_accounts"
+                           android:id="@+id/tvAccountCounts"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="0"

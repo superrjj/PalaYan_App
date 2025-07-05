@@ -7,15 +7,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.palayan.Adapter.AdminAccountAdapter;
 import com.example.palayan.Helper.AdminModel;
+import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.databinding.ActivityViewAccountsBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ViewAccounts extends AppCompatActivity {
 
@@ -23,6 +26,7 @@ public class ViewAccounts extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private AdminAccountAdapter adapter;
     private ArrayList<AdminModel> accountList;
+    private ArrayList<AdminModel> fullAccountList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,9 @@ public class ViewAccounts extends AppCompatActivity {
         setContentView(root.getRoot());
 
         firestore = FirebaseFirestore.getInstance();
+        loadAccounts();
         accountList = new ArrayList<>();
+        fullAccountList = new ArrayList<>();
         adapter = new AdminAccountAdapter(accountList, this);
 
         root.rvAccounts.setLayoutManager(new LinearLayoutManager(this));
@@ -40,7 +46,22 @@ public class ViewAccounts extends AppCompatActivity {
         root.ivBack.setOnClickListener(v -> onBackPressed());
         root.fabAdd.setOnClickListener(v -> startActivity(new Intent(this, AddAdminAccount.class)));
 
-        loadAccounts();
+        root.svSearchBar.setQueryHint("Search for account...");
+        root.svSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                filterList(s);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                filterList(s);
+                return true;
+            }
+        });
+
+
     }
 
     private void loadAccounts() {
@@ -52,6 +73,7 @@ public class ViewAccounts extends AppCompatActivity {
                     }
 
                     accountList.clear();
+                    fullAccountList.clear();
 
                     if (snapshots != null) {
                         for (QueryDocumentSnapshot doc : snapshots) {
@@ -59,6 +81,7 @@ public class ViewAccounts extends AppCompatActivity {
                                 AdminModel account = doc.toObject(AdminModel.class);
                                 if (account != null && !account.isArchived()) {
                                     accountList.add(account);
+                                    fullAccountList.add(account);
                                 }
                             } catch (Exception ex) {
                                 Log.e("Firestore Data", "Error parsing account", ex);
@@ -69,6 +92,27 @@ public class ViewAccounts extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     root.tvNoData.setVisibility(accountList.isEmpty() ? View.VISIBLE : View.GONE);
                 });
-
     }
+
+
+    // Filter list based on query string
+    private void filterList(String query) {
+        List<AdminModel> filteredList = new ArrayList<>();
+        String lowerQuery = query.toLowerCase();
+
+        for (AdminModel item : fullAccountList) {
+            if ((item.fullName != null && item.fullName.toLowerCase().contains(lowerQuery)) ||
+                    (item.role != null && item.role.toLowerCase().contains(lowerQuery)) ||
+                    (item.status != null && item.status.toLowerCase().contains(lowerQuery))) {
+                filteredList.add(item);
+            }
+        }
+
+        accountList.clear();
+        accountList.addAll(filteredList);
+        adapter.notifyDataSetChanged();
+
+        root.tvNoData.setVisibility(accountList.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
 }
