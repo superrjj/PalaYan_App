@@ -163,39 +163,31 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 return;
             }
 
-            // Check hardcoded accounts first
-            if (username.equals("Admin2025") && password.equals("AdminDATarlac")) {
-                Toast.makeText(this, "Login Successful as Main Admin", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
-                intent.putExtra("userRole", "Main Admin");
-                startActivity(intent);
-                dialog.dismiss();
-                return;
-            }
 
-            if (username.equals("Admin2025") && password.equals("Admin1234")) {
-                Toast.makeText(this, "Login Successful as Main Admin", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
-                intent.putExtra("userRole", "Main Admin");
-                startActivity(intent);
-                dialog.dismiss();
-                return;
-            }
-
-            // Check Firestore accounts if not predefined
             firestore.collection("accounts")
                     .whereEqualTo("username", username)
                     .whereEqualTo("password", password)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
+                            // Get document ID to update lastActive
+                            String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
                             String role = queryDocumentSnapshots.getDocuments().get(0).getString("role");
 
-                            Toast.makeText(this, "Login Successful as " + role, Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
-                            intent.putExtra("userRole", role);
-                            startActivity(intent);
-                            dialog.dismiss();
+                            // Update lastActive field with current server timestamp
+                            firestore.collection("accounts")
+                                    .document(docId)
+                                    .update("lastActive", com.google.firebase.firestore.FieldValue.serverTimestamp())
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
+                                        intent.putExtra("userRole", role);
+                                        startActivity(intent);
+                                        dialog.dismiss();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(this, "Failed to update last active.", Toast.LENGTH_SHORT).show();
+                                    });
 
                         } else {
                             Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
@@ -204,6 +196,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, "Login failed.", Toast.LENGTH_SHORT).show();
                     });
+
         });
     }
 

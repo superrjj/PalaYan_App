@@ -1,8 +1,10 @@
 package com.example.palayan.Helper;
 
+import java.util.Date;
+
 public class AdminModel {
 
-    public String userId;
+    public int userId;
     public String fullName;
     public String username;
     public String password;
@@ -10,11 +12,14 @@ public class AdminModel {
     public String securityQ1;
     public String securityQ2;
     public String status;
+    private boolean archived;
+    private Date lastActive;
 
     public AdminModel() {
     }
 
-    public AdminModel(String userId, String fullName, String username, String password, String role, String securityQ1, String securityQ2, String status) {
+    public AdminModel(int userId, String fullName, String username, String password,
+                      String role, String securityQ1, String securityQ2, String status, boolean archived) {
         this.userId = userId;
         this.fullName = fullName;
         this.username = username;
@@ -23,9 +28,18 @@ public class AdminModel {
         this.securityQ1 = securityQ1;
         this.securityQ2 = securityQ2;
         this.status = status;
+        this.archived = archived;
     }
 
-    public String getUserId() {
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public Date getLastActive() {
+        return lastActive;
+    }
+
+    public int getUserId() {
         return userId;
     }
 
