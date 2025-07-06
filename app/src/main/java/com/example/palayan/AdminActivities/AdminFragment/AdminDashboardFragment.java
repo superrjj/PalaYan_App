@@ -21,7 +21,7 @@ public class AdminDashboardFragment extends Fragment {
 
     private FragmentAdminDashboardBinding root;
     private FirebaseFirestore firestore;
-    private ListenerRegistration riceVarietyListener, accountListener;
+    private ListenerRegistration riceVarietyListener, accountListener, pestListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +53,16 @@ public class AdminDashboardFragment extends Fragment {
                     long count = (snapshots != null) ? snapshots.size() : 0;
                     root.tvRiceSeedCount.setText(String.valueOf(count));
                 });
+
+
+        accountListener = firestore.collection("pests")
+                .whereEqualTo("archived", false)
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null || root == null) return;
+                    long count = (snapshots != null) ? snapshots.size() : 0;
+                    root.tvPestCount.setText(String.valueOf(count));
+                });
+
 
         accountListener = firestore.collection("accounts")
                 .whereEqualTo("archived", false)

@@ -108,7 +108,7 @@
         app:tint="@android:color/white" />
 
     <TextView
-        android:id="@+id/tvNodata"
+        android:id="@+id/tvNoData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No pest data found"

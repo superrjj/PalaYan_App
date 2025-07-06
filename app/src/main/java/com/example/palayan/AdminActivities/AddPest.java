@@ -18,12 +18,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Dialog.StatusDialogFragment;
 import com.example.palayan.Helper.Pest;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddPestBinding;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -38,8 +39,8 @@ public class AddPest extends AppCompatActivity {
     private File photoFile;
     private boolean isEditMode = false;
     private String existingPestId;
+    private String existingImageUrl;
 
-    // Choose from gallery
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -50,7 +51,6 @@ public class AddPest extends AppCompatActivity {
                 }
             });
 
-    // Take a photo
     private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -90,8 +90,18 @@ public class AddPest extends AppCompatActivity {
             root.txtPestName.setEnabled(false);
             root.txtScientificName.setText(getIntent().getStringExtra("scientificName"));
             root.txtDescription.setText(getIntent().getStringExtra("description"));
+            root.txtSymptoms.setText(getIntent().getStringExtra("symptoms "));
             root.txtCause.setText(getIntent().getStringExtra("cause"));
             root.txtTreatments.setText(getIntent().getStringExtra("treatments"));
+            existingImageUrl = getIntent().getStringExtra("imageUrl");
+
+            //display the existing image
+            Glide.with(this)
+                    .load(existingImageUrl)
+                    .placeholder(R.drawable.ic_pest_logo)
+                    .into(root.ivUploadImage);
+
+            root.tvTapToUpload.setVisibility(View.GONE);
 
             root.btnAddPest.setVisibility(View.GONE);
             root.btnUpdatePest.setVisibility(View.VISIBLE);
@@ -156,9 +166,9 @@ public class AddPest extends AppCompatActivity {
                 "Add Pest",
                 "Are you sure you want to add \"" + name + "\"?",
                 "This pest will be added to the system.",
-                R.drawable.ic_rice_logo,
+                R.drawable.ic_pest_logo,
                 "ADD",
-                (dialog, which) -> addPestToDatabase(name)
+                (dialog, which) -> addPestToFirestore(name)
         ).show(getSupportFragmentManager(), "AddConfirmDialog");
     }
 
@@ -166,16 +176,17 @@ public class AddPest extends AppCompatActivity {
         CustomDialogFragment.newInstance(
                 "Update Pest",
                 "Are you sure you want to update \"" + id + "\"?",
-                "The changes will be saved and take effect immediately.",
+                "The changes will be saved immediately.",
                 R.drawable.ic_edit,
                 "UPDATE",
                 (dialog, which) -> updatePest(id)
         ).show(getSupportFragmentManager(), "UpdateConfirmDialog");
     }
 
-    private void addPestToDatabase(String name) {
+    private void addPestToFirestore(String name) {
         String sciName = root.txtScientificName.getText().toString().trim();
         String desc = root.txtDescription.getText().toString().trim();
+        String symp = root.txtSymptoms.getText().toString().trim();
         String cause = root.txtCause.getText().toString().trim();
         String treat = root.txtTreatments.getText().toString().trim();
 
@@ -195,18 +206,20 @@ public class AddPest extends AppCompatActivity {
 
         imageRef.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Pest pest = new Pest(pestId, name, sciName, desc, cause, treat, uri.toString());
+                    Pest pest = new Pest(pestId, name, sciName, desc, symp, cause, treat, uri.toString(), false);
 
-                    FirebaseDatabase.getInstance().getReference("pests")
-                            .child(pestId)
-                            .setValue(pest)
+
+                    FirebaseFirestore.getInstance()
+                            .collection("pests")
+                            .document(pestId)
+                            .set(pest)
                             .addOnSuccessListener(unused -> {
                                 dialog.dismiss();
                                 showSuccessDialog("added", name);
                             })
                             .addOnFailureListener(e -> {
                                 dialog.dismiss();
-                                Toast.makeText(this, "Database Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
                 }))
                 .addOnFailureListener(e -> {
@@ -219,6 +232,7 @@ public class AddPest extends AppCompatActivity {
         String name = root.txtPestName.getText().toString().trim();
         String sciName = root.txtScientificName.getText().toString().trim();
         String desc = root.txtDescription.getText().toString().trim();
+        String symp = root.txtSymptoms.getText().toString().trim();
         String cause = root.txtCause.getText().toString().trim();
         String treat = root.txtTreatments.getText().toString().trim();
 
@@ -238,24 +252,26 @@ public class AddPest extends AppCompatActivity {
 
             imageRef.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Pest pest = new Pest(pestId, name, sciName, desc, cause, treat, uri.toString());
-                        updateDatabase(pestId, pest, dialog);
+                        Pest pest = new Pest(pestId, name, sciName, desc, symp, cause, treat, uri.toString(), false);
+                        pest.archived = false;
+                        updateToFirestore(pestId, pest, dialog);
                     }))
                     .addOnFailureListener(e -> {
                         dialog.dismiss();
                         Toast.makeText(this, "Image Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         } else {
-            String imageUrl = getIntent().getStringExtra("imageUrl");
-            Pest pest = new Pest(pestId, name, sciName, desc, cause, treat, imageUrl);
-            updateDatabase(pestId, pest, dialog);
+            Pest pest = new Pest(pestId, name, sciName, desc, symp, cause, treat, existingImageUrl, false);
+            pest.archived = false;
+            updateToFirestore(pestId, pest, dialog);
         }
     }
 
-    private void updateDatabase(String pestId, Pest pest, ProgressDialog dialog) {
-        FirebaseDatabase.getInstance().getReference("pests")
-                .child(pestId)
-                .setValue(pest)
+    private void updateToFirestore(String pestId, Pest pest, ProgressDialog dialog) {
+        FirebaseFirestore.getInstance()
+                .collection("pests")
+                .document(pestId)
+                .set(pest)
                 .addOnSuccessListener(unused -> {
                     dialog.dismiss();
                     showSuccessDialog("updated", pest.getPestName());
