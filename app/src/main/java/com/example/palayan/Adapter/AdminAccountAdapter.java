@@ -27,10 +27,12 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
     private List<AdminModel> accountList;
     private Context context;
     private FirebaseFirestore firestore;
+    private int currentUserId;
 
-    public AdminAccountAdapter(List<AdminModel> accountList, Context context) {
+    public AdminAccountAdapter(List<AdminModel> accountList, Context context, int currentUserId) {
         this.accountList = accountList;
         this.context = context;
+        this.currentUserId = currentUserId;
         firestore = FirebaseFirestore.getInstance();
     }
 
@@ -75,6 +77,13 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
         } else {
             holder.tvStatus.setText("Inactive");
             holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
+        }
+
+        //cannot delete the accounts who currently logged
+        if(model.getUserId() == currentUserId){
+            holder.ivDelete.setVisibility(View.GONE);
+        }else{
+            holder.ivDelete.setVisibility(View.VISIBLE);
         }
 
         // Archive button

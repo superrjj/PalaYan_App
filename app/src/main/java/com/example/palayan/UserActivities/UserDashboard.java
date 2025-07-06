@@ -151,6 +151,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
                             String role = queryDocumentSnapshots.getDocuments().get(0).getString("role");
                             String fullName = queryDocumentSnapshots.getDocuments().get(0).getString("fullName");
+                            int userId = queryDocumentSnapshots.getDocuments().get(0).getLong("userId").intValue();
 
                             String initials;
                             if (fullName != null) {
@@ -166,7 +167,6 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                                 initials = "";
                             }
 
-                            Log.d("LOGIN_ROLE_CHECK", "Fetched role: " + role); // ✅ ADDED
 
                             firestore.collection("accounts")
                                     .document(docId)
@@ -174,6 +174,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                                     .addOnSuccessListener(unused -> {
                                         Toast.makeText(this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
+                                        intent.putExtra("userId", userId);
                                         intent.putExtra("userRole", role);
                                         intent.putExtra("fullName", fullName);
                                         intent.putExtra("initials", initials);

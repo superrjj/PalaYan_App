@@ -37,6 +37,7 @@ public class AdminDashboardFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
 
         String userRole = getArguments() != null ? getArguments().getString("userRole") : "";
+        int userId = getArguments() != null ? getArguments().getInt("userId", -1) : -1;
 
         if (userRole.equals("Data Manager")) {
             root.cvAccounts.setEnabled(false);
@@ -63,7 +64,11 @@ public class AdminDashboardFragment extends Fragment {
 
         root.cvRiceVarieties.setOnClickListener(v -> startActivity(new Intent(getActivity(), ViewRiceVarieties.class)));
         root.cvPest.setOnClickListener(v -> startActivity(new Intent(getActivity(), ViewPest.class)));
-        root.cvAccounts.setOnClickListener(v -> startActivity(new Intent(getActivity(), ViewAccounts.class)));
+        root.cvAccounts.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ViewAccounts.class);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
     }
 
     @Override

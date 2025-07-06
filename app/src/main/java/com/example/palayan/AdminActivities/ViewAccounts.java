@@ -29,6 +29,7 @@ public class ViewAccounts extends AppCompatActivity {
     private ArrayList<AdminModel> accountList;
     private ArrayList<AdminModel> fullAccountList;
     private ListenerRegistration accountListener;
+    private int currentUserId; //call the userId from the admin model
 
 
     @Override
@@ -38,12 +39,13 @@ public class ViewAccounts extends AppCompatActivity {
         setContentView(root.getRoot());
 
         firestore = FirebaseFirestore.getInstance();
+        currentUserId = getIntent().getIntExtra("userId", -1);
 
-        //initialize lists BEFORE loading accounts
+        //initialize lists before loading accounts
         accountList = new ArrayList<>();
         fullAccountList = new ArrayList<>();
 
-        adapter = new AdminAccountAdapter(accountList, this);
+        adapter = new AdminAccountAdapter(accountList, this, currentUserId);
         root.rvAccounts.setLayoutManager(new LinearLayoutManager(this));
         root.rvAccounts.setAdapter(adapter);
 

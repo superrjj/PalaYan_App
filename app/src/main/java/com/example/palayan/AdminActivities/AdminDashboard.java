@@ -45,6 +45,7 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
         String userRole = getIntent().getStringExtra("userRole");
         String fullName = getIntent().getStringExtra("fullName");
         String initials = getIntent().getStringExtra("initials");
+        int userId = getIntent().getIntExtra("userId", -1);
 
         // Access header views
         View headerView = navView.getHeaderView(0);
@@ -60,6 +61,7 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
         // Load dashboard fragment and pass role and other data
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
+            bundle.putInt("userId", userId);
             bundle.putString("userRole", tvRole.getText().toString());  // Pass role from TextView
             bundle.putString("fullName", fullName);
             bundle.putString("initials", initials);
