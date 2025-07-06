@@ -145,6 +145,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             firestore.collection("accounts")
                     .whereEqualTo("username", username)
                     .whereEqualTo("password", password)
+                    .whereEqualTo("archived", false)//for non deleted accounts
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
