@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log; // ✅ ADDED
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -26,10 +25,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.palayan.AdminActivities.AdminDashboard;
 import com.example.palayan.BottomFragment.HomeFragment;
-import com.example.palayan.BottomFragment.PestDiseaseFragment;
 import com.example.palayan.BottomFragment.RiceSeedsFragment;
+import com.example.palayan.MenuFragment.DiseaseFragment;
+import com.example.palayan.MenuFragment.PestFragment;
 import com.example.palayan.MenuFragment.GuideFragment;
-import com.example.palayan.MenuFragment.LanguageFragment;
 import com.example.palayan.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -74,8 +73,6 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
             } else if (id == R.id.bot_nav_rice) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RiceSeedsFragment()).commit();
-            } else if (id == R.id.bot_nav_pest_disease) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PestDiseaseFragment()).commit();
             }
             return true;
         });
@@ -113,9 +110,11 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
-        if (id == R.id.nav_language) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LanguageFragment()).commit();
-        } else if (id == R.id.nav_guide) {
+        if (id == R.id.nav_pest) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PestFragment()).commit();
+        } else if (id == R.id.nav_disease) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DiseaseFragment()).commit();
+        } else if (id == R.id.nav_disease){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GuideFragment()).commit();
         }
         drawerLayout.closeDrawer(GravityCompat.START);

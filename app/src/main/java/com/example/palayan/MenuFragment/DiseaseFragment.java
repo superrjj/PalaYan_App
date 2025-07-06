@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.example.palayan.R;
 
 
-public class LanguageFragment extends Fragment {
+public class DiseaseFragment extends Fragment {
 
 
 
@@ -19,6 +19,6 @@ public class LanguageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_language, container, false);
+        return inflater.inflate(R.layout.fragment_disease, container, false);
     }
 }
