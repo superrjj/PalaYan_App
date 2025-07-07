@@ -61,23 +61,34 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
         }
         holder.tvInitialName.setText(initials);
 
-        //status based on lastActive
-        if (model.getLastActive() != null) {
-            long lastActiveMillis = model.getLastActive().getTime();
-            long currentMillis = System.currentTimeMillis();
-            long diffInDays = (currentMillis - lastActiveMillis) / (1000 * 60 * 60 * 24);
+        //check active status string from Firestore first
+        if (model.getStatus() != null && model.getStatus().equalsIgnoreCase("Active")) {
 
-            if (diffInDays <= 7) {
+            //if lastActive is available, check how long ago it was
+            if (model.getLastActive() != null) {
+                long lastActiveMillis = model.getLastActive().getTime();
+                long currentMillis = System.currentTimeMillis();
+                long diffInDays = (currentMillis - lastActiveMillis) / (1000 * 60 * 60 * 24);
+
+                if (diffInDays <= 1) { //default 7 change it after testing for inactive
+                    holder.tvStatus.setText("Active");
+                    holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
+                } else {
+                    holder.tvStatus.setText("Inactive");
+                    holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
+                }
+            } else {
+                //if no lastActive recorded but status is Active, show it as Active
                 holder.tvStatus.setText("Active");
                 holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
-            } else {
-                holder.tvStatus.setText("Inactive");
-                holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
             }
+
         } else {
+            // If status is not Active, always mark as Inactive
             holder.tvStatus.setText("Inactive");
             holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
         }
+
 
         //cannot delete the accounts who currently logged
         if(model.getUserId() == currentUserId){

@@ -46,6 +46,7 @@ public class AdminDashboardFragment extends Fragment {
             root.cvAccounts.setEnabled(true);
         }
 
+        //counter for rice
         riceVarietyListener = firestore.collection("rice_seed_varieties")
                 .whereEqualTo("archived", false)
                 .addSnapshotListener((snapshots, e) -> {
@@ -54,8 +55,8 @@ public class AdminDashboardFragment extends Fragment {
                     root.tvRiceSeedCount.setText(String.valueOf(count));
                 });
 
-
-        accountListener = firestore.collection("pests")
+        //counter for accounts
+        pestListener = firestore.collection("pests")
                 .whereEqualTo("archived", false)
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null || root == null) return;
@@ -63,7 +64,7 @@ public class AdminDashboardFragment extends Fragment {
                     root.tvPestCount.setText(String.valueOf(count));
                 });
 
-
+        //counter for accounts
         accountListener = firestore.collection("accounts")
                 .whereEqualTo("archived", false)
                 .addSnapshotListener((snapshots, e) -> {
@@ -72,6 +73,7 @@ public class AdminDashboardFragment extends Fragment {
                     root.tvAccountCounts.setText(String.valueOf(count));
                 });
 
+        //intent for the specific card view
         root.cvRiceVarieties.setOnClickListener(v -> startActivity(new Intent(getActivity(), ViewRiceVarieties.class)));
         root.cvPest.setOnClickListener(v -> startActivity(new Intent(getActivity(), ViewPest.class)));
         root.cvAccounts.setOnClickListener(v -> {
@@ -81,6 +83,7 @@ public class AdminDashboardFragment extends Fragment {
         });
     }
 
+    //for remove the previous listener
     @Override
     public void onDestroyView() {
         super.onDestroyView();
