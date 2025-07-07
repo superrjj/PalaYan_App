@@ -39,8 +39,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:padding="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_back"
+                    android:src="@drawable/ic_back_final"
                     app:tint="@color/white" />
 
                 <TextView

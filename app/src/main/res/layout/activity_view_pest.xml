@@ -36,11 +36,10 @@
 
                 <ImageView
                     android:id="@+id/iv_back"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:padding="2dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_back"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_back_final"
                     app:tint="@color/white" />
 
                 <TextView

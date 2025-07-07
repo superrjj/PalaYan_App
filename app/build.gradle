@@ -74,6 +74,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
 
+
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 

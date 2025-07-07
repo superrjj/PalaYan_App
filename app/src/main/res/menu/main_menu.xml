@@ -8,13 +8,13 @@
 
         <item
             android:id="@+id/nav_pest"
-            android:icon="@drawable/ic_pest"
-            android:title="Pest"/>
+            android:icon="@drawable/ic_final_pest"
+            android:title="Rice Pest"/>
 
         <item
             android:id="@+id/nav_disease"
             android:icon="@drawable/ic_rice_disease"
-            android:title="Disease"/>
+            android:title="Rice Disease"/>
 
         <item
             android:id="@+id/nav_guide"
