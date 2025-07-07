@@ -12,7 +12,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -105,6 +107,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         } else {
             Toast.makeText(this, "Logo not found.", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -188,6 +191,109 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                         } else {
                             Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
                         }
+                    });
+        });
+
+        TextView btnForgotPassword = dialogView.findViewById(R.id.tv_forgot_password);
+        btnForgotPassword.setOnClickListener(v -> {
+            dialog.dismiss();
+            showForgotPasswordUsernameDialog();
+        });
+
+    }
+
+    private void showForgotPasswordUsernameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_forgot_password, null);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        EditText txtUsername = dialogView.findViewById(R.id.txtUsername);
+        Button btnNext = dialogView.findViewById(R.id.btnNextUsername);
+
+        btnNext.setOnClickListener(v -> {
+            String username = txtUsername.getText().toString().trim();
+            if (username.isEmpty()) {
+                Toast.makeText(this, "Enter username.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            firestore.collection("accounts")
+                    .whereEqualTo("username", username)
+                    .get()
+                    .addOnSuccessListener(snapshots -> {
+                        if (!snapshots.isEmpty()) {
+                            String docId = snapshots.getDocuments().get(0).getId();
+                            String secQ1 = snapshots.getDocuments().get(0).getString("security1");
+                            String secQ2 = snapshots.getDocuments().get(0).getString("security2");
+
+                            dialog.dismiss();
+                            showSecurityQuestionsDialog(docId, secQ1, secQ2);
+                        } else {
+                            Toast.makeText(this, "Username not found.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
+    }
+
+    private void showSecurityQuestionsDialog(String docId, String secQ1, String secQ2) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_security_questions, null);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        EditText txtSecOne = dialogView.findViewById(R.id.txtSecOne);
+        EditText txtSecTwo = dialogView.findViewById(R.id.txtSecTwo);
+        Button btnNextSec = dialogView.findViewById(R.id.btnConfirm);
+
+
+        btnNextSec.setOnClickListener(v -> {
+            String ansOne = txtSecOne.getText().toString().trim();
+            String ansTwo = txtSecTwo.getText().toString().trim();
+
+            firestore.collection("accounts").document(docId).get()
+                    .addOnSuccessListener(document -> {
+                        String correctOne = document.getString("security1");
+                        String correctTwo = document.getString("security2");
+
+                        if (ansOne.equalsIgnoreCase(correctOne) && ansTwo.equalsIgnoreCase(correctTwo)) {
+                            dialog.dismiss();
+                            showNewPasswordDialog(docId);
+                        } else {
+                            Toast.makeText(this, "Incorrect answers.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
+    }
+
+    private void showNewPasswordDialog(String docId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_new_password, null);
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        EditText etNewPass = view.findViewById(R.id.txtNewPassword);
+        Button btnConfirm = view.findViewById(R.id.btnSubmit);
+
+        btnConfirm.setOnClickListener(v -> {
+            String newPass = etNewPass.getText().toString().trim();
+
+
+            if (newPass.isEmpty()) {
+                Toast.makeText(this, "Please fill both fields.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
+            firestore.collection("accounts").document(docId)
+                    .update("password", newPass)
+                    .addOnSuccessListener(unused -> {
+                        Toast.makeText(this, "Password updated successfully.", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        showAdminLoginDialog();
                     });
         });
     }
