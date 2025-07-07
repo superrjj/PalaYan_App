@@ -25,6 +25,7 @@ import com.example.palayan.Helper.Pest;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddPestBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -54,10 +55,14 @@ public class AddPest extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == RESULT_OK && imageUri != null) {
-                    root.ivUploadImage.setImageURI(imageUri);
-                    root.tvTapToUpload.setVisibility(View.GONE);
-                }
+                // Broadcast to notify media scanner
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                mediaScanIntent.setData(imageUri);
+                sendBroadcast(mediaScanIntent);
+
+                // Load captured image
+                root.ivUploadImage.setImageURI(imageUri);
+                root.tvTapToUpload.setVisibility(View.GONE);
             });
 
     private final ActivityResultLauncher<String> requestCameraPermission = registerForActivityResult(
@@ -90,7 +95,7 @@ public class AddPest extends AppCompatActivity {
             root.txtPestName.setEnabled(false);
             root.txtScientificName.setText(getIntent().getStringExtra("scientificName"));
             root.txtDescription.setText(getIntent().getStringExtra("description"));
-            root.txtSymptoms.setText(getIntent().getStringExtra("symptoms "));
+            root.txtSymptoms.setText(getIntent().getStringExtra("symptoms"));
             root.txtCause.setText(getIntent().getStringExtra("cause"));
             root.txtTreatments.setText(getIntent().getStringExtra("treatments"));
             existingImageUrl = getIntent().getStringExtra("imageUrl");
@@ -173,9 +178,11 @@ public class AddPest extends AppCompatActivity {
     }
 
     private void showUpdateConfirmationDialog(String id) {
+        String name = root.txtPestName.getText().toString().trim();
+
         CustomDialogFragment.newInstance(
                 "Update Pest",
-                "Are you sure you want to update \"" + id + "\"?",
+                "Are you sure you want to update \"" + name + "\"?",
                 "The changes will be saved immediately.",
                 R.drawable.ic_edit,
                 "UPDATE",
@@ -200,33 +207,56 @@ public class AddPest extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
 
-        String pestId = name.toLowerCase().replaceAll("[^a-z0-9]+", "_");
-        String imageName = UUID.randomUUID().toString();
-        StorageReference imageRef = FirebaseStorage.getInstance().getReference("pest_images/" + imageName);
+        FirebaseFirestore.getInstance().collection("pests")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int maxId = 0;
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        try {
+                            int currentId = Integer.parseInt(doc.getId());
+                            if (currentId > maxId) {
+                                maxId = currentId;
+                            }
+                        } catch (NumberFormatException ignored) {
+                            // skip non-numeric IDs
+                        }
+                    }
 
-        imageRef.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Pest pest = new Pest(pestId, name, sciName, desc, symp, cause, treat, uri.toString(), false);
+                    int newId = maxId + 1;
+                    String pestId = String.valueOf(newId);
 
+                    String imageName = UUID.randomUUID().toString();
+                    StorageReference imageRef = FirebaseStorage.getInstance().getReference("pest_images/" + imageName);
 
-                    FirebaseFirestore.getInstance()
-                            .collection("pests")
-                            .document(pestId)
-                            .set(pest)
-                            .addOnSuccessListener(unused -> {
-                                dialog.dismiss();
-                                showSuccessDialog("added", name);
-                            })
+                    imageRef.putFile(imageUri)
+                            .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                Pest pest = new Pest(pestId, name, sciName, desc, symp, cause, treat, uri.toString(), false);
+
+                                FirebaseFirestore.getInstance()
+                                        .collection("pests")
+                                        .document(pestId)
+                                        .set(pest)
+                                        .addOnSuccessListener(unused -> {
+                                            dialog.dismiss();
+                                            showSuccessDialog("added", name);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            dialog.dismiss();
+                                            Toast.makeText(this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                            }))
                             .addOnFailureListener(e -> {
                                 dialog.dismiss();
-                                Toast.makeText(this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Image Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
-                }))
+
+                })
                 .addOnFailureListener(e -> {
                     dialog.dismiss();
-                    Toast.makeText(this, "Image Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to fetch Pest IDs: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     private void updatePest(String pestId) {
         String name = root.txtPestName.getText().toString().trim();
