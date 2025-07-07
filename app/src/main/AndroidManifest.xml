@@ -17,13 +17,16 @@
         android:theme="@style/Theme.PalaYan"
         tools:targetApi="31">
         <activity
+            android:name=".AdminActivities.AccountDetails"
+            android:exported="false" />
+        <activity
             android:name=".AdminActivities.ViewAccounts"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".AdminActivities.AddAdminAccount"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

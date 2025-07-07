@@ -163,6 +163,8 @@ public class AddAdminAccount extends AppCompatActivity {
         String fullName = root.txtFullName.getText().toString().trim();
         String username = root.txtUsername.getText().toString().trim();
         String password = root.txtPassword.getText().toString().trim();
+        String secOne = root.txtSecOne.getText().toString().trim();
+        String secTwo = root.txtSecTwo.getText().toString().trim();
         String selectedRole = root.spRole.getSelectedItem().toString();
 
         if (fullName.isEmpty() || username.isEmpty() || password.isEmpty()) {
@@ -180,8 +182,8 @@ public class AddAdminAccount extends AppCompatActivity {
         account.put("username", username);
         account.put("password", password);
         account.put("role", selectedRole);
-        account.put("security1", root.txtSecOne.getText().toString().trim());
-        account.put("security2", root.txtSecTwo.getText().toString().trim());
+        account.put("security1", secOne);
+        account.put("security2", secTwo);
         account.put("status", "Active");
         account.put("lastActive", null);
         account.put("archived", false);

@@ -10,10 +10,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.palayan.AdminActivities.AccountDetails;
 import com.example.palayan.AdminActivities.AddAdminAccount;
 import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Helper.AdminModel;
@@ -139,6 +141,13 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
             intent.putExtra("userId", model.getUserId());
             context.startActivity(intent);
         });
+
+        holder.cvAccounts.setOnClickListener(v ->{
+            Intent intent = new Intent(context, AccountDetails.class);
+            intent.putExtra("userId", model.getUserId());
+            context.startActivity(intent);
+        });
+
     }
 
     @Override
@@ -149,6 +158,7 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
     public static class AccountHolder extends RecyclerView.ViewHolder {
         TextView tvFullName, tvRole, tvStatus, tvInitialName;
         ImageView ivUpdate, ivDelete;
+        CardView cvAccounts;
 
         public AccountHolder(@NonNull View itemView) {
             super(itemView);
@@ -158,6 +168,7 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
             tvInitialName = itemView.findViewById(R.id.tvInitialName);
             ivUpdate = itemView.findViewById(R.id.ivUpdate);
             ivDelete = itemView.findViewById(R.id.ivDelete);
+            cvAccounts = itemView.findViewById(R.id.cvAccounts);
         }
     }
 }

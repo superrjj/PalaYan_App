@@ -92,7 +92,7 @@
             android:id="@+id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tap to see description"
+            android:text="Tap to view"
             android:textAlignment="viewEnd"
             android:gravity="end"
             android:textColor="@color/green"

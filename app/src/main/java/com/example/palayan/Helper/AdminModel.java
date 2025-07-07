@@ -9,8 +9,8 @@ public class AdminModel {
     public String username;
     public String password;
     public String role;
-    public String securityQ1;
-    public String securityQ2;
+    public String security1;
+    public String security2;
     public String status;
     private boolean archived;
     private Date lastActive;
@@ -19,14 +19,14 @@ public class AdminModel {
     }
 
     public AdminModel(int userId, String fullName, String username, String password,
-                      String role, String securityQ1, String securityQ2, String status, boolean archived) {
+                      String role, String security1, String security2, String status, boolean archived) {
         this.userId = userId;
         this.fullName = fullName;
         this.username = username;
         this.password = password;
         this.role = role;
-        this.securityQ1 = securityQ1;
-        this.securityQ2 = securityQ2;
+        this.security1 = security1;
+        this.security2 = security2;
         this.status = status;
         this.archived = archived;
     }
@@ -59,12 +59,12 @@ public class AdminModel {
         return role;
     }
 
-    public String getSecurityQ1() {
-        return securityQ1;
+    public String getSecurity1() {
+        return security1;
     }
 
-    public String getSecurityQ2() {
-        return securityQ2;
+    public String getSecurity2() {
+        return security2;
     }
 
     public String getStatus() {
@@ -91,12 +91,12 @@ public class AdminModel {
         this.role = role;
     }
 
-    public void setSecurityQ1(String securityQ1) {
-        this.securityQ1 = securityQ1;
+    public void setSecurity1(String security1) {
+        this.security1 = security1;
     }
 
-    public void setSecurityQ2(String securityQ2) {
-        this.securityQ2 = securityQ2;
+    public void setSecurity2(String security2) {
+        this.security2 = security2;
     }
 
     public void setStatus(String status) {
