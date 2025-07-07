@@ -13,6 +13,7 @@ import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddRiceVarietyBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class AddRiceVariety extends AppCompatActivity {
 
@@ -83,9 +84,10 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private void showUpdateConfirmationDialog(String id) {
+        String varietyName = root.txtVarietyName.getText().toString().trim();
         CustomDialogFragment.newInstance(
                 "Update Rice Variety",
-                "Are you sure you want to update \"" + id + "\"?",
+                "Are you sure you want to update \"" + varietyName + "\"?",
                 "The changes will be saved and take effect immediately.",
                 R.drawable.ic_edit,
                 "UPDATE",
@@ -94,45 +96,70 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private void addVarietyToDatabase() {
-        String id = root.txtVarietyName.getText().toString().trim();
+        firestore.collection("rice_seed_varieties")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int maxId = 0;
 
-        try {
-            int maturity = Integer.parseInt(root.txtMaturity.getText().toString().trim());
-            int height = Integer.parseInt(root.txtPlantHeight.getText().toString().trim());
-            int tillers = Integer.parseInt(root.txtTillers.getText().toString().trim());
-            double avgYield = Double.parseDouble(root.txtAverageYield.getText().toString().trim());
-            double maxYieldVal = Double.parseDouble(root.txtMaxYield.getText().toString().trim());
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        try {
+                            int currentId = Integer.parseInt(doc.getId());
+                            if (currentId > maxId) {
+                                maxId = currentId;
+                            }
+                        } catch (NumberFormatException ignored) {
+                            // Skip non-numeric IDs
+                        }
+                    }
 
-            RiceVariety variety = new RiceVariety(
-                    id,
-                    id,
-                    root.txtReleaseName.getText().toString().trim(),
-                    root.txtBreedingCode.getText().toString().trim(),
-                    root.txtYearRelease.getText().toString().trim(),
-                    root.txtBreederOrigin.getText().toString().trim(),
-                    maturity,
-                    height,
-                    avgYield,
-                    maxYieldVal,
-                    tillers,
-                    root.txtLocation.getText().toString().trim(),
-                    root.txtEnvironment.getText().toString().trim(),
-                    root.txtSeason.getText().toString().trim(),
-                    root.txtPlantingMethod.getText().toString().trim(),
-                    false
-            );
+                    int newId = maxId + 1;
+                    String id = String.valueOf(newId);
 
-            firestore.collection("rice_seed_varieties")
-                    .document(id)
-                    .set(variety)
-                    .addOnSuccessListener(aVoid -> showSuccessDialog("added", id))
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                    );
+                    try {
+                        int maturity = Integer.parseInt(root.txtMaturity.getText().toString().trim());
+                        int height = Integer.parseInt(root.txtPlantHeight.getText().toString().trim());
+                        int tillers = Integer.parseInt(root.txtTillers.getText().toString().trim());
+                        double avgYield = Double.parseDouble(root.txtAverageYield.getText().toString().trim());
+                        double maxYieldVal = Double.parseDouble(root.txtMaxYield.getText().toString().trim());
 
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Enter valid numbers for Maturity, Height, and Yields", Toast.LENGTH_LONG).show();
-        }
+                        RiceVariety variety = new RiceVariety(
+                                id,
+                                root.txtVarietyName.getText().toString().trim(),
+                                root.txtReleaseName.getText().toString().trim(),
+                                root.txtBreedingCode.getText().toString().trim(),
+                                root.txtYearRelease.getText().toString().trim(),
+                                root.txtBreederOrigin.getText().toString().trim(),
+                                maturity,
+                                height,
+                                avgYield,
+                                maxYieldVal,
+                                tillers,
+                                root.txtLocation.getText().toString().trim(),
+                                root.txtEnvironment.getText().toString().trim(),
+                                root.txtSeason.getText().toString().trim(),
+                                root.txtPlantingMethod.getText().toString().trim(),
+                                false
+                        );
+
+                        firestore.collection("rice_seed_varieties")
+                                .document(id)
+                                .set(variety)
+                                .addOnSuccessListener(aVoid -> {
+                                    String varietyName = root.txtVarietyName.getText().toString().trim();
+                                    showSuccessDialog("added", varietyName);
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                                );
+
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, "Enter valid numbers for Maturity, Height, and Yields", Toast.LENGTH_LONG).show();
+                    }
+
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to fetch IDs: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
     }
 
     private void updateVariety() {
@@ -147,7 +174,7 @@ public class AddRiceVariety extends AppCompatActivity {
 
             RiceVariety updatedVariety = new RiceVariety(
                     id,
-                    id,
+                    root.txtVarietyName.getText().toString().trim(),
                     root.txtReleaseName.getText().toString().trim(),
                     root.txtBreedingCode.getText().toString().trim(),
                     root.txtYearRelease.getText().toString().trim(),
@@ -167,7 +194,10 @@ public class AddRiceVariety extends AppCompatActivity {
             firestore.collection("rice_seed_varieties")
                     .document(id)
                     .set(updatedVariety)
-                    .addOnSuccessListener(aVoid -> showSuccessDialog("updated", id))
+                    .addOnSuccessListener(aVoid -> {
+                        String varietyName = root.txtVarietyName.getText().toString().trim();
+                        showSuccessDialog("updated", varietyName);
+                    })
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
                     );
@@ -175,11 +205,12 @@ public class AddRiceVariety extends AppCompatActivity {
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid input for numbers", Toast.LENGTH_LONG).show();
         }
-    }
+}
 
-    private void showSuccessDialog(String action, String name) {
+
+    private void showSuccessDialog(String action, String varietyName) {
         String title = "Rice Variety " + (action.equals("updated") ? "Updated" : "Added");
-        String message = name + " has been successfully " + action + ".";
+        String message = varietyName + " has been successfully " + action + ".";
 
         StatusDialogFragment.newInstance(
                         title,
