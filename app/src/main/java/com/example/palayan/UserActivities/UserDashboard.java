@@ -44,7 +44,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     private ImageView logo;
     private FirebaseFirestore firestore;
 
-    private final long HOLD_DURATION = 3000;
+    private final long HOLD_DURATION = 2000;
     private final Handler handler = new Handler();
     private boolean triggered = false;
 

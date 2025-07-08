@@ -27,7 +27,6 @@
                 android:layout_height="wrap_content"
                 android:text="####"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:textColor="@color/green"
                 android:layout_alignParentStart="true"
                 android:fontFamily="@font/poppins__semibold"/>
@@ -58,7 +57,6 @@
                 android:text="####"
                 android:textSize="16sp"
                 android:textColor="@color/green"
-                android:textStyle="bold"
                 android:layout_alignParentStart="true"
                 android:fontFamily="@font/poppins__semibold"/>
 

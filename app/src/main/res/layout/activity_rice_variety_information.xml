@@ -9,489 +9,789 @@
     android:background="@color/semi_white"
     tools:context=".RiceVarietyInformation">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            android:background="@color/green"
-            android:elevation="4dp"
-            app:title=""
-            app:contentInsetStart="0dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="2dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/iv_back"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_back_final"
-                    app:tint="@color/white" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Back"
-                    android:textSize="18sp"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/poppins__medium"/>
-
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:paddingTop="10dp"
-            android:orientation="vertical">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                app:cardBackgroundColor="@color/light_gray"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="15dp"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/txtVarietyName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="####"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/green"
-                            android:layout_alignParentStart="true"
-                            android:fontFamily="@font/poppins__semibold"/>
-
-                        <TextView
-                            android:id="@+id/txtBreederOrigin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="####"
-                            android:textSize="14sp"
-                            android:textColor="@color/green"
-                            android:layout_alignParentEnd="true"
-                            android:fontFamily="@font/poppins__medium"/>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/txtReleaseName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="####"
-                            android:textSize="16sp"
-                            android:textColor="@color/green"
-                            android:textStyle="bold"
-                            android:layout_alignParentStart="true"
-                            android:fontFamily="@font/poppins__semibold"/>
-
-                        <TextView
-                            android:id="@+id/txtBreederCode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="####"
-                            android:textSize="16sp"
-                            android:textColor="@color/green"
-                            android:paddingStart="5dp"
-                            android:layout_toEndOf="@id/txtReleaseName"
-                            android:fontFamily="@font/poppins__medium"/>
-
-                        <TextView
-                            android:id="@+id/txtYearRelease"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="####"
-                            android:textSize="14sp"
-                            android:textColor="@color/green"
-                            android:layout_alignParentEnd="true"
-                            android:fontFamily="@font/poppins__medium"/>
-
-                    </RelativeLayout>
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/light_gray"
-                app:cardCornerRadius="15dp"
-                android:layout_marginTop="30dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="15dp"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/txtMaxYield"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textColor="@color/green"
-                                android:textSize="30sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="tonelada"
-                                android:textColor="@color/green"
-                                android:textSize="16sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:text="Karinawang Ani"
-                                android:textSize="14sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/txtAverageYield"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textColor="@color/green"
-                                android:textSize="30sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="tonelada"
-                                android:textColor="@color/green"
-                                android:textSize="16sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:text="Pinakamataas na Ani"
-                                android:textSize="14sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/txtMaturityDay"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textColor="@color/green"
-                                android:textSize="30sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="DAYS"
-                                android:textColor="@color/green"
-                                android:textSize="16sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Bilang ng Araw"
-                                android:textSize="14sp"
-                                android:textColor="@color/black"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/txtPlantHeight"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textColor="@color/green"
-                                android:textSize="30sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="CM"
-                                android:textColor="@color/green"
-                                android:textSize="16sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Taas ng Palay"
-                                android:textColor="@color/black"
-                                android:textSize="14sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:layout_centerInParent="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/txtTillers"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textColor="@color/green"
-                                android:textSize="30sp"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__medium"/>
-
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Dami ng Sanga"
-                                android:textSize="14sp"
-                                android:layout_gravity="center"
-                                android:textColor="@color/black"
-                                android:fontFamily="@font/poppins__medium"/>
-
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingTop="30dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Nirerekomendang Lugar"
-                            android:textSize="20sp"
-                            android:layout_gravity="center"
-                            android:textColor="@color/green"
-                            android:fontFamily="@font/poppins__semibold"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Lugar:"
-                                android:textSize="16sp"
-                                android:textColor="@color/black"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__semibold"/>
-
-
-                            <TextView
-                                android:id="@+id/txtLocation"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textSize="16sp"
-                                android:paddingStart="5dp"
-                                android:layout_gravity="center"
-                                android:textColor="@color/green"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Uri ng sakahan:"
-                                android:textSize="16sp"
-                                android:textColor="@color/black"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__semibold"/>
-
-
-                            <TextView
-                                android:id="@+id/txtEnvironment"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textSize="16sp"
-                                android:paddingStart="5dp"
-                                android:layout_gravity="center"
-                                android:textColor="@color/green"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Panahon ng Pagtatanim:"
-                                android:textSize="16sp"
-                                android:textColor="@color/black"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__semibold"/>
-
-
-                            <TextView
-                                android:id="@+id/txtSeason"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textSize="16sp"
-                                android:paddingStart="5dp"
-                                android:layout_gravity="center"
-                                android:textColor="@color/green"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Paraan ng Pagtatanim:"
-                                android:textSize="16sp"
-                                android:textColor="@color/black"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/poppins__semibold"/>
-
-
-                            <TextView
-                                android:id="@+id/txtPlantMethod"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="####"
-                                android:textSize="16sp"
-                                android:paddingStart="5dp"
-                                android:layout_gravity="center"
-                                android:textColor="@color/green"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-    </LinearLayout>
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical">
+
+           <androidx.appcompat.widget.Toolbar
+               android:id="@+id/toolbar"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:minHeight="?attr/actionBarSize"
+               android:background="@color/green"
+               android:elevation="4dp"
+               app:title=""
+               app:contentInsetStart="0dp"
+               android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+               app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:padding="2dp"
+                   android:gravity="center_vertical">
+
+                   <ImageView
+                       android:id="@+id/iv_back"
+                       android:layout_width="50dp"
+                       android:layout_height="50dp"
+                       android:padding="10dp"
+                       android:src="@drawable/ic_back_final"
+                       app:tint="@color/white" />
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Back"
+                       android:textSize="18sp"
+                       android:textColor="@color/white"
+                       android:fontFamily="@font/poppins__medium"/>
+
+               </LinearLayout>
+           </androidx.appcompat.widget.Toolbar>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:padding="15dp"
+               android:paddingTop="10dp"
+               android:orientation="vertical">
+
+               <androidx.cardview.widget.CardView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   app:cardCornerRadius="15dp"
+                   app:cardElevation="4dp">
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:padding="15dp"
+                       android:background="@color/deam_green"
+                       android:layout_gravity="center"
+                       android:orientation="vertical">
+
+                       <RelativeLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content">
+
+                           <TextView
+                               android:id="@+id/txtVarietyName"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="####"
+                               android:textSize="17sp"
+                               android:textStyle="bold"
+                               android:textColor="@color/semi_dark_green"
+                               android:layout_alignParentStart="true"
+                               android:fontFamily="@font/poppins__semibold"/>
+
+                           <ImageView
+                               android:id="@+id/ivFavorites"
+                               android:layout_width="20dp"
+                               android:layout_height="20dp"
+                               android:src="@drawable/ic_fav_outline"
+                               app:tint="@color/semi_yellow"
+                               android:layout_alignParentEnd="true" />
+
+                       </RelativeLayout>
+
+
+                       <RelativeLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content">
+
+                           <TextView
+                               android:id="@+id/txtReleaseName"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="####"
+                               android:textSize="16sp"
+                               android:textColor="@color/semi_dark_green"
+                               android:layout_alignParentStart="true"
+                               android:fontFamily="@font/poppins__medium"/>
+
+                           <TextView
+                               android:id="@+id/txtBreederCode"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="####"
+                               android:textSize="16sp"
+                               android:textColor="@color/semi_dark_green"
+                               android:paddingStart="5dp"
+                               android:layout_toEndOf="@id/txtReleaseName"
+                               android:fontFamily="@font/poppins__medium"/>
+
+                       </RelativeLayout>
+
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:orientation="horizontal">
+
+                           <androidx.cardview.widget.CardView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               app:cardCornerRadius="50dp">
+
+                               <TextView
+                                   android:id="@+id/txtBreederOrigin"
+                                   android:padding="5dp"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="match_parent"
+                                   android:textSize="12sp"
+                                   android:layout_gravity="center"
+                                   android:textColor="@color/white"
+                                   android:textAlignment="center"
+                                   android:background="@color/semi_green"
+                                   android:text="#####"
+                                   android:fontFamily="@font/poppins__medium"/>
+
+                           </androidx.cardview.widget.CardView>
+
+                           <androidx.cardview.widget.CardView
+                               android:layout_width="50dp"
+                               android:layout_height="wrap_content"
+                               android:layout_marginStart="8dp"
+                               app:cardCornerRadius="50dp">
+
+                               <TextView
+                                   android:id="@+id/txtYearRelease"
+                                   android:padding="5dp"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="match_parent"
+                                   android:textSize="12sp"
+                                   android:layout_gravity="center"
+                                   android:textColor="@color/white"
+                                   android:textAlignment="center"
+                                   android:background="@color/semi_blue"
+                                   android:text="#####"
+                                   android:fontFamily="@font/poppins__medium"/>
+
+                           </androidx.cardview.widget.CardView>
+
+                       </LinearLayout>
+                   </LinearLayout>
+
+               </androidx.cardview.widget.CardView>
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:textColor="@color/black"
+                   android:fontFamily="@font/poppins__semibold"
+                   android:textSize="14sp"
+                   android:paddingTop="15dp"
+                   android:paddingBottom="15dp"
+                   android:text="Datus ng Ani"/>
+               
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   
+                   <androidx.cardview.widget.CardView
+                       android:layout_width="160dp"
+                       android:layout_height="wrap_content"
+                       app:cardCornerRadius="15dp"
+                       android:layout_alignParentStart="true"
+                       app:cardElevation="2dp"
+                       app:cardBackgroundColor="@color/light_green">
+
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           android:padding="10dp"
+                           android:orientation="vertical">
+
+                           <LinearLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+
+                               android:orientation="horizontal">
+
+                               <ImageView
+                                   android:layout_width="50dp"
+                                   android:layout_height="50dp"
+                                   android:src="@drawable/ic_rice_logo"
+                                   android:padding="10dp"
+                                   app:tint="@color/dark_green"/>
+
+                               <TextView
+                                   android:id="@+id/txtAverageYield"
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   android:text="##"
+                                   android:textSize="25sp"
+                                   android:gravity="center"
+                                   android:layout_gravity="center"
+                                   android:textColor="@color/dark_green"
+                                   android:fontFamily="@font/poppins__semibold"/>
+
+                           </LinearLayout>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="tonelada"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__medium"
+                               android:textSize="13sp"
+                               android:textColor="@color/dark_green"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Karaniwang Ani"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Average na ani"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+
+                       </LinearLayout>
+
+                   </androidx.cardview.widget.CardView>
+
+                   <androidx.cardview.widget.CardView
+                       android:layout_width="160dp"
+                       android:layout_height="wrap_content"
+                       app:cardCornerRadius="15dp"
+                       android:layout_alignParentEnd="true"
+                       app:cardElevation="2dp"
+                       app:cardBackgroundColor="@color/sky_blue">
+
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           android:padding="10dp"
+                           android:orientation="vertical">
+
+                           <LinearLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+
+                               android:orientation="horizontal">
+
+                               <ImageView
+                                   android:layout_width="50dp"
+                                   android:layout_height="50dp"
+                                   android:src="@drawable/ic_rice_logo"
+                                   android:padding="10dp"
+                                   app:tint="@color/dark_sky_blue"/>
+
+                               <TextView
+                                   android:id="@+id/txtMaxYield"
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   android:text="##"
+                                   android:textSize="25sp"
+                                   android:gravity="center"
+                                   android:layout_gravity="center"
+                                   android:textColor="@color/dark_sky_blue"
+                                   android:fontFamily="@font/poppins__semibold"/>
+
+                           </LinearLayout>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="tonelada"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__medium"
+                               android:textSize="13sp"
+                               android:textColor="@color/dark_sky_blue"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:text="Pinakamataas na Ani"
+                               android:textColor="@color/dark_gray"
+                               android:textSize="10sp" />
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Maximum Potential"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+
+                       </LinearLayout>
+
+                   </androidx.cardview.widget.CardView>
+
+               </RelativeLayout>
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:textColor="@color/black"
+                   android:fontFamily="@font/poppins__semibold"
+                   android:textSize="14sp"
+                   android:paddingTop="15dp"
+                   android:paddingBottom="15dp"
+                   android:text="Impormasyon sa Paglaki"/>
+
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+
+                   <androidx.cardview.widget.CardView
+                       android:layout_width="100dp"
+                       android:layout_height="wrap_content"
+                       app:cardCornerRadius="15dp"
+                       android:layout_alignParentStart="true"
+                       app:cardElevation="2dp"
+                       app:cardBackgroundColor="@color/light_orange">
+
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           android:padding="10dp"
+                           android:orientation="vertical">
+
+                           <LinearLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:orientation="horizontal">
+
+                               <ImageView
+                                   android:layout_width="40dp"
+                                   android:layout_height="40dp"
+                                   android:src="@drawable/ic_calendar"
+                                   android:padding="8dp"
+                                   app:tint="@color/dark_orange"/>
+
+                               <TextView
+                                   android:id="@+id/txtMaturityDay"
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   android:text="##"
+                                   android:textSize="20sp"
+                                   android:gravity="center"
+                                   android:layout_gravity="center"
+                                   android:textColor="@color/dark_orange"
+                                   android:fontFamily="@font/poppins__semibold"/>
+
+                           </LinearLayout>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="araw"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__medium"
+                               android:textSize="13sp"
+                               android:textColor="@color/dark_orange"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Bilang ng Araw"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Bago Anihan"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+
+                       </LinearLayout>
+
+                   </androidx.cardview.widget.CardView>
+
+                   <androidx.cardview.widget.CardView
+                       android:layout_width="100dp"
+                       android:layout_height="wrap_content"
+                       app:cardCornerRadius="15dp"
+                       android:layout_centerInParent="true"
+                       app:cardElevation="2dp"
+                       app:cardBackgroundColor="@color/light_purple">
+
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           android:padding="10dp"
+                           android:orientation="vertical">
+
+                           <LinearLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:orientation="horizontal">
+
+                               <ImageView
+                                   android:layout_width="40dp"
+                                   android:layout_height="40dp"
+                                   android:src="@drawable/ic_centimeter"
+                                   android:padding="8dp"
+                                   app:tint="@color/dark_purple"/>
+
+                               <TextView
+                                   android:id="@+id/txtPlantHeight"
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   android:text="##"
+                                   android:textSize="20sp"
+                                   android:gravity="center"
+                                   android:layout_gravity="center"
+                                   android:textColor="@color/dark_purple"
+                                   android:fontFamily="@font/poppins__semibold"/>
+
+                           </LinearLayout>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="cm"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__medium"
+                               android:textSize="13sp"
+                               android:textColor="@color/dark_purple"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Taas ng Palay"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Average height"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+
+                       </LinearLayout>
+
+                   </androidx.cardview.widget.CardView>
+
+                   <androidx.cardview.widget.CardView
+                       android:layout_width="100dp"
+                       android:layout_height="wrap_content"
+                       app:cardCornerRadius="15dp"
+                       android:layout_alignParentEnd="true"
+                       app:cardElevation="2dp"
+                       app:cardBackgroundColor="@color/light_navy">
+
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           android:padding="10dp"
+                           android:orientation="vertical">
+
+                           <LinearLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:orientation="horizontal">
+
+                               <ImageView
+                                   android:layout_width="40dp"
+                                   android:layout_height="40dp"
+                                   android:src="@drawable/ic_tillers"
+                                   android:padding="8dp"
+                                   app:tint="@color/dark_navy"/>
+
+                               <TextView
+                                   android:id="@+id/txtTillers"
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   android:text="##"
+                                   android:textSize="20sp"
+                                   android:gravity="center"
+                                   android:layout_gravity="center"
+                                   android:textColor="@color/dark_navy"
+                                   android:fontFamily="@font/poppins__semibold"/>
+
+                           </LinearLayout>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="sanga"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__medium"
+                               android:textSize="13sp"
+                               android:textColor="@color/dark_navy"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Dami ng Sanga"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Per halaman"
+                               android:layout_gravity="center"
+                               android:fontFamily="@font/poppins__regular"
+                               android:textSize="10sp"
+                               android:textColor="@color/dark_gray"/>
+
+
+                       </LinearLayout>
+
+                   </androidx.cardview.widget.CardView>
+
+               </RelativeLayout>
+
+               <androidx.cardview.widget.CardView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="15dp"
+                   app:cardBackgroundColor="@color/white"
+                   app:cardElevation="2dp"
+                   app:cardCornerRadius="15dp">
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:orientation="vertical"
+                       android:padding="10dp"
+                       android:layout_gravity="center">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/black"
+                           android:fontFamily="@font/poppins__semibold"
+                           android:textSize="14sp"
+                           android:layout_gravity="center"
+                           android:text="Nirerekomendang Lugar at Panahon"/>
+
+                       <androidx.cardview.widget.CardView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           app:cardCornerRadius="10dp"
+                           app:cardElevation="2dp"
+                           android:layout_marginTop="15dp"
+                           app:cardBackgroundColor="@color/light_green">
+
+                          <LinearLayout
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+
+                              <ImageView
+                                  android:layout_width="40dp"
+                                  android:layout_height="40dp"
+                                  android:src="@drawable/ic_location"
+                                  android:padding="8dp"
+                                  app:tint="@color/dark_green"/>
+
+                              <TextView
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:text="Lugar:"
+                                  android:textColor="@color/dark_gray"
+                                  android:layout_gravity="center"
+                                  android:textSize="13sp"
+                                  android:fontFamily="@font/poppins__medium"/>
+
+                              <TextView
+                                  android:id="@+id/txtLocation"
+                                  android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:text="####"
+                                  android:textColor="@color/dark_green"
+                                  android:layout_gravity="center"
+                                  android:gravity="end"
+                                  android:textSize="13sp"
+                                  android:paddingStart="10dp"
+                                  android:paddingEnd="10dp"
+                                  android:fontFamily="@font/poppins__semibold"/>
+
+                          </LinearLayout>
+
+                       </androidx.cardview.widget.CardView>
+
+                       <androidx.cardview.widget.CardView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           app:cardCornerRadius="10dp"
+                           app:cardElevation="2dp"
+                           android:layout_marginTop="15dp"
+                           app:cardBackgroundColor="@color/sky_blue">
+
+                           <LinearLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:orientation="horizontal">
+
+                               <ImageView
+                                   android:layout_width="40dp"
+                                   android:layout_height="40dp"
+                                   android:src="@drawable/ic_environmental"
+                                   android:padding="8dp"
+                                   app:tint="@color/dark_sky_blue"/>
+
+                               <TextView
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   android:text="Uri ng Sakahan:"
+                                   android:textColor="@color/dark_gray"
+                                   android:layout_gravity="center"
+                                   android:textSize="13sp"
+                                   android:fontFamily="@font/poppins__medium"/>
+
+                               <TextView
+                                   android:id="@+id/txtEnvironment"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:text="####"
+                                   android:textColor="@color/dark_sky_blue"
+                                   android:layout_gravity="center"
+                                   android:gravity="end"
+                                   android:paddingStart="10dp"
+                                   android:textSize="13sp"
+                                   android:paddingEnd="10dp"
+                                   android:fontFamily="@font/poppins__semibold"/>
+
+                           </LinearLayout>
+
+                       </androidx.cardview.widget.CardView>
+
+                       <androidx.cardview.widget.CardView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           app:cardCornerRadius="10dp"
+                           app:cardElevation="2dp"
+                           android:layout_marginTop="15dp"
+                           app:cardBackgroundColor="@color/light_orange">
+
+                           <LinearLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:orientation="horizontal">
+
+                               <ImageView
+                                   android:layout_width="40dp"
+                                   android:layout_height="40dp"
+                                   android:src="@drawable/ic_season"
+                                   android:padding="8dp"
+                                   app:tint="@color/dark_orange"/>
+
+                               <TextView
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   android:text="Panahon ng Pagtatanim:"
+                                   android:textSize="13sp"
+                                   android:textColor="@color/dark_gray"
+                                   android:layout_gravity="center"
+                                   android:fontFamily="@font/poppins__medium"/>
+
+                               <TextView
+                                   android:id="@+id/txtSeason"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:text="####"
+                                   android:textSize="13sp"
+                                   android:textColor="@color/dark_orange"
+                                   android:layout_gravity="center"
+                                   android:gravity="end"
+                                   android:paddingStart="10dp"
+                                   android:paddingEnd="10dp"
+                                   android:fontFamily="@font/poppins__semibold"/>
+
+                           </LinearLayout>
+
+                       </androidx.cardview.widget.CardView>
+
+                       <androidx.cardview.widget.CardView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           app:cardCornerRadius="10dp"
+                           app:cardElevation="2dp"
+                           android:layout_marginTop="15dp"
+                           android:layout_marginBottom="15dp"
+                           app:cardBackgroundColor="@color/light_purple">
+
+                           <LinearLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:orientation="horizontal">
+
+                               <ImageView
+                                   android:layout_width="40dp"
+                                   android:layout_height="40dp"
+                                   android:src="@drawable/ic_method"
+                                   android:padding="8dp"
+                                   app:tint="@color/dark_purple"/>
+
+                               <TextView
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   android:text="Paraan ng Pagtatanim:"
+                                   android:textColor="@color/dark_gray"
+                                   android:layout_gravity="center"
+                                   android:fontFamily="@font/poppins__medium"/>
+
+                               <TextView
+                                   android:id="@+id/txtPlantMethod"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:text="####"
+                                   android:textSize="13sp"
+                                   android:textColor="@color/dark_purple"
+                                   android:layout_gravity="center"
+                                   android:gravity="end"
+                                   android:paddingStart="10dp"
+                                   android:paddingEnd="10dp"
+                                   android:fontFamily="@font/poppins__semibold"/>
+
+                           </LinearLayout>
+
+                       </androidx.cardview.widget.CardView>
+
+
+                   </LinearLayout>
+
+               </androidx.cardview.widget.CardView>
+
+           </LinearLayout>
+
+       </LinearLayout>
+
+   </ScrollView>
+
 </FrameLayout>
