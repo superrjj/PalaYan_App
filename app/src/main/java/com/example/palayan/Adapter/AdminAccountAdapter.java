@@ -20,6 +20,7 @@ import com.example.palayan.AdminActivities.AddAdminAccount;
 import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Helper.AdminModel;
 import com.example.palayan.R;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -63,36 +64,47 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
         }
         holder.tvInitialName.setText(initials);
 
-        //check active status string from Firestore first
-        if (model.getStatus() != null && model.getStatus().equalsIgnoreCase("Active")) {
+        //check the user admin if active or inactive in 1 day
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference accountRef = db.collection("accounts").document(String.valueOf(model.getUserId()));
 
-            //if lastActive is available, check how long ago it was
-            if (model.getLastActive() != null) {
-                long lastActiveMillis = model.getLastActive().getTime();
-                long currentMillis = System.currentTimeMillis();
-                long diffInDays = (currentMillis - lastActiveMillis) / (1000 * 60 * 60 * 24);
+        String computedStatus;
+        if (model.getLastActive() != null) {
+            long lastActiveMillis = model.getLastActive().getTime();
+            long currentMillis = System.currentTimeMillis();
+            long diffInMillis = currentMillis - lastActiveMillis;
 
-                if (diffInDays <= 1) { //default 7 change it after testing for inactive
-                    holder.tvStatus.setText("Active");
-                    holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
-                } else {
-                    holder.tvStatus.setText("Inactive");
-                    holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
-                }
-            } else {
-                //if no lastActive recorded but status is Active, show it as Active
+            if (diffInMillis <= (24 * 60 * 60 * 1000)) {
+                computedStatus = "Active";
                 holder.tvStatus.setText("Active");
                 holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
+            } else {
+                computedStatus = "Inactive";
+                holder.tvStatus.setText("Inactive");
+                holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
             }
-
         } else {
-            // If status is not Active, always mark as Inactive
-            holder.tvStatus.setText("Inactive");
-            holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
+            // No lastActive — treat as Active
+            computedStatus = "Active";
+            holder.tvStatus.setText("Active");
+            holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
+        }
+
+//update Firestore only if different
+        if (!model.getStatus().equals(computedStatus)) {
+            accountRef.update("status", computedStatus)
+                    .addOnSuccessListener(aVoid -> {
+                        //optional
+                        // Toast.makeText(context, "Status updated", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        //optional
+                        // Toast.makeText(context, "Failed to update status", Toast.LENGTH_SHORT).show();
+                    });
         }
 
 
-        //cannot delete the accounts who currently logged
+        //cannot delete the accounts who currently logged in
         if(model.getUserId() == currentUserId){
             holder.ivDelete.setVisibility(View.GONE);
         }else{

@@ -291,7 +291,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             firestore.collection("accounts").document(docId)
                     .update("password", newPass)
                     .addOnSuccessListener(unused -> {
-                        Toast.makeText(this, "Password updated successfully.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Password reset successfully.", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         showAdminLoginDialog();
                     });
