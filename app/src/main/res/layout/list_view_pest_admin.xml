@@ -61,7 +61,7 @@
                         android:layout_height="wrap_content"
                         android:text="Green Leaf Hopper"
                         android:textColor="@color/green"
-                        android:textSize="17sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         android:fontFamily="@font/poppins__medium" />
 
@@ -71,7 +71,7 @@
                         android:layout_height="wrap_content"
                         android:text="Cicadella viridis"
                         android:textColor="@color/green"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:fontFamily="@font/poppins__medium" />
                 </LinearLayout>
 

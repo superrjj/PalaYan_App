@@ -80,32 +80,62 @@
 
                </androidx.cardview.widget.CardView>
 
-               <RelativeLayout
+
+               <LinearLayout
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
-                   android:paddingTop="30dp">
+                   android:orientation="horizontal">
+
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Pest Name:"
+                       android:textSize="17sp"
+                       android:fontFamily="@font/poppins__semibold"
+                       android:layout_alignParentStart="true"
+                       android:paddingTop="15dp"
+                       android:textColor="@color/dark_gray"/>
+
 
                    <TextView
                        android:id="@+id/tvPestName"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:text="#####"
-                       android:textSize="20sp"
+                       android:textSize="17sp"
                        android:fontFamily="@font/poppins__semibold"
-                       android:layout_alignParentStart="true"
+                       android:paddingStart="10dp"
+                       android:paddingTop="15dp"
                        android:textColor="@color/green"/>
+
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Scientific Name:"
+                       android:textSize="14sp"
+                       android:fontFamily="@font/poppins__medium"
+                       android:textColor="@color/dark_gray"/>
 
                    <TextView
                        android:id="@+id/tvSciName"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:text="#####"
-                       android:textSize="16sp"
+                       android:textSize="14sp"
                        android:fontFamily="@font/poppins__medium"
-                       android:layout_alignParentEnd="true"
+                       android:paddingStart="10dp"
                        android:textColor="@color/green"/>
 
-               </RelativeLayout>
+               </LinearLayout>
+
 
                <androidx.cardview.widget.CardView
                    android:layout_width="match_parent"
@@ -135,7 +165,9 @@
                            android:layout_height="wrap_content"
                            android:text="Description"
                            android:textSize="15sp"
+                           android:justificationMode="inter_word"
                            android:fontFamily="@font/poppins__medium"
+                           android:paddingBottom="10dp"
                            android:textColor="@color/dark_gray"/>
 
                        <TextView
@@ -152,6 +184,7 @@
                            android:layout_height="wrap_content"
                            android:text="Symptomps"
                            android:textSize="15sp"
+                           android:justificationMode="inter_word"
                            android:fontFamily="@font/poppins__medium"
                            android:textColor="@color/dark_gray"/>
 
@@ -169,6 +202,7 @@
                            android:layout_height="wrap_content"
                            android:text="Cause"
                            android:textSize="15sp"
+                           android:justificationMode="inter_word"
                            android:fontFamily="@font/poppins__medium"
                            android:textColor="@color/dark_gray"/>
 
@@ -186,6 +220,7 @@
                            android:layout_height="wrap_content"
                            android:text="Treatments"
                            android:textSize="15sp"
+                           android:justificationMode="inter_word"
                            android:fontFamily="@font/poppins__medium"
                            android:textColor="@color/dark_gray"/>
 

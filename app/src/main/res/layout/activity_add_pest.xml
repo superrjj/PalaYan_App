@@ -175,6 +175,7 @@
                     android:paddingEnd="12dp"
                     android:layout_marginBottom="5dp"
                     android:hint="Description"
+                    android:justificationMode="inter_word"
                     android:background="@drawable/custom_input"
                     android:fontFamily="@font/poppins__medium"/>
 
@@ -200,6 +201,7 @@
                     android:paddingTop="5dp"
                     android:lines="5"
                     android:paddingEnd="12dp"
+                    android:justificationMode="inter_word"
                     android:layout_marginBottom="5dp"
                     android:hint="Symptoms"
                     android:background="@drawable/custom_input"
@@ -227,6 +229,7 @@
                     android:paddingTop="5dp"
                     android:lines="5"
                     android:paddingEnd="12dp"
+                    android:justificationMode="inter_word"
                     android:layout_marginBottom="5dp"
                     android:hint="Cause"
                     android:background="@drawable/custom_input"
@@ -253,6 +256,7 @@
                     android:maxLines="5"
                     android:gravity="top|start"
                     android:paddingTop="5dp"
+                    android:justificationMode="inter_word"
                     android:lines="5"
                     android:paddingEnd="12dp"
                     android:layout_marginBottom="30dp"
