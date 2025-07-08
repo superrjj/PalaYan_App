@@ -1,5 +1,7 @@
 package com.example.palayan.Adapter;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.palayan.AdminActivities.AddPest;
 import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Helper.Pest;
+import com.example.palayan.PestDetails;
 import com.example.palayan.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -47,7 +51,7 @@ public class AdminPestAdapter extends RecyclerView.Adapter<AdminPestAdapter.Pest
 
         Glide.with(context)
                 .load(pest.getImageUrl())
-                .placeholder(R.drawable.ic_pest_logo)
+                .placeholder(R.drawable.loading_image)
                 .into(holder.pestImage);
 
         // Edit button
@@ -91,6 +95,13 @@ public class AdminPestAdapter extends RecyclerView.Adapter<AdminPestAdapter.Pest
             }
         });
 
+        holder.cvPest.setOnClickListener(v -> {
+            Intent intent = new Intent(context, PestDetails.class);
+            intent.putExtra("pest_id", pest.getPest_id());
+            context.startActivity(intent);
+        });
+
+
     }
 
     @Override
@@ -102,6 +113,7 @@ public class AdminPestAdapter extends RecyclerView.Adapter<AdminPestAdapter.Pest
 
         TextView tvPestName, tvSciName;
         ImageView pestImage, imgDelete, imgUpdate;
+        CardView cvPest;
 
         public PestHolder(@NonNull View itemView) {
             super(itemView);
@@ -110,6 +122,7 @@ public class AdminPestAdapter extends RecyclerView.Adapter<AdminPestAdapter.Pest
             pestImage = itemView.findViewById(R.id.ivPestImage);
             imgDelete = itemView.findViewById(R.id.iv_delete);
             imgUpdate = itemView.findViewById(R.id.iv_edit);
+            cvPest = itemView.findViewById(R.id.cvPestView);
         }
     }
 }
