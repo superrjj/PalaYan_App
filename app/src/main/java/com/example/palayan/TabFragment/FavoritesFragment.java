@@ -51,9 +51,10 @@ public class FavoritesFragment extends Fragment {
 
     private void loadFavorites() {
         String deviceId = DeviceUtils.getDeviceId(requireContext());
+        String deviceModel = android.os.Build.MODEL;
 
         // Listen sa favorites collection
-        listenerRegistration = firestore.collection("favorites")
+        listenerRegistration = firestore.collection("rice_seed_favorites")
                 .whereEqualTo("deviceId", deviceId)
                 .addSnapshotListener((favoritesSnapshot, e) -> {
                     if (e != null) return;

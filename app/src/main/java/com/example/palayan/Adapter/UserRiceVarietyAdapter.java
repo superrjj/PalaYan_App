@@ -54,6 +54,7 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
         holder.breederYear.setText(origin + ", " + year);
 
         String deviceId = DeviceUtils.getDeviceId(context);
+        String deviceModel = android.os.Build.MODEL;
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
         if (isFavoritesPage) {
@@ -73,21 +74,22 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
         }
 
         holder.ivFavorites.setOnClickListener(v -> {
-            firestore.collection("favorites")
+            firestore.collection("rice_seed_favorites")
                     .whereEqualTo("deviceId", deviceId)
                     .whereEqualTo("rice_seed_id", variety.rice_seed_id)
                     .get()
                     .addOnSuccessListener(snapshot -> {
                         if (!snapshot.isEmpty()) {
                             for (QueryDocumentSnapshot doc : snapshot) {
-                                firestore.collection("favorites").document(doc.getId()).delete();
+                                firestore.collection("rice_seed_favorites").document(doc.getId()).delete();
                             }
                             holder.ivFavorites.setImageResource(R.drawable.ic_fav_outline);
                         } else {
                             Map<String, Object> favorite = new HashMap<>();
                             favorite.put("deviceId", deviceId);
+                            favorite.put("deviceModel", deviceModel);
                             favorite.put("rice_seed_id", variety.rice_seed_id);
-                            firestore.collection("favorites").add(favorite);
+                            firestore.collection("rice_seed_favorites").add(favorite);
                             holder.ivFavorites.setImageResource(R.drawable.ic_fav_filled);
                         }
                     });
