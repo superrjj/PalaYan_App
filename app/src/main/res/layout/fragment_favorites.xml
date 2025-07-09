@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    tools:context=".TabFragment.TarlacFragment">
+    tools:context=".TabFragment.FavoritesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTarlacRiceSeed"
+        android:id="@+id/rvFavoriteRiceSeed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/list_rice_seed_user" />
@@ -17,7 +17,7 @@
         android:id="@+id/tvNoData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No tarlac data found"
+        android:text="No favorites found"
         android:textSize="18sp"
         android:textColor="@android:color/darker_gray"
         android:layout_gravity="center"

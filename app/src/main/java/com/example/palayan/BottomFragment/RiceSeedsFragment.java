@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.example.palayan.Helper.SearchQuery.SearchableFragment;
 import com.example.palayan.R;
 import com.example.palayan.TabFragment.AllFragment;
+import com.example.palayan.TabFragment.FavoritesFragment;
 import com.example.palayan.TabFragment.TarlacFragment;
 import com.example.palayan.databinding.FragmentRiceSeedsBinding;
 import com.google.android.material.tabs.TabLayout;
@@ -33,10 +34,16 @@ public class RiceSeedsFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 updateTabView(tab, true);
-                if (tab.getPosition() == 0) {
-                    loadFragment(new AllFragment());
-                } else {
-                    loadFragment(new TarlacFragment());
+                switch (tab.getPosition()) {
+                    case 0:
+                        loadFragment(new AllFragment());
+                        break;
+                    case 1:
+                        loadFragment(new TarlacFragment());
+                        break;
+                    case 2:
+                        loadFragment(new FavoritesFragment());
+                        break;
                 }
             }
 
@@ -71,7 +78,7 @@ public class RiceSeedsFragment extends Fragment {
     }
 
     private void setupCustomTabs() {
-        String[] tabTitles = {"All", "Tarlac Province"};
+        String[] tabTitles = {"All", "Tarlac Province", "Favorites"};
         for (String title : tabTitles) {
             TabLayout.Tab tab = root.tabLayout.newTab();
             View customView = LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);

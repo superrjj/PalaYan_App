@@ -5,26 +5,34 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.palayan.Helper.DeviceUtils;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.example.palayan.RiceVarietyInformation;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVarietyAdapter.UserViewHolder> {
 
     private List<RiceVariety> list;
     private Context context;
+    private boolean isFavoritesPage;
 
-    public UserRiceVarietyAdapter(List<RiceVariety> list, Context context) {
+    public UserRiceVarietyAdapter(List<RiceVariety> list, Context context, boolean isFavoritesPage) {
         this.list = list;
         this.context = context;
+        this.isFavoritesPage = isFavoritesPage;
     }
 
     @NonNull
@@ -45,6 +53,46 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
         String year = variety.yearRelease != null ? variety.yearRelease : "N/A";
         holder.breederYear.setText(origin + ", " + year);
 
+        String deviceId = DeviceUtils.getDeviceId(context);
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        if (isFavoritesPage) {
+            holder.ivFavorites.setImageResource(R.drawable.ic_fav_filled);
+        } else {
+            firestore.collection("favorites")
+                    .whereEqualTo("deviceId", deviceId)
+                    .whereEqualTo("rice_seed_id", variety.rice_seed_id)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            holder.ivFavorites.setImageResource(R.drawable.ic_fav_filled);
+                        } else {
+                            holder.ivFavorites.setImageResource(R.drawable.ic_fav_outline);
+                        }
+                    });
+        }
+
+        holder.ivFavorites.setOnClickListener(v -> {
+            firestore.collection("favorites")
+                    .whereEqualTo("deviceId", deviceId)
+                    .whereEqualTo("rice_seed_id", variety.rice_seed_id)
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        if (!snapshot.isEmpty()) {
+                            for (QueryDocumentSnapshot doc : snapshot) {
+                                firestore.collection("favorites").document(doc.getId()).delete();
+                            }
+                            holder.ivFavorites.setImageResource(R.drawable.ic_fav_outline);
+                        } else {
+                            Map<String, Object> favorite = new HashMap<>();
+                            favorite.put("deviceId", deviceId);
+                            favorite.put("rice_seed_id", variety.rice_seed_id);
+                            firestore.collection("favorites").add(favorite);
+                            holder.ivFavorites.setImageResource(R.drawable.ic_fav_filled);
+                        }
+                    });
+        });
+
         // Go to RiceVarietyInformation Activity on item click
         holder.cvRiceDetails.setOnClickListener(v -> {
             Intent intent = new Intent(context, RiceVarietyInformation.class);
@@ -60,6 +108,7 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         TextView varietyName, location, breederYear;
+        ImageView ivFavorites;
         CardView cvRiceDetails;
 
         public UserViewHolder(@NonNull View itemView) {
@@ -67,6 +116,7 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
             varietyName = itemView.findViewById(R.id.txtVarietyName);
             location = itemView.findViewById(R.id.txtLocation);
             breederYear = itemView.findViewById(R.id.txtBreederYearRelease);
+            ivFavorites = itemView.findViewById(R.id.ivFavorites);
             cvRiceDetails = itemView.findViewById(R.id.cvUserRiceView);
         }
     }

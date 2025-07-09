@@ -40,7 +40,7 @@ public class AllFragment extends Fragment implements SearchableFragment {
         riceVarietyList = new ArrayList<>();
         fullList = new ArrayList<>();
 
-        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext());
+        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), false);
         root.rvAllRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
         root.rvAllRiceSeed.setAdapter(adapter);
 

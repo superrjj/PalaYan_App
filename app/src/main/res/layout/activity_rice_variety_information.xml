@@ -92,13 +92,7 @@
                                android:layout_alignParentStart="true"
                                android:fontFamily="@font/poppins__semibold"/>
 
-                           <ImageView
-                               android:id="@+id/ivFavorites"
-                               android:layout_width="20dp"
-                               android:layout_height="20dp"
-                               android:src="@drawable/ic_fav_outline"
-                               app:tint="@color/semi_yellow"
-                               android:layout_alignParentEnd="true" />
+
 
                        </RelativeLayout>
 

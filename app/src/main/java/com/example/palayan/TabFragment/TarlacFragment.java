@@ -39,7 +39,7 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
 
         riceVarietyList = new ArrayList<>();
         fullList = new ArrayList<>();
-        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext());
+        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), false);
         root.rvTarlacRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
         root.rvTarlacRiceSeed.setAdapter(adapter);
 
