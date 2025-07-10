@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
 import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Dialog.StatusDialogFragment;
@@ -25,6 +26,7 @@ public class AddRiceVariety extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         root = ActivityAddRiceVarietyBinding.inflate(getLayoutInflater());
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
         ImageView ivBack = findViewById(R.id.iv_back);

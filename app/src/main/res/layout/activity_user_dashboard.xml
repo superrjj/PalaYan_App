@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -44,8 +44,8 @@
             android:layout_gravity="bottom"
             android:background="@color/white"
             app:itemIconSize="28dp"
-            app:itemIconTint="@color/green"
-            app:itemTextColor="@color/green"
+            app:itemIconTint="@color/bot_nav_selector"
+            app:itemTextColor="@color/bot_nav_selector"
             app:itemTextAppearanceActive="@style/BottomNavTextStyle"
             app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
             app:menu="@menu/bottom_menu" />

@@ -23,6 +23,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.WindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.palayan.AdminActivities.AdminDashboard;
@@ -32,6 +33,7 @@ import com.example.palayan.MenuFragment.DiseaseFragment;
 import com.example.palayan.MenuFragment.PestFragment;
 import com.example.palayan.MenuFragment.GuideFragment;
 import com.example.palayan.R;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -51,12 +53,12 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_user_dashboard);
 
         firestore = FirebaseFirestore.getInstance();
 
-        Toolbar toolBar = findViewById(R.id.toolbar);
+        MaterialToolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
         drawerLayout = findViewById(R.id.drawer_layout);

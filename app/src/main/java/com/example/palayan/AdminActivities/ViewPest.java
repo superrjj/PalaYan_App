@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.palayan.Adapter.AdminPestAdapter;
@@ -30,6 +31,7 @@ public class ViewPest extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         root = ActivityViewPestBinding.inflate(getLayoutInflater());
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
         firestore = FirebaseFirestore.getInstance();

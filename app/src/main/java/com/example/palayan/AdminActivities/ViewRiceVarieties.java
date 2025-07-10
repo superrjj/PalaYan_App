@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.palayan.Adapter.AdminRiceVarietyAdapter;
@@ -37,6 +38,7 @@ public class ViewRiceVarieties extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         root = ActivityViewRiceVarietiesBinding.inflate(getLayoutInflater());
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
         setSupportActionBar(root.toolbar);

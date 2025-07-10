@@ -9,6 +9,57 @@
         <item>Data Admin</item>
     </string-array>
 
+    <string-array name="region_array">
+        <item>National</item>
+        <item>Region 1</item>
+        <item>Region 2</item>
+        <item>Region 3</item>
+        <item>Region 4</item>
+        <item>Region 5</item>
+        <item>Region 6</item>
+        <item>Region 7</item>
+        <item>Region 8</item>
+        <item>Region 9</item>
+        <item>Region 10</item>
+    </string-array>
+
+    <string-array name="year_array">
+        <item>2015</item>
+        <item>2016</item>
+        <item>2017</item>
+        <item>2018</item>
+        <item>2019</item>
+        <item>2020</item>
+        <item>2021</item>
+        <item>2022</item>
+        <item>2023</item>
+        <item>2024</item>
+        <item>2025</item>
+    </string-array>
+
+    <string-array name="environment_array">
+        <item>Irrigated Lowland</item>
+        <item>Rainfed Lowland</item>
+        <item>Rainfed Upland</item>
+        <item>Saline-prone Area</item>
+        <item>Cool Elevated Areas</item>
+        <item>Deepwater or Floating Rice Areas</item>
+    </string-array>
+
+    <string-array name="planting_methods_array">
+        <item>Direct Seeding</item>
+        <item>Transplanting</item>
+        <item>Drum Seeder</item>
+        <item>Mat Method</item>
+        <item>Manual Row Seeding</item>
+    </string-array>
+
+    <string-array name="seasons_array">
+        <item>Dry Season</item>
+        <item>Wet Season</item>
+        <item>Summer Crop</item>
+    </string-array>
+
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

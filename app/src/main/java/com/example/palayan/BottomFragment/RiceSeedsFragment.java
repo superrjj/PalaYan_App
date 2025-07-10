@@ -74,6 +74,11 @@ public class RiceSeedsFragment extends Fragment {
             }
         });
 
+        root.ivFilter.setOnClickListener(v -> {
+            RiceFilterBottomSheetDialogFragment bottomSheet = new RiceFilterBottomSheetDialogFragment();
+            bottomSheet.show(getChildFragmentManager(), bottomSheet.getTag());
+        });
+
         return root.getRoot();
     }
 

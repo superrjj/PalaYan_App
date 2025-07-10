@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.databinding.ActivityRiceVarietyInformationBinding;
@@ -20,6 +21,7 @@ public class RiceVarietyInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         root = ActivityRiceVarietyInformationBinding.inflate(getLayoutInflater());
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
         firestore = FirebaseFirestore.getInstance();

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.palayan.Adapter.UserRiceVarietyAdapter;
+import com.example.palayan.Helper.DeviceUtils;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.Helper.SearchQuery.SearchableFragment;
 import com.example.palayan.databinding.FragmentAllBinding;
@@ -22,7 +23,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AllFragment extends Fragment implements SearchableFragment {
 
@@ -32,6 +35,7 @@ public class AllFragment extends Fragment implements SearchableFragment {
     private UserRiceVarietyAdapter adapter;
     private FirebaseFirestore firestore;
     private ListenerRegistration listenerRegistration;
+    private Set<String> favoriteIds = new HashSet<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,12 +43,8 @@ public class AllFragment extends Fragment implements SearchableFragment {
 
         riceVarietyList = new ArrayList<>();
         fullList = new ArrayList<>();
-
-        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), false);
-        root.rvAllRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
-        root.rvAllRiceSeed.setAdapter(adapter);
-
         firestore = FirebaseFirestore.getInstance();
+        root.rvAllRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return root.getRoot();
     }
@@ -52,7 +52,51 @@ public class AllFragment extends Fragment implements SearchableFragment {
     @Override
     public void onStart() {
         super.onStart();
-        attachListener();
+        loadFavoritesAndRiceVarieties();
+    }
+
+    private void loadFavoritesAndRiceVarieties() {
+        String deviceId = DeviceUtils.getDeviceId(requireContext());
+        firestore.collection("rice_seed_favorites")
+                .whereEqualTo("deviceId", deviceId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    favoriteIds.clear();
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        favoriteIds.add(doc.getString("rice_seed_id"));
+                    }
+                    attachListener();
+                });
+    }
+
+    private void attachListener() {
+        listenerRegistration = firestore.collection("rice_seed_varieties")
+                .whereEqualTo("archived", false)
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.e("Firestore", "Error: " + e.getMessage());
+                        return;
+                    }
+
+                    riceVarietyList.clear();
+                    fullList.clear();
+
+                    for (QueryDocumentSnapshot document : snapshots) {
+                        RiceVariety variety = document.toObject(RiceVariety.class);
+                        if (variety != null) {
+                            riceVarietyList.add(variety);
+                            fullList.add(variety);
+                        }
+                    }
+
+                    adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), favoriteIds, false);
+                    root.rvAllRiceSeed.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+
+                    if (root != null) {
+                        root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
+                });
     }
 
     @Override
@@ -63,38 +107,12 @@ public class AllFragment extends Fragment implements SearchableFragment {
         }
     }
 
-    private void attachListener() {
-        listenerRegistration = firestore.collection("rice_seed_varieties")
-                .whereEqualTo("archived", false)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@NonNull QuerySnapshot snapshots, FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.e("Firestore", "Error: " + e.getMessage());
-                            return;
-                        }
-
-                        riceVarietyList.clear();
-                        fullList.clear();
-
-                        for (QueryDocumentSnapshot document : snapshots) {
-                            RiceVariety variety = document.toObject(RiceVariety.class);
-                            if (variety != null) {
-                                riceVarietyList.add(variety);
-                                fullList.add(variety);
-                            }
-                        }
-
-                        adapter.notifyDataSetChanged();
-                        if (root != null) {
-                            root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
-                        }
-                    }
-                });
-    }
-
     @Override
     public void filter(String query) {
+        if (adapter == null) {
+            return; // prevent crash if adapter isn't initialized yet
+        }
+
         List<RiceVariety> filteredList = new ArrayList<>();
         String lower = query.toLowerCase();
 

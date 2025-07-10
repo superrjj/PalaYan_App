@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.WindowCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.palayan.Dialog.CustomDialogFragment;
@@ -79,6 +80,7 @@ public class AddPest extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         root = ActivityAddPestBinding.inflate(getLayoutInflater());
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
         root.ivBack.setOnClickListener(v -> onBackPressed());

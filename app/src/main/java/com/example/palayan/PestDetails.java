@@ -7,6 +7,7 @@
     import androidx.appcompat.app.AppCompatActivity;
     import androidx.core.graphics.Insets;
     import androidx.core.view.ViewCompat;
+    import androidx.core.view.WindowCompat;
     import androidx.core.view.WindowInsetsCompat;
 
     import com.bumptech.glide.Glide;
@@ -25,6 +26,7 @@
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             root = ActivityPestDetailsBinding.inflate(getLayoutInflater());
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
             setContentView(root.getRoot());
 
             firestore = FirebaseFirestore.getInstance();

@@ -21,7 +21,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FavoritesFragment extends Fragment {
 
@@ -36,11 +38,11 @@ public class FavoritesFragment extends Fragment {
         root = FragmentFavoritesBinding.inflate(inflater, container, false);
 
         favoriteList = new ArrayList<>();
-        adapter = new UserRiceVarietyAdapter(favoriteList, getContext(), true);
+        firestore = FirebaseFirestore.getInstance();
+
+        adapter = new UserRiceVarietyAdapter(favoriteList, getContext(), null, true);
         root.rvFavoriteRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
         root.rvFavoriteRiceSeed.setAdapter(adapter);
-
-        firestore = FirebaseFirestore.getInstance();
 
         loadFavorites();
 
@@ -51,9 +53,7 @@ public class FavoritesFragment extends Fragment {
 
     private void loadFavorites() {
         String deviceId = DeviceUtils.getDeviceId(requireContext());
-        String deviceModel = android.os.Build.MODEL;
 
-        // Listen sa favorites collection
         listenerRegistration = firestore.collection("rice_seed_favorites")
                 .whereEqualTo("deviceId", deviceId)
                 .addSnapshotListener((favoritesSnapshot, e) -> {
@@ -80,7 +80,7 @@ public class FavoritesFragment extends Fragment {
                                 .whereIn("rice_seed_id", favoriteIds)
                                 .get()
                                 .addOnSuccessListener(varietiesSnapshot -> {
-                                    favoriteList.clear(); // clear ulit bago mag add
+                                    favoriteList.clear();
                                     for (QueryDocumentSnapshot doc : varietiesSnapshot) {
                                         RiceVariety variety = doc.toObject(RiceVariety.class);
                                         favoriteList.add(variety);

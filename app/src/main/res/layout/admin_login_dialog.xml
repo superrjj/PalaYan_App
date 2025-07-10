@@ -27,8 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:boxBackgroundMode="outline"
-            android:hint="Username"
-            app:boxStrokeColor="@color/green">
+            android:hint="Username">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtUsername"
@@ -47,6 +46,7 @@
             app:boxStrokeColor="@color/green"
             app:endIconMode="password_toggle"
             android:hint="Password"
+            android:paddingTop="10dp"
             android:paddingBottom="10dp">
 
             <com.google.android.material.textfield.TextInputEditText

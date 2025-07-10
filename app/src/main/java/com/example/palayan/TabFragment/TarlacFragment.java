@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.palayan.Adapter.UserRiceVarietyAdapter;
+import com.example.palayan.Helper.DeviceUtils;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.Helper.SearchQuery.SearchableFragment;
 import com.example.palayan.databinding.FragmentTarlacBinding;
@@ -21,7 +22,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TarlacFragment extends Fragment implements SearchableFragment {
 
@@ -31,50 +34,64 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
     private UserRiceVarietyAdapter adapter;
     private FirebaseFirestore firestore;
     private ListenerRegistration listenerRegistration;
+    private Set<String> favoriteIds = new HashSet<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = FragmentTarlacBinding.inflate(inflater, container, false);
 
         riceVarietyList = new ArrayList<>();
         fullList = new ArrayList<>();
-        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), false);
-        root.rvTarlacRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
-        root.rvTarlacRiceSeed.setAdapter(adapter);
-
         firestore = FirebaseFirestore.getInstance();
-
-        loadTarlacData();
-        root.tvNoData.setVisibility(View.GONE);
+        root.rvTarlacRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return root.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadFavoritesAndTarlacData();
+    }
+
+    private void loadFavoritesAndTarlacData() {
+        String deviceId = DeviceUtils.getDeviceId(requireContext());
+        firestore.collection("rice_seed_favorites")
+                .whereEqualTo("deviceId", deviceId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    favoriteIds.clear();
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        favoriteIds.add(doc.getString("rice_seed_id"));
+                    }
+                    loadTarlacData();
+                });
     }
 
     private void loadTarlacData() {
         listenerRegistration = firestore.collection("rice_seed_varieties")
                 .whereEqualTo("archived", false)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@NonNull QuerySnapshot snapshots, FirebaseFirestoreException e) {
-                        if (e != null) return;
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) return;
 
-                        riceVarietyList.clear();
-                        fullList.clear();
+                    riceVarietyList.clear();
+                    fullList.clear();
 
-                        for (QueryDocumentSnapshot doc : snapshots) {
-                            RiceVariety variety = doc.toObject(RiceVariety.class);
-                            if (variety != null && variety.location != null &&
-                                    variety.location.toLowerCase().contains("tarlac")) {
-                                riceVarietyList.add(variety);
-                                fullList.add(variety);
-                            }
+                    for (QueryDocumentSnapshot doc : snapshots) {
+                        RiceVariety variety = doc.toObject(RiceVariety.class);
+                        if (variety != null && variety.location != null &&
+                                variety.location.toLowerCase().contains("tarlac")) {
+                            riceVarietyList.add(variety);
+                            fullList.add(variety);
                         }
+                    }
 
-                        adapter.notifyDataSetChanged();
-                        if (root != null) {
-                            root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
-                        }
+                    adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), favoriteIds, false);
+                    root.rvTarlacRiceSeed.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+
+                    if (root != null) {
+                        root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
                     }
                 });
     }
