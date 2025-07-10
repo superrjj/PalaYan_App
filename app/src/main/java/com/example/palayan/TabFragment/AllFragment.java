@@ -18,6 +18,7 @@ import com.example.palayan.databinding.FragmentAllBinding;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -105,6 +106,46 @@ public class AllFragment extends Fragment implements SearchableFragment {
         if (listenerRegistration != null) {
             listenerRegistration.remove();
         }
+    }
+
+    //Firestore filtering function
+    public void filterRiceVarietiesFirestore(String location, String year, String season, String plantingMethod, String environment) {
+        riceVarietyList.clear();
+
+        Query query = firestore.collection("rice_seed_varieties")
+                .whereEqualTo("archived", false);
+
+        if (location != null && !location.isEmpty()) {
+            query = query.whereEqualTo("location", location);
+        }
+        if (year != null && !year.isEmpty()) {
+            query = query.whereEqualTo("yearRelease", year);
+        }
+        if (season != null && !season.isEmpty()) {
+            query = query.whereEqualTo("season", season);
+        }
+        if (plantingMethod != null && !plantingMethod.isEmpty()) {
+            query = query.whereEqualTo("plantingMethod", plantingMethod);
+        }
+        if (environment != null && !environment.isEmpty()) {
+            query = query.whereEqualTo("environment", environment);
+        }
+
+        query.get().addOnSuccessListener(snapshot -> {
+            riceVarietyList.clear();
+            for (QueryDocumentSnapshot document : snapshot) {
+                RiceVariety variety = document.toObject(RiceVariety.class);
+                riceVarietyList.add(variety);
+            }
+
+            adapter.notifyDataSetChanged();
+
+            if (root != null) {
+                root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Filter Error: " + e.getMessage());
+        });
     }
 
     @Override

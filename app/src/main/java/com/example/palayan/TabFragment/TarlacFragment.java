@@ -43,7 +43,11 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
         riceVarietyList = new ArrayList<>();
         fullList = new ArrayList<>();
         firestore = FirebaseFirestore.getInstance();
+
+        // Adapter initialized here with empty list
+        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), favoriteIds, false);
         root.rvTarlacRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
+        root.rvTarlacRiceSeed.setAdapter(adapter);
 
         return root.getRoot();
     }
@@ -86,8 +90,6 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
                         }
                     }
 
-                    adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), favoriteIds, false);
-                    root.rvTarlacRiceSeed.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
                     if (root != null) {
@@ -106,6 +108,8 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
 
     @Override
     public void filter(String query) {
+        if (adapter == null || fullList == null) return;
+
         List<RiceVariety> filteredList = new ArrayList<>();
         String lower = query.toLowerCase();
 
@@ -121,10 +125,8 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
         riceVarietyList.addAll(filteredList);
         adapter.notifyDataSetChanged();
 
-        if (riceVarietyList.isEmpty()) {
-            root.tvNoData.setVisibility(View.VISIBLE);
-        } else {
-            root.tvNoData.setVisibility(View.GONE);
+        if (root != null) {
+            root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
         }
     }
 }

@@ -6,15 +6,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.palayan.Helper.OnFilterAppliedListener;
 import com.example.palayan.R;
+import com.example.palayan.TabFragment.AllFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class RiceFilterBottomSheetDialogFragment extends BottomSheetDialogFragment {
+
+    private AutoCompleteTextView actLocation, actYear, actSeason, actMethod, actEnvironment;
+    private Button btnApplyFilter;
+
+    private OnFilterAppliedListener filterAppliedListener;
+
+    public void setOnFilterAppliedListener(OnFilterAppliedListener listener) {
+        this.filterAppliedListener = listener;
+    }
 
     @Nullable
     @Override
@@ -28,41 +40,45 @@ public class RiceFilterBottomSheetDialogFragment extends BottomSheetDialogFragme
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // setup string array adapter
-        String[] environments = getResources().getStringArray(R.array.environment_array);
-        ArrayAdapter<String> adapterEnvironment = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, environments);
+        actLocation = view.findViewById(R.id.act_location);
+        actYear = view.findViewById(R.id.act_year);
+        actSeason = view.findViewById(R.id.act_season);
+        actMethod = view.findViewById(R.id.act_plant_method);
+        actEnvironment = view.findViewById(R.id.act_environment);
+        btnApplyFilter = view.findViewById(R.id.btnFilter);
 
-        AutoCompleteTextView actEnvironment = view.findViewById(R.id.act_environment);
-        actEnvironment.setAdapter(adapterEnvironment);
+        setupDropdown(actLocation, R.array.region_array);
+        setupDropdown(actYear, R.array.year_array);
+        setupDropdown(actSeason, R.array.seasons_array);
+        setupDropdown(actMethod, R.array.planting_methods_array);
+        setupDropdown(actEnvironment, R.array.environment_array);
 
-        String[] location = getResources().getStringArray(R.array.region_array);
-        ArrayAdapter<String> adapterLocation = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, location);
+        btnApplyFilter.setOnClickListener(v -> {
+            String location = actLocation.getText().toString().trim();
+            String year = actYear.getText().toString().trim();
+            String season = actSeason.getText().toString().trim();
+            String method = actMethod.getText().toString().trim();
+            String environment = actEnvironment.getText().toString().trim();
 
-        AutoCompleteTextView actLocation = view.findViewById(R.id.act_location);
-        actLocation.setAdapter(adapterLocation);
+            if (getTargetFragment() instanceof AllFragment) {
+                ((AllFragment) getTargetFragment()).filterRiceVarietiesFirestore(
+                        location.isEmpty() ? null : location,
+                        year.isEmpty() ? null : year,
+                        season.isEmpty() ? null : season,
+                        method.isEmpty() ? null : method,
+                        environment.isEmpty() ? null : environment
+                );
+            }
 
-        String[] season = getResources().getStringArray(R.array.seasons_array);
-        ArrayAdapter<String> adapterSeason = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, season);
+            dismiss();
+        });
+    }
 
-        AutoCompleteTextView actSeason = view.findViewById(R.id.act_season);
-        actSeason.setAdapter(adapterSeason);
-
-        String[] year = getResources().getStringArray(R.array.year_array);
-        ArrayAdapter<String> adapterYear = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, year);
-
-        AutoCompleteTextView actYear = view.findViewById(R.id.act_year);
-        actYear.setAdapter(adapterYear);
-
-        String[] method = getResources().getStringArray(R.array.planting_methods_array);
-        ArrayAdapter<String> adapterMethod = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, method);
-
-        AutoCompleteTextView actMethod = view.findViewById(R.id.act_plant_method);
-        actMethod.setAdapter(adapterMethod);
+    private void setupDropdown(AutoCompleteTextView actView, int arrayRes) {
+        String[] array = getResources().getStringArray(arrayRes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, array);
+        actView.setAdapter(adapter);
     }
 
     @Override
@@ -77,5 +93,4 @@ public class RiceFilterBottomSheetDialogFragment extends BottomSheetDialogFragme
             }
         }
     }
-
 }

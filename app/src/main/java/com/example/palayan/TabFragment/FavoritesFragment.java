@@ -12,43 +12,49 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.palayan.Adapter.UserRiceVarietyAdapter;
 import com.example.palayan.Helper.DeviceUtils;
 import com.example.palayan.Helper.RiceVariety;
+import com.example.palayan.Helper.SearchQuery.SearchableFragment;
 import com.example.palayan.databinding.FragmentFavoritesBinding;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FavoritesFragment extends Fragment {
+public class FavoritesFragment extends Fragment implements SearchableFragment {
 
     private FragmentFavoritesBinding root;
     private List<RiceVariety> favoriteList;
+    private List<RiceVariety> fullList;
     private UserRiceVarietyAdapter adapter;
     private FirebaseFirestore firestore;
     private ListenerRegistration listenerRegistration;
+    private Set<String> favoriteIds = new HashSet<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = FragmentFavoritesBinding.inflate(inflater, container, false);
 
         favoriteList = new ArrayList<>();
+        fullList = new ArrayList<>();
         firestore = FirebaseFirestore.getInstance();
 
-        adapter = new UserRiceVarietyAdapter(favoriteList, getContext(), null, true);
+        // Initialize adapter with empty list
+        adapter = new UserRiceVarietyAdapter(favoriteList, getContext(), favoriteIds,true);
         root.rvFavoriteRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
         root.rvFavoriteRiceSeed.setAdapter(adapter);
-
-        loadFavorites();
 
         root.tvNoData.setVisibility(View.GONE);
 
         return root.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadFavorites();
     }
 
     private void loadFavorites() {
@@ -60,6 +66,7 @@ public class FavoritesFragment extends Fragment {
                     if (e != null) return;
 
                     favoriteList.clear();
+                    fullList.clear();
 
                     if (favoritesSnapshot.isEmpty()) {
                         adapter.notifyDataSetChanged();
@@ -81,9 +88,11 @@ public class FavoritesFragment extends Fragment {
                                 .get()
                                 .addOnSuccessListener(varietiesSnapshot -> {
                                     favoriteList.clear();
+                                    fullList.clear();
                                     for (QueryDocumentSnapshot doc : varietiesSnapshot) {
                                         RiceVariety variety = doc.toObject(RiceVariety.class);
                                         favoriteList.add(variety);
+                                        fullList.add(variety);
                                     }
 
                                     adapter.notifyDataSetChanged();
@@ -104,4 +113,29 @@ public class FavoritesFragment extends Fragment {
             listenerRegistration.remove();
         }
     }
+
+    @Override
+    public void filter(String query) {
+        if (adapter == null || fullList == null) return;
+
+        List<RiceVariety> filteredList = new ArrayList<>();
+        String lower = query.toLowerCase();
+
+        for (RiceVariety item : fullList) {
+            if ((item.varietyName != null && item.varietyName.toLowerCase().contains(lower)) ||
+                    (item.location != null && item.location.toLowerCase().contains(lower)) ||
+                    (item.yearRelease != null && item.yearRelease.toLowerCase().contains(lower))) {
+                filteredList.add(item);
+            }
+        }
+
+        favoriteList.clear();
+        favoriteList.addAll(filteredList);
+        adapter.notifyDataSetChanged();
+
+        if (root != null) {
+            root.tvNoData.setVisibility(favoriteList.isEmpty() ? View.VISIBLE : View.GONE);
+        }
+    }
+
 }

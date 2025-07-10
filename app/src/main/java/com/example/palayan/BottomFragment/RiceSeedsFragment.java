@@ -76,6 +76,9 @@ public class RiceSeedsFragment extends Fragment {
 
         root.ivFilter.setOnClickListener(v -> {
             RiceFilterBottomSheetDialogFragment bottomSheet = new RiceFilterBottomSheetDialogFragment();
+            if (currentFragment != null) {
+                bottomSheet.setTargetFragment(currentFragment, 0);
+            }
             bottomSheet.show(getChildFragmentManager(), bottomSheet.getTag());
         });
 
@@ -110,12 +113,15 @@ public class RiceSeedsFragment extends Fragment {
                 .runOnCommit(() -> {
                     currentFragment = fragment;
 
-                    // Reapply current query to new fragment
                     String currentQuery = root.svSearchBar.getQuery().toString();
-                    if (fragment instanceof SearchableFragment) {
-                        ((SearchableFragment) fragment).filter(currentQuery);
-                    }
+                    // Safe delay via post para sure attached na ang view at adapter
+                    root.getRoot().post(() -> {
+                        if (fragment instanceof SearchableFragment) {
+                            ((SearchableFragment) fragment).filter(currentQuery);
+                        }
+                    });
                 })
                 .commit();
     }
+
 }
