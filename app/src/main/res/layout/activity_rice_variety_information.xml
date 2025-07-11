@@ -356,7 +356,7 @@
                        android:layout_height="wrap_content"
                        app:cardCornerRadius="15dp"
                        android:layout_alignParentStart="true"
-                       app:cardElevation="4dp"
+                       app:cardElevation="2dp"
                        app:cardBackgroundColor="@color/light_orange">
 
                        <LinearLayout
@@ -428,7 +428,7 @@
                        android:layout_height="wrap_content"
                        app:cardCornerRadius="15dp"
                        android:layout_centerInParent="true"
-                       app:cardElevation="4dp"
+                       app:cardElevation="2dp"
                        app:cardBackgroundColor="@color/light_purple">
 
                        <LinearLayout
@@ -500,7 +500,7 @@
                        android:layout_height="wrap_content"
                        app:cardCornerRadius="15dp"
                        android:layout_alignParentEnd="true"
-                       app:cardElevation="4dp"
+                       app:cardElevation="2dp"
                        app:cardBackgroundColor="@color/light_navy">
 
                        <LinearLayout
@@ -629,7 +629,6 @@
                                   android:text="####"
                                   android:textColor="@color/dark_green"
                                   android:layout_gravity="center"
-                                  android:gravity="end"
                                   android:textSize="13sp"
                                   android:paddingStart="10dp"
                                   android:paddingEnd="10dp"
@@ -657,6 +656,7 @@
                                    android:layout_height="40dp"
                                    android:src="@drawable/ic_environmental"
                                    android:padding="8dp"
+                                   android:layout_gravity="center"
                                    app:tint="@color/dark_sky_blue"/>
 
                                <TextView
@@ -675,7 +675,6 @@
                                    android:text="####"
                                    android:textColor="@color/dark_sky_blue"
                                    android:layout_gravity="center"
-                                   android:gravity="end"
                                    android:paddingStart="10dp"
                                    android:textSize="13sp"
                                    android:paddingEnd="10dp"
@@ -703,6 +702,7 @@
                                    android:layout_height="40dp"
                                    android:src="@drawable/ic_season"
                                    android:padding="8dp"
+                                   android:layout_gravity="center"
                                    app:tint="@color/dark_orange"/>
 
                                <TextView
@@ -722,7 +722,6 @@
                                    android:textSize="13sp"
                                    android:textColor="@color/dark_orange"
                                    android:layout_gravity="center"
-                                   android:gravity="end"
                                    android:paddingStart="10dp"
                                    android:paddingEnd="10dp"
                                    android:fontFamily="@font/poppins__semibold"/>
@@ -750,6 +749,7 @@
                                    android:layout_height="40dp"
                                    android:src="@drawable/ic_method"
                                    android:padding="8dp"
+                                   android:layout_gravity="center"
                                    app:tint="@color/dark_purple"/>
 
                                <TextView
@@ -758,6 +758,7 @@
                                    android:text="Paraan ng Pagtatanim:"
                                    android:textColor="@color/dark_gray"
                                    android:layout_gravity="center"
+                                   android:textSize="13sp"
                                    android:fontFamily="@font/poppins__medium"/>
 
                                <TextView
@@ -768,7 +769,6 @@
                                    android:textSize="13sp"
                                    android:textColor="@color/dark_purple"
                                    android:layout_gravity="center"
-                                   android:gravity="end"
                                    android:paddingStart="10dp"
                                    android:paddingEnd="10dp"
                                    android:fontFamily="@font/poppins__semibold"/>
