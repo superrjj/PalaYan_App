@@ -151,7 +151,19 @@ public class AllFragment extends Fragment implements SearchableFragment {
     @Override
     public void filter(String query) {
         if (adapter == null) {
-            return; // prevent crash if adapter isn't initialized yet
+            return;
+        }
+
+        if (query == null || query.trim().isEmpty()) {
+            // No query — restore full list
+            riceVarietyList.clear();
+            riceVarietyList.addAll(fullList);
+            adapter.notifyDataSetChanged();
+
+            if (root != null) {
+                root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
+            }
+            return;
         }
 
         List<RiceVariety> filteredList = new ArrayList<>();

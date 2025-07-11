@@ -8,6 +8,11 @@
 
     </style>
 
+    <style name="CustomChipTextAppearance" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/poppins__medium</item>
+    </style>
+
+
     <style name="BottomNavTextStyle" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/poppins__medium</item>

@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/semi_white"
-    android:layout_margin="15dp">
+    app:cardCornerRadius="10dp"
+    android:layout_margin="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,20 +21,21 @@
             android:textSize="25sp"
             android:fontFamily="@font/poppins__semibold"
             android:textAlignment="center"
+            app:hintTextColor="@color/green"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:boxBackgroundMode="outline"
+            android:layout_height="wrap_content"
             android:hint="Username">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtUsername"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins__regular"
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:inputType="text" />
 
@@ -42,19 +44,21 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:boxBackgroundMode="outline"
             app:boxStrokeColor="@color/green"
-            app:endIconMode="password_toggle"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/green"
             android:hint="Password"
+            app:hintTextColor="@color/green"
             android:paddingTop="10dp"
             android:paddingBottom="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPassword"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins__regular"
                 android:textSize="15sp"
+                android:textColor="@color/black"
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>

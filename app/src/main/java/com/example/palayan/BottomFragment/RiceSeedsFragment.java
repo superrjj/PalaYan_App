@@ -123,5 +123,4 @@ public class RiceSeedsFragment extends Fragment {
                 })
                 .commit();
     }
-
 }

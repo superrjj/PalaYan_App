@@ -80,6 +80,8 @@
                    android:textSize="14sp"
                    android:paddingStart="12dp"
                    android:paddingEnd="12dp"
+                   android:textColor="@color/black"
+                   android:textColorHint="@color/gray"
                    android:layout_marginBottom="5dp"
                    android:hint="Variety Name"
                    android:background="@drawable/custom_input"
@@ -103,6 +105,8 @@
                     android:textSize="14sp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
                     android:layout_marginBottom="5dp"
                     android:hint="Release Name"
                     android:background="@drawable/custom_input"
@@ -126,6 +130,8 @@
                     android:textSize="14sp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
                     android:layout_marginBottom="5dp"
                     android:hint="Breeding Code"
                     android:background="@drawable/custom_input"
@@ -149,6 +155,8 @@
                     android:textSize="14sp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
                     android:layout_marginBottom="5dp"
                     android:hint="Year Release"
                     android:background="@drawable/custom_input"
@@ -170,6 +178,8 @@
                     android:layout_height="50dp"
                     android:inputType="text"
                     android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:layout_marginBottom="5dp"
@@ -202,6 +212,8 @@
                             android:layout_height="50dp"
                             android:inputType="number"
                             android:textSize="14sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/gray"
                             android:paddingStart="12dp"
                             android:paddingEnd="12dp"
                             android:layout_marginBottom="5dp"
@@ -233,6 +245,8 @@
                             android:textSize="14sp"
                             android:paddingStart="12dp"
                             android:paddingEnd="12dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/gray"
                             android:layout_marginBottom="5dp"
                             android:hint="Plant Height"
                             android:background="@drawable/custom_input"
@@ -252,6 +266,8 @@
                         android:layout_alignParentStart="true"
                         android:orientation="vertical">
 
+
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -269,6 +285,8 @@
                             android:textSize="14sp"
                             android:paddingStart="12dp"
                             android:paddingEnd="12dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/gray"
                             android:layout_marginBottom="5dp"
                             android:hint="Average Yield"
                             android:background="@drawable/custom_input"
@@ -297,6 +315,8 @@
                             android:inputType="numberDecimal"
                             android:textSize="14sp"
                             android:paddingStart="12dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/gray"
                             android:paddingEnd="12dp"
                             android:layout_marginBottom="5dp"
                             android:hint="Max Yield"
@@ -314,19 +334,21 @@
                     android:paddingBottom="5dp"
                     android:fontFamily="@font/poppins__medium" />
 
-
                 <EditText
                     android:id="@+id/txtTillers"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/custom_input"
+                    android:fontFamily="@font/poppins__medium"
+                    android:hint="No. of Tillers"
                     android:inputType="number"
-                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:layout_marginBottom="5dp"
-                    android:hint="No. of Tillers"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium" />
+                    android:textSize="14sp" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -348,74 +370,224 @@
                     android:paddingEnd="12dp"
                     android:layout_marginBottom="5dp"
                     android:hint="Location"
+                    android:textColorHint="@color/gray"
                     android:background="@drawable/custom_input"
                     android:fontFamily="@font/poppins__medium" />
+
+                <!--Environment Chip Group Start-->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Environment*"
+                    android:text="Select Environment*"
                     android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium" />
-
-                <EditText
-                    android:id="@+id/txtEnvironment"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"
-                    android:hint="Environment"
-                    android:inputType="text"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Season*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium" />
-
-                <EditText
-                    android:id="@+id/txtSeason"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
                     android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Season"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Planting Method*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
+                    android:paddingTop="10dp"
                     android:paddingBottom="5dp"
                     android:fontFamily="@font/poppins__medium" />
 
-                <EditText
-                    android:id="@+id/txtPlantingMethod"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
+               <com.google.android.material.chip.ChipGroup
+                   android:id="@+id/chipGroupEnvironment"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:paddingBottom="5dp"
+                   app:singleSelection="false"
+                   app:selectionRequired="false"
+                   android:paddingTop="5dp">
+
+                   <com.google.android.material.chip.Chip
+                       android:id="@+id/chipIrrigatedLowland"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@style/Widget.Material3.Chip.Filter.Elevated"
+                       android:textColor="@color/chip_text_selector"
+                       android:text="Irrigated Lowland"
+                       app:chipBackgroundColor="@color/chip_background_selector"
+                       android:textAppearance="@style/CustomChipTextAppearance" />
+
+                   <com.google.android.material.chip.Chip
+                       android:id="@+id/chipRainfedLowland"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@style/Widget.Material3.Chip.Filter.Elevated"
+                       android:textColor="@color/chip_text_selector"
+                       android:text="Rainfed Lowland"
+                       app:chipBackgroundColor="@color/chip_background_selector"
+                       android:textAppearance="@style/CustomChipTextAppearance" />
+
+                   <com.google.android.material.chip.Chip
+                       android:id="@+id/chipRainfedUpland"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@style/Widget.Material3.Chip.Filter.Elevated"
+                       android:textColor="@color/chip_text_selector"
+                       android:text="Rainfed Upland"
+                       app:chipBackgroundColor="@color/chip_background_selector"
+                       android:textAppearance="@style/CustomChipTextAppearance"
+                       />
+
+                   <com.google.android.material.chip.Chip
+                       android:id="@+id/chipSaline"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@style/Widget.Material3.Chip.Filter.Elevated"
+                       android:textColor="@color/chip_text_selector"
+                       android:text="Saline-prone area"
+                       app:chipBackgroundColor="@color/chip_background_selector"
+                       android:textAppearance="@style/CustomChipTextAppearance" />
+
+                   <com.google.android.material.chip.Chip
+                       android:id="@+id/chipCoolElevated"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@style/Widget.Material3.Chip.Filter.Elevated"
+                       android:textColor="@color/chip_text_selector"
+                       android:text="Cool Elevated Areas"
+                       app:chipBackgroundColor="@color/chip_background_selector"
+                       android:textAppearance="@style/CustomChipTextAppearance"
+                       />
+
+                   <com.google.android.material.chip.Chip
+                       android:id="@+id/chipDeepwater"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@style/Widget.Material3.Chip.Filter.Elevated"
+                       android:textColor="@color/chip_text_selector"
+                       android:text="Deepwater"
+                       app:chipBackgroundColor="@color/chip_background_selector"
+                       android:textAppearance="@style/CustomChipTextAppearance"
+                       />
+
+               </com.google.android.material.chip.ChipGroup>
+                <!--Environment Chip Group End-->
+
+                <!--Season Chip Group Start-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Season*"
+                    android:textColor="@color/green"
                     android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="50dp"
-                    android:hint="Planting Method"
-                    android:background="@drawable/custom_input"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="10dp"
                     android:fontFamily="@font/poppins__medium" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupSeason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    app:singleSelection="false"
+                    app:selectionRequired="false"
+                    android:paddingTop="5dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipDry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Dry"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance"
+                        />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipWet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Wet"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSummer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Summer Crop"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance" />
+
+                </com.google.android.material.chip.ChipGroup>
+                <!--Season Chip Group End-->
+
+                <!--Method Chip Group Start-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Planting Method*"
+                    android:textColor="@color/green"
+                    android:textSize="14sp"
+                    android:paddingBottom="5dp"
+                    android:fontFamily="@font/poppins__medium" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupPlanting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="false"
+                    app:selectionRequired="false"
+                    android:paddingBottom="30dp"
+                    android:paddingTop="10dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipDirectSeeding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Direct Seeding"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance"
+                        />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTransplanting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Transplanting"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipDrumSeeder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Drum Seeder"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance"
+                        />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipMat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Mat Method"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipManual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Manual Row Seeding"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance" />
+
+                </com.google.android.material.chip.ChipGroup>
+                <!--Method Chip Group End-->
 
              <Button
                  android:id="@+id/btnAddVariety"

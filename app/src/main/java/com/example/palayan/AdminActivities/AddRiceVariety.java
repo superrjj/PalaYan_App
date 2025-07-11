@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 
@@ -13,14 +14,21 @@ import com.example.palayan.Dialog.StatusDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddRiceVarietyBinding;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.List;
 
 public class AddRiceVariety extends AppCompatActivity {
 
     private ActivityAddRiceVarietyBinding root;
     private FirebaseFirestore firestore;
     private boolean isEditMode = false;
+
+    // Added ChipGroups
+    private ChipGroup chipGroupEnvironment, chipGroupSeason, chipGroupPlanting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +37,16 @@ public class AddRiceVariety extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
+        firestore = FirebaseFirestore.getInstance();
+
+        // Bind ChipGroups
+        chipGroupEnvironment = findViewById(R.id.chipGroupEnvironment);
+        chipGroupSeason = findViewById(R.id.chipGroupSeason);
+        chipGroupPlanting = findViewById(R.id.chipGroupPlanting);
+        setupChipListeners();
+
         ImageView ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(v -> onBackPressed());
-
-        firestore = FirebaseFirestore.getInstance();
 
         root.btnAddVariety.setVisibility(View.VISIBLE);
         root.btnUpdateVariety.setVisibility(View.GONE);
@@ -56,15 +70,60 @@ public class AddRiceVariety extends AppCompatActivity {
             root.txtMaxYield.setText(String.valueOf(getIntent().getDoubleExtra("maxYield", 0)));
             root.txtTillers.setText(String.valueOf(getIntent().getIntExtra("tillers", 0)));
             root.txtLocation.setText(getIntent().getStringExtra("location"));
-            root.txtEnvironment.setText(getIntent().getStringExtra("environment"));
-            root.txtSeason.setText(getIntent().getStringExtra("season"));
-            root.txtPlantingMethod.setText(getIntent().getStringExtra("plantingMethod"));
 
             root.btnUpdateVariety.setOnClickListener(view -> {
                 String id = getIntent().getStringExtra("rice_seed_id");
                 showUpdateConfirmationDialog(id);
             });
         }
+    }
+
+    private void setupChipListeners() {
+
+
+        chipGroupEnvironment.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
+
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup chipGroup, @NonNull List<Integer> checkedIds) {
+                StringBuilder builder = new StringBuilder();
+                for (int id : checkedIds) {
+                    Chip chip = chipGroup.findViewById(id);
+                    if (chip != null) {
+                        builder.append(", ").append(chip.getText());
+                    }
+                }
+            }
+        });
+
+        chipGroupSeason.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
+
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup chipGroup, @NonNull List<Integer> checkedIds) {
+                StringBuilder builder = new StringBuilder();
+                for (int id : checkedIds) {
+                    Chip chip = chipGroup.findViewById(id);
+                    if (chip != null) {
+                        builder.append(", ").append(chip.getText());
+                    }
+                }
+            }
+        });
+
+
+        chipGroupPlanting.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
+
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup chipGroup, @NonNull List<Integer> checkedIds) {
+                StringBuilder builder = new StringBuilder();
+                for (int id : checkedIds) {
+                    Chip chip = chipGroup.findViewById(id);
+                    if (chip != null) {
+                        builder.append(", ").append(chip.getText());
+                    }
+                }
+            }
+        });
+
     }
 
     private void showAddConfirmationDialog() {
@@ -109,9 +168,7 @@ public class AddRiceVariety extends AppCompatActivity {
                             if (currentId > maxId) {
                                 maxId = currentId;
                             }
-                        } catch (NumberFormatException ignored) {
-                            // Skip non-numeric IDs
-                        }
+                        } catch (NumberFormatException ignored) {}
                     }
 
                     int newId = maxId + 1;
@@ -123,6 +180,17 @@ public class AddRiceVariety extends AppCompatActivity {
                         int tillers = Integer.parseInt(root.txtTillers.getText().toString().trim());
                         double avgYield = Double.parseDouble(root.txtAverageYield.getText().toString().trim());
                         double maxYieldVal = Double.parseDouble(root.txtMaxYield.getText().toString().trim());
+
+                        // Get selected chips
+                        String environment = getSelectedChipsText(chipGroupEnvironment);
+                        String season = getSelectedChipsText(chipGroupSeason);
+                        String plantingMethod = getSelectedChipsText(chipGroupPlanting);
+
+                        // Validate chip selections
+                        if (environment.isEmpty() || season.isEmpty() || plantingMethod.isEmpty()) {
+                            Toast.makeText(this, "Please select Environment, Season, and Planting Method.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
 
                         RiceVariety variety = new RiceVariety(
                                 id,
@@ -137,9 +205,9 @@ public class AddRiceVariety extends AppCompatActivity {
                                 maxYieldVal,
                                 tillers,
                                 root.txtLocation.getText().toString().trim(),
-                                root.txtEnvironment.getText().toString().trim(),
-                                root.txtSeason.getText().toString().trim(),
-                                root.txtPlantingMethod.getText().toString().trim(),
+                                environment,
+                                season,
+                                plantingMethod,
                                 false
                         );
 
@@ -174,6 +242,16 @@ public class AddRiceVariety extends AppCompatActivity {
             double avgYield = Double.parseDouble(root.txtAverageYield.getText().toString().trim());
             double maxYieldVal = Double.parseDouble(root.txtMaxYield.getText().toString().trim());
 
+            // Get selected chips
+            String environment = getSelectedChipsText(chipGroupEnvironment);
+            String season = getSelectedChipsText(chipGroupSeason);
+            String plantingMethod = getSelectedChipsText(chipGroupPlanting);
+
+            if (environment.isEmpty() || season.isEmpty() || plantingMethod.isEmpty()) {
+                Toast.makeText(this, "Please select Environment, Season, and Planting Method.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             RiceVariety updatedVariety = new RiceVariety(
                     id,
                     root.txtVarietyName.getText().toString().trim(),
@@ -187,9 +265,9 @@ public class AddRiceVariety extends AppCompatActivity {
                     maxYieldVal,
                     tillers,
                     root.txtLocation.getText().toString().trim(),
-                    root.txtEnvironment.getText().toString().trim(),
-                    root.txtSeason.getText().toString().trim(),
-                    root.txtPlantingMethod.getText().toString().trim(),
+                    environment,
+                    season,
+                    plantingMethod,
                     false
             );
 
@@ -207,8 +285,19 @@ public class AddRiceVariety extends AppCompatActivity {
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid input for numbers", Toast.LENGTH_LONG).show();
         }
-}
+    }
 
+    private String getSelectedChipsText(ChipGroup chipGroup) {
+        StringBuilder selected = new StringBuilder();
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            if (chip.isChecked()) {
+                if (selected.length() > 0) selected.append(", ");
+                selected.append(chip.getText().toString());
+            }
+        }
+        return selected.toString();
+    }
 
     private void showSuccessDialog(String action, String varietyName) {
         String title = "Rice Variety " + (action.equals("updated") ? "Updated" : "Added");

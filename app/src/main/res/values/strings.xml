@@ -43,7 +43,7 @@
         <item>Rainfed Upland</item>
         <item>Saline-prone Area</item>
         <item>Cool Elevated Areas</item>
-        <item>Deepwater or Floating Rice Areas</item>
+        <item>Deepwater</item>
     </string-array>
 
     <string-array name="planting_methods_array">
