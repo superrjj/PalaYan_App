@@ -65,127 +65,125 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Variety Name*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
+                    android:text="Basic Information"
+                    android:textSize="16sp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/poppins__semibold"
+                    android:textColor="@color/green"/>
 
-               <EditText
-                   android:id="@+id/txtVarietyName"
-                   android:layout_width="match_parent"
-                   android:layout_height="50dp"
-                   android:inputType="text"
-                   android:textSize="14sp"
-                   android:paddingStart="12dp"
-                   android:paddingEnd="12dp"
-                   android:textColor="@color/black"
-                   android:textColorHint="@color/gray"
-                   android:layout_marginBottom="5dp"
-                   android:hint="Variety Name"
-                   android:background="@drawable/custom_input"
-                   android:fontFamily="@font/poppins__medium"/>
+
+               <!--Variety name-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutVarietyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:hint="Variety Name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtVarietyName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--Release name-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutReleaseName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="10dp"
+                    android:hint="Release Name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtReleaseName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--Breeding code-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutBreedingCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="10dp"
+                    android:hint="Breeding Code">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtBreedingCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--Year release-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutYearRelease"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="10dp"
+                    android:hint="Year Release">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtYearRelease"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--Breeding origin-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutBreedingOrigin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="10dp"
+                    android:hint="Breeding/Origin">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtBreederOrigin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Release Name*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <EditText
-                    android:id="@+id/txtReleaseName"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Release Name"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Breeding Code*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <EditText
-                    android:id="@+id/txtBreedingCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Breeding Code"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Year Release*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <EditText
-                    android:id="@+id/txtYearRelease"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="number"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Year Release"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Breeder/Origin*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <EditText
-                    android:id="@+id/txtBreederOrigin"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Breeder/Origin"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    android:text="Plant Characteristics"
+                    android:textSize="16sp"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/poppins__semibold"
+                    android:textColor="@color/green"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -197,30 +195,29 @@
                         android:layout_alignParentStart="true"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Maturity (days)*"
-                            android:textColor="@color/green"
-                            android:textSize="13sp"
-                            android:paddingBottom="5dp"
-                            android:fontFamily="@font/poppins__medium" />
-
-                        <EditText
-                            android:id="@+id/txtMaturity"
+                        <!--Maturity-->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutMaturity"
                             android:layout_width="150dp"
-                            android:layout_height="50dp"
-                            android:inputType="number"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/gray"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:layout_marginBottom="5dp"
-                            android:hint="Maturity Days"
-                            android:background="@drawable/custom_input"
-                            android:fontFamily="@font/poppins__medium" />
+                            android:layout_height="wrap_content"
+                            app:boxStrokeColor="@color/green"
+                            app:hintTextColor="@color/green"
+                            android:layout_marginTop="10dp"
+                            android:hint="Maturity">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txtMaturity"
+                                android:layout_width="150dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins__regular"
+                                android:textColor="@color/black"
+                                android:textSize="13sp"
+                                android:inputType="number" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
                     </LinearLayout>
+
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -228,29 +225,27 @@
                         android:layout_alignParentEnd="true"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Plant Height (cm)*"
-                            android:textColor="@color/green"
-                            android:textSize="13sp"
-                            android:paddingBottom="5dp"
-                            android:fontFamily="@font/poppins__medium" />
-
-                        <EditText
-                            android:id="@+id/txtPlantHeight"
+                        <!--Plant height-->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutPlantHeight"
                             android:layout_width="150dp"
-                            android:layout_height="50dp"
-                            android:inputType="number"
-                            android:textSize="14sp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/gray"
-                            android:layout_marginBottom="5dp"
-                            android:hint="Plant Height"
-                            android:background="@drawable/custom_input"
-                            android:fontFamily="@font/poppins__medium" />
+                            android:layout_height="wrap_content"
+                            app:boxStrokeColor="@color/green"
+                            app:hintTextColor="@color/green"
+                            android:layout_marginTop="10dp"
+                            android:hint="Plant Height">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txtPlantHeight"
+                                android:layout_width="150dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins__regular"
+                                android:textColor="@color/black"
+                                android:textSize="13sp"
+                                android:inputType="text" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -266,31 +261,28 @@
                         android:layout_alignParentStart="true"
                         android:orientation="vertical">
 
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Average yield(t/h)*"
-                            android:textColor="@color/green"
-                            android:textSize="13sp"
-                            android:paddingBottom="5dp"
-                            android:fontFamily="@font/poppins__medium" />
-
-                        <EditText
-                            android:id="@+id/txtAverageYield"
+                        <!--Average yield-->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutAverageYield"
                             android:layout_width="150dp"
-                            android:layout_height="50dp"
-                            android:inputType="numberDecimal"
-                            android:textSize="14sp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/gray"
-                            android:layout_marginBottom="5dp"
-                            android:hint="Average Yield"
-                            android:background="@drawable/custom_input"
-                            android:fontFamily="@font/poppins__medium" />
+                            android:layout_height="wrap_content"
+                            app:boxStrokeColor="@color/green"
+                            app:hintTextColor="@color/green"
+                            android:layout_marginTop="10dp"
+                            android:hint="Average Yield">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txtAverageYield"
+                                android:layout_width="150dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins__regular"
+                                android:textColor="@color/black"
+                                android:textSize="13sp"
+                                android:inputType="numberDecimal" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -299,83 +291,73 @@
                         android:layout_alignParentEnd="true"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Max. Yield (t/h)*"
-                            android:textColor="@color/green"
-                            android:textSize="13sp"
-                            android:paddingBottom="5dp"
-                            android:fontFamily="@font/poppins__medium" />
-
-                        <EditText
-                            android:id="@+id/txtMaxYield"
+                        <!--Max yield-->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutMaYield"
                             android:layout_width="150dp"
-                            android:layout_height="50dp"
-                            android:inputType="numberDecimal"
-                            android:textSize="14sp"
-                            android:paddingStart="12dp"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/gray"
-                            android:paddingEnd="12dp"
-                            android:layout_marginBottom="5dp"
-                            android:hint="Max Yield"
-                            android:background="@drawable/custom_input"
-                            android:fontFamily="@font/poppins__medium" />
+                            android:layout_height="wrap_content"
+                            app:boxStrokeColor="@color/green"
+                            app:hintTextColor="@color/green"
+                            android:layout_marginTop="10dp"
+                            android:hint="Plant Height">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txtMaxYield"
+                                android:layout_width="150dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins__regular"
+                                android:textColor="@color/black"
+                                android:textSize="13sp"
+                                android:inputType="numberDecimal" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
                     </LinearLayout>
                 </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No. of Tillers*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium" />
-
-                <EditText
-                    android:id="@+id/txtTillers"
+                <!--Tillers-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutTillers"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"
-                    android:hint="No. of Tillers"
-                    android:inputType="number"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:textSize="14sp" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Location*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium" />
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="10dp"
+                    android:hint="No. of Tillers">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtTillers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="number" />
 
-                <EditText
-                    android:id="@+id/txtLocation"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--Location-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutLocation"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Location"
-                    android:textColorHint="@color/gray"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium" />
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="10dp"
+                    android:hint="Location">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <!--Environment Chip Group Start-->
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

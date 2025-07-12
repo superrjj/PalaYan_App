@@ -317,7 +317,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         dialog.show();
 
         TextInputEditText etNewPass = view.findViewById(R.id.txtNewPassword);
-        TextInputEditText etConfirmPass = view.findViewById(R.id.txtConfrimPass);
+        TextInputEditText etConfirmPass = view.findViewById(R.id.txtConfirmPass);
         Button btnConfirm = view.findViewById(R.id.btnSubmit);
 
         TextInputLayout layoutNewPass = view.findViewById(R.id.layoutNewPass);

@@ -39,6 +39,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins__regular"
                 android:textColor="@color/black"
+                android:drawableStart="@drawable/ic_person"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/green"
                 android:textSize="13sp"
                 android:inputType="text" />
 
@@ -62,6 +65,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins__regular"
                 android:textSize="13sp"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/green"
                 android:textColor="@color/black"
                 android:inputType="textPassword" />
 
