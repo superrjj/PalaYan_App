@@ -27,7 +27,7 @@ public class AddRiceVariety extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private boolean isEditMode = false;
 
-    // Added ChipGroups
+    // ChipGroups
     private ChipGroup chipGroupEnvironment, chipGroupSeason, chipGroupPlanting;
 
     @Override
@@ -71,6 +71,16 @@ public class AddRiceVariety extends AppCompatActivity {
             root.txtTillers.setText(String.valueOf(getIntent().getIntExtra("tillers", 0)));
             root.txtLocation.setText(getIntent().getStringExtra("location"));
 
+            // Restore chip selections from Intent extras
+            String environment = getIntent().getStringExtra("environment");
+            selectChipsFromText(chipGroupEnvironment, environment);
+
+            String season = getIntent().getStringExtra("season");
+            selectChipsFromText(chipGroupSeason, season);
+
+            String plantingMethod = getIntent().getStringExtra("plantingMethod");
+            selectChipsFromText(chipGroupPlanting, plantingMethod);
+
             root.btnUpdateVariety.setOnClickListener(view -> {
                 String id = getIntent().getStringExtra("rice_seed_id");
                 showUpdateConfirmationDialog(id);
@@ -79,51 +89,9 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private void setupChipListeners() {
-
-
-        chipGroupEnvironment.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
-
-            @Override
-            public void onCheckedChanged(@NonNull ChipGroup chipGroup, @NonNull List<Integer> checkedIds) {
-                StringBuilder builder = new StringBuilder();
-                for (int id : checkedIds) {
-                    Chip chip = chipGroup.findViewById(id);
-                    if (chip != null) {
-                        builder.append(", ").append(chip.getText());
-                    }
-                }
-            }
-        });
-
-        chipGroupSeason.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
-
-            @Override
-            public void onCheckedChanged(@NonNull ChipGroup chipGroup, @NonNull List<Integer> checkedIds) {
-                StringBuilder builder = new StringBuilder();
-                for (int id : checkedIds) {
-                    Chip chip = chipGroup.findViewById(id);
-                    if (chip != null) {
-                        builder.append(", ").append(chip.getText());
-                    }
-                }
-            }
-        });
-
-
-        chipGroupPlanting.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
-
-            @Override
-            public void onCheckedChanged(@NonNull ChipGroup chipGroup, @NonNull List<Integer> checkedIds) {
-                StringBuilder builder = new StringBuilder();
-                for (int id : checkedIds) {
-                    Chip chip = chipGroup.findViewById(id);
-                    if (chip != null) {
-                        builder.append(", ").append(chip.getText());
-                    }
-                }
-            }
-        });
-
+        chipGroupEnvironment.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {});
+        chipGroupSeason.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {});
+        chipGroupPlanting.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {});
     }
 
     private void showAddConfirmationDialog() {
@@ -161,13 +129,10 @@ public class AddRiceVariety extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int maxId = 0;
-
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         try {
                             int currentId = Integer.parseInt(doc.getId());
-                            if (currentId > maxId) {
-                                maxId = currentId;
-                            }
+                            if (currentId > maxId) maxId = currentId;
                         } catch (NumberFormatException ignored) {}
                     }
 
@@ -181,12 +146,10 @@ public class AddRiceVariety extends AppCompatActivity {
                         double avgYield = Double.parseDouble(root.txtAverageYield.getText().toString().trim());
                         double maxYieldVal = Double.parseDouble(root.txtMaxYield.getText().toString().trim());
 
-                        // Get selected chips
                         String environment = getSelectedChipsText(chipGroupEnvironment);
                         String season = getSelectedChipsText(chipGroupSeason);
                         String plantingMethod = getSelectedChipsText(chipGroupPlanting);
 
-                        // Validate chip selections
                         if (environment.isEmpty() || season.isEmpty() || plantingMethod.isEmpty()) {
                             Toast.makeText(this, "Please select Environment, Season, and Planting Method.", Toast.LENGTH_LONG).show();
                             return;
@@ -199,37 +162,23 @@ public class AddRiceVariety extends AppCompatActivity {
                                 root.txtBreedingCode.getText().toString().trim(),
                                 root.txtYearRelease.getText().toString().trim(),
                                 root.txtBreederOrigin.getText().toString().trim(),
-                                maturity,
-                                height,
-                                avgYield,
-                                maxYieldVal,
-                                tillers,
+                                maturity, height, avgYield, maxYieldVal, tillers,
                                 root.txtLocation.getText().toString().trim(),
-                                environment,
-                                season,
-                                plantingMethod,
-                                false
+                                environment, season, plantingMethod, false
                         );
 
                         firestore.collection("rice_seed_varieties")
                                 .document(id)
                                 .set(variety)
-                                .addOnSuccessListener(aVoid -> {
-                                    String varietyName = root.txtVarietyName.getText().toString().trim();
-                                    showSuccessDialog("added", varietyName);
-                                })
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                                );
+                                .addOnSuccessListener(aVoid -> showSuccessDialog("added", variety.getVarietyName()))
+                                .addOnFailureListener(e -> Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
                     } catch (NumberFormatException e) {
                         Toast.makeText(this, "Enter valid numbers for Maturity, Height, and Yields", Toast.LENGTH_LONG).show();
                     }
 
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to fetch IDs: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to fetch IDs: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
     private void updateVariety() {
@@ -242,7 +191,6 @@ public class AddRiceVariety extends AppCompatActivity {
             double avgYield = Double.parseDouble(root.txtAverageYield.getText().toString().trim());
             double maxYieldVal = Double.parseDouble(root.txtMaxYield.getText().toString().trim());
 
-            // Get selected chips
             String environment = getSelectedChipsText(chipGroupEnvironment);
             String season = getSelectedChipsText(chipGroupSeason);
             String plantingMethod = getSelectedChipsText(chipGroupPlanting);
@@ -259,28 +207,16 @@ public class AddRiceVariety extends AppCompatActivity {
                     root.txtBreedingCode.getText().toString().trim(),
                     root.txtYearRelease.getText().toString().trim(),
                     root.txtBreederOrigin.getText().toString().trim(),
-                    maturity,
-                    height,
-                    avgYield,
-                    maxYieldVal,
-                    tillers,
+                    maturity, height, avgYield, maxYieldVal, tillers,
                     root.txtLocation.getText().toString().trim(),
-                    environment,
-                    season,
-                    plantingMethod,
-                    false
+                    environment, season, plantingMethod, false
             );
 
             firestore.collection("rice_seed_varieties")
                     .document(id)
                     .set(updatedVariety)
-                    .addOnSuccessListener(aVoid -> {
-                        String varietyName = root.txtVarietyName.getText().toString().trim();
-                        showSuccessDialog("updated", varietyName);
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                    );
+                    .addOnSuccessListener(aVoid -> showSuccessDialog("updated", updatedVariety.getVarietyName()))
+                    .addOnFailureListener(e -> Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid input for numbers", Toast.LENGTH_LONG).show();
@@ -299,16 +235,26 @@ public class AddRiceVariety extends AppCompatActivity {
         return selected.toString();
     }
 
+    private void selectChipsFromText(ChipGroup chipGroup, String chipTexts) {
+        if (chipTexts == null || chipTexts.isEmpty()) return;
+
+        String[] selectedTexts = chipTexts.split(", ");
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            for (String text : selectedTexts) {
+                if (chip.getText().toString().equalsIgnoreCase(text.trim())) {
+                    chip.setChecked(true);
+                }
+            }
+        }
+    }
+
     private void showSuccessDialog(String action, String varietyName) {
         String title = "Rice Variety " + (action.equals("updated") ? "Updated" : "Added");
         String message = varietyName + " has been successfully " + action + ".";
 
-        StatusDialogFragment.newInstance(
-                        title,
-                        message,
-                        R.drawable.ic_success,
-                        R.color.green
-                ).setOnDismissListener(() -> finish())
+        StatusDialogFragment.newInstance(title, message, R.drawable.ic_success, R.color.green)
+                .setOnDismissListener(this::finish)
                 .show(getSupportFragmentManager(), "SuccessDialog");
     }
 }
