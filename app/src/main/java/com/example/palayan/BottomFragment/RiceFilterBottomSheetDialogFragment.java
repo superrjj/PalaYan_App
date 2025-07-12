@@ -11,7 +11,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.palayan.Helper.OnFilterAppliedListener;
+import com.example.palayan.Helper.SearchQuery.OnFilterAppliedListener;
 import com.example.palayan.R;
 import com.example.palayan.TabFragment.AllFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;

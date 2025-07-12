@@ -26,8 +26,11 @@
             android:paddingBottom="5dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/green"
+            app:hintTextColor="@color/green"
             android:hint="Username">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -36,12 +39,13 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins__regular"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutPassword"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:boxStrokeColor="@color/green"
@@ -57,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins__regular"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textColor="@color/black"
                 android:inputType="textPassword" />
 
@@ -78,6 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/button_solid"
+            app:backgroundTint="@null"
             android:text="LOGIN"
             android:textColor="@color/white"
             android:fontFamily="@font/poppins__medium"

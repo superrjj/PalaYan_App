@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,18 +18,24 @@
         android:paddingBottom="5dp"
         android:fontFamily="@font/poppins__medium"/>
 
-    <EditText
-        android:id="@+id/txtSecOne"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutSecOne"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="text"
-        android:textSize="14sp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:layout_marginBottom="5dp"
-        android:hint="What city where you born in?"
-        android:background="@drawable/custom_input"
-        android:fontFamily="@font/poppins__medium"/>
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/green"
+        app:hintTextColor="@color/green"
+        android:hint="What city where you born in?">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtSecOne"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:paddingStart="15dp"
+            android:textSize="13sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins__regular" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <TextView
@@ -38,31 +45,40 @@
         android:textColor="@color/green"
         android:textSize="13sp"
         android:paddingBottom="5dp"
+        android:layout_marginTop="15dp"
         android:fontFamily="@font/poppins__medium" />
 
-
-    <EditText
-        android:id="@+id/txtSecTwo"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutSecTwo"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="text"
-        android:textSize="14sp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:layout_marginBottom="30dp"
-        android:hint="What is your childhood nickname?"
-        android:background="@drawable/custom_input"
-        android:fontFamily="@font/poppins__medium"/>
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/green"
+        app:hintTextColor="@color/green"
+        android:hint="What is your childhood nickname?">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtSecTwo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:paddingStart="15dp"
+            android:textSize="13sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins__regular"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/btnConfirm"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/button_solid"
+        app:backgroundTint="@null"
         android:text="CONFIRM"
         android:textSize="15sp"
         android:textColor="@color/white"
         android:layout_marginBottom="10dp"
+        android:layout_marginTop="30dp"
         android:fontFamily="@font/poppins__semibold"/>
 
 </LinearLayout>

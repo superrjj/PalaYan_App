@@ -29,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.palayan.AdminActivities.AdminDashboard;
 import com.example.palayan.BottomFragment.HomeFragment;
 import com.example.palayan.BottomFragment.RiceSeedsFragment;
+import com.example.palayan.Helper.Validator.TextHelp;
 import com.example.palayan.MenuFragment.DiseaseFragment;
 import com.example.palayan.MenuFragment.PestFragment;
 import com.example.palayan.MenuFragment.GuideFragment;
@@ -37,6 +38,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -135,11 +137,23 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
         TextInputEditText etUsername = dialogView.findViewById(R.id.txtUsername);
         TextInputEditText etPassword = dialogView.findViewById(R.id.txtPassword);
+
+        TextInputLayout layoutUsername = dialogView.findViewById(R.id.layoutUsername);
+        TextInputLayout layoutPassword = dialogView.findViewById(R.id.layoutPassword);
+        TextHelp.addValidation(layoutUsername, etUsername, "Field required");
+        TextHelp.addValidation(layoutPassword, etPassword, "Field required");
+
         Button btnLogin = dialogView.findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(v -> {
             if (!isNetworkAvailable()) {
                 Toast.makeText(this, "No internet connection.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            //check the fields if not empty
+            if (!TextHelp.isFilled(layoutUsername, etUsername, "Please enter username") ||
+                    !TextHelp.isFilled(layoutPassword, etPassword, "Please enter password")) {
                 return;
             }
 
@@ -191,7 +205,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                                     });
 
                         } else {
-                            Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+                            layoutPassword.setError("Incorrect username or password");
+                            layoutUsername.setError("Incorrect username or password");
                         }
                     });
         });
@@ -211,13 +226,15 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        EditText txtUsername = dialogView.findViewById(R.id.txtUsername);
+        TextInputEditText txtEnterUsername = dialogView.findViewById(R.id.txtEnterUsername);
         Button btnNext = dialogView.findViewById(R.id.btnNextUsername);
+        TextInputLayout layoutEnter = dialogView.findViewById(R.id.layoutEnterUsername);
+        TextHelp.addValidation(layoutEnter, txtEnterUsername, "Field required");
 
         btnNext.setOnClickListener(v -> {
-            String username = txtUsername.getText().toString().trim();
+            String username = txtEnterUsername.getText().toString().trim();
             if (username.isEmpty()) {
-                Toast.makeText(this, "Enter username.", Toast.LENGTH_SHORT).show();
+               TextHelp.isFilled(layoutEnter, txtEnterUsername, "Please enter username");
                 return;
             }
 
@@ -233,7 +250,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             dialog.dismiss();
                             showSecurityQuestionsDialog(docId, secQ1, secQ2);
                         } else {
-                            Toast.makeText(this, "Username not found.", Toast.LENGTH_SHORT).show();
+                           layoutEnter.setError("Username not found");
                         }
                     });
         });
@@ -246,12 +263,20 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        EditText txtSecOne = dialogView.findViewById(R.id.txtSecOne);
-        EditText txtSecTwo = dialogView.findViewById(R.id.txtSecTwo);
+        TextInputEditText txtSecOne = dialogView.findViewById(R.id.txtSecOne);
+        TextInputEditText txtSecTwo = dialogView.findViewById(R.id.txtSecTwo);
         Button btnNextSec = dialogView.findViewById(R.id.btnConfirm);
+
+        TextInputLayout layoutSecOne = dialogView.findViewById(R.id.layoutSecOne);
+        TextInputLayout layoutSecTwo = dialogView.findViewById(R.id.layoutSecTwo);
 
 
         btnNextSec.setOnClickListener(v -> {
+            if (!TextHelp.isFilled(layoutSecOne, txtSecOne, "Please answer this question") ||
+                    !TextHelp.isFilled(layoutSecTwo, txtSecTwo, "Please answer this question")) {
+                return;
+            }
+
             String ansOne = txtSecOne.getText().toString().trim();
             String ansTwo = txtSecTwo.getText().toString().trim();
 
@@ -260,14 +285,28 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                         String correctOne = document.getString("security1");
                         String correctTwo = document.getString("security2");
 
-                        if (ansOne.equalsIgnoreCase(correctOne) && ansTwo.equalsIgnoreCase(correctTwo)) {
+                        if (correctOne == null || correctTwo == null) {
+                            Toast.makeText(this, "Security answers not reset. Please contact admin.", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            return;
+                        }
+
+                        boolean isCorrect1 = ansOne.equalsIgnoreCase(correctOne);
+                        boolean isCorrect2 = ansTwo.equalsIgnoreCase(correctTwo);
+
+                        layoutSecOne.setError(null);
+                        layoutSecTwo.setError(null);
+
+                        if (isCorrect1 && isCorrect2) {
                             dialog.dismiss();
                             showNewPasswordDialog(docId);
                         } else {
-                            Toast.makeText(this, "Incorrect answers.", Toast.LENGTH_SHORT).show();
+                            if (!isCorrect1) layoutSecOne.setError("Incorrect answer");
+                            if (!isCorrect2) layoutSecTwo.setError("Incorrect answer");
                         }
                     });
         });
+
     }
 
     private void showNewPasswordDialog(String docId) {
@@ -277,16 +316,35 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        EditText etNewPass = view.findViewById(R.id.txtNewPassword);
+        TextInputEditText etNewPass = view.findViewById(R.id.txtNewPassword);
+        TextInputEditText etConfirmPass = view.findViewById(R.id.txtConfrimPass);
         Button btnConfirm = view.findViewById(R.id.btnSubmit);
+
+        TextInputLayout layoutNewPass = view.findViewById(R.id.layoutNewPass);
+        TextInputLayout layoutConfirmPass = view.findViewById(R.id.layoutConfrimPass);
+        TextHelp.addValidation(layoutNewPass, etNewPass, "Field required");
+        TextHelp.addValidation(layoutConfirmPass, etConfirmPass, "Field required");
 
         btnConfirm.setOnClickListener(v -> {
             String newPass = etNewPass.getText().toString().trim();
+            String confirmPass = etConfirmPass.getText().toString().trim();
 
 
             if (newPass.isEmpty()) {
                 Toast.makeText(this, "Please fill both fields.", Toast.LENGTH_SHORT).show();
                 return;
+            }
+
+            if (!TextHelp.isFilled(layoutNewPass, etNewPass, "Please enter new password") ||
+                    !TextHelp.isFilled(layoutConfirmPass, etConfirmPass, "Please confirm new password")) {
+                return;
+            }
+
+            if (!newPass.equals(confirmPass)) {
+                layoutConfirmPass.setError("Passwords do not match");
+                return;
+            } else {
+                layoutConfirmPass.setError(null);
             }
 
 
