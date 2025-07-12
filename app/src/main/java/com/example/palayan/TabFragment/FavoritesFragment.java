@@ -85,6 +85,7 @@ public class FavoritesFragment extends Fragment implements SearchableFragment {
                     if (!favoriteIds.isEmpty()) {
                         firestore.collection("rice_seed_varieties")
                                 .whereIn("rice_seed_id", favoriteIds)
+                                .whereEqualTo("archived", false)
                                 .get()
                                 .addOnSuccessListener(varietiesSnapshot -> {
                                     favoriteList.clear();
