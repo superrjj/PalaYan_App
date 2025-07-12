@@ -3,13 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MenuFragment.GuideFragment">
+    tools:context=".MenuFragment.GuideFragment"
+    android:padding="10dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="40sp"
-        android:text="Pest" />
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/rvViewPestUser"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       tools:listitem="@layout/list_view_pest_user"
+       android:paddingBottom="10dp"/>
+
+   <TextView
+       android:id="@+id/tvNoData"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="No pest found"
+       android:textSize="18sp"
+       android:textColor="@android:color/darker_gray"
+       android:layout_gravity="center"
+       android:visibility="gone"
+       android:fontFamily="@font/poppins__semibold" />
 
 </FrameLayout>
