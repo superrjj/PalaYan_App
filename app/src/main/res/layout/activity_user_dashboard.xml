@@ -46,6 +46,8 @@
             app:itemIconSize="28dp"
             app:itemIconTint="@color/bot_nav_selector"
             app:itemTextColor="@color/bot_nav_selector"
+            app:labelVisibilityMode="labeled"
+            app:itemActiveIndicatorStyle="@style/BottomNav_NoIndicator"
             app:itemTextAppearanceActive="@style/BottomNavTextStyle"
             app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
             app:menu="@menu/bottom_menu" />
@@ -55,14 +57,16 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:maxWidth="250dp"
         android:layout_gravity="start"
         android:background="@color/white"
         app:headerLayout="@layout/nav_header"
         app:itemIconSize="30dp"
         app:itemIconTint="@color/green"
         app:itemTextColor="@color/green"
+        app:itemBackground="@drawable/bot_nav_item_background"
         app:itemTextAppearance="@style/NavDrawerTextStyle"
         app:menu="@menu/main_menu"/>
 

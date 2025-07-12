@@ -89,14 +89,13 @@ public class AllFragment extends Fragment implements SearchableFragment {
                             fullList.add(variety);
                         }
                     }
-
-                    adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), favoriteIds, false);
-                    root.rvAllRiceSeed.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-
                     if (root != null) {
+                        adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), favoriteIds, false);
+                        root.rvAllRiceSeed.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                         root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
                     }
+
                 });
     }
 
