@@ -157,7 +157,7 @@
 
                 <!--Breeding origin-->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layoutBreedingOrigin"
+                    android:id="@+id/layoutBreederOrigin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
@@ -293,7 +293,7 @@
 
                         <!--Max yield-->
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/layoutMaYield"
+                            android:id="@+id/layoutMaxYield"
                             android:layout_width="150dp"
                             android:layout_height="wrap_content"
                             app:boxStrokeColor="@color/green"
@@ -356,6 +356,12 @@
                         android:inputType="text" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutChipEnvironment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <!--Environment Chip Group Start-->
                 <TextView
@@ -447,7 +453,23 @@
                        />
 
                </com.google.android.material.chip.ChipGroup>
+
+                <TextView
+                    android:id="@+id/tvChipEnvironmentError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:text="Please select environment" />
+            </LinearLayout>
                 <!--Environment Chip Group End-->
+
+            <LinearLayout
+                android:id="@+id/layoutChipSeason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <!--Season Chip Group Start-->
                 <TextView
@@ -504,7 +526,25 @@
                         android:textAppearance="@style/CustomChipTextAppearance" />
 
                 </com.google.android.material.chip.ChipGroup>
+
+                <TextView
+                    android:id="@+id/tvChipSeasonError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:text="Please select season" />
+
+            </LinearLayout>
+
                 <!--Season Chip Group End-->
+
+            <LinearLayout
+                android:id="@+id/layoutChipMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <!--Method Chip Group Start-->
                 <TextView
@@ -583,6 +623,17 @@
                         android:textAppearance="@style/CustomChipTextAppearance" />
 
                 </com.google.android.material.chip.ChipGroup>
+
+                <TextView
+                    android:id="@+id/tvChipMethodError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:text="Please select season" />
+
+            </LinearLayout>
                 <!--Method Chip Group End-->
 
              <Button

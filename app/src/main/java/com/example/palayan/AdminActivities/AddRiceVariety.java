@@ -12,6 +12,7 @@ import androidx.core.view.WindowCompat;
 import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Dialog.StatusDialogFragment;
 import com.example.palayan.Helper.RiceVariety;
+import com.example.palayan.Helper.Validator.TextHelp;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddRiceVarietyBinding;
 import com.google.android.material.chip.Chip;
@@ -86,6 +87,20 @@ public class AddRiceVariety extends AppCompatActivity {
                 showUpdateConfirmationDialog(id);
             });
         }
+
+        TextHelp.addValidation(root.layoutVarietyName, root.txtVarietyName, "Field required");
+        TextHelp.addValidation(root.layoutReleaseName, root.txtReleaseName, "Field required");
+        TextHelp.addValidation(root.layoutBreedingCode, root.txtBreedingCode, "Field required");
+        TextHelp.addValidation(root.layoutYearRelease, root.txtYearRelease, "Field required");
+        TextHelp.addValidation(root.layoutBreederOrigin, root.txtBreederOrigin, "Field required");
+        TextHelp.addValidation(root.layoutMaturity, root.txtMaturity, "Field required");
+        TextHelp.addValidation(root.layoutPlantHeight, root.txtPlantHeight, "Field required");
+        TextHelp.addValidation(root.layoutAverageYield, root.txtAverageYield, "Field required");
+        TextHelp.addValidation(root.layoutMaxYield, root.txtMaxYield, "Field required");
+        TextHelp.addValidation(root.layoutTillers, root.txtTillers, "Field required");
+        TextHelp.addValidation(root.layoutLocation, root.txtLocation, "Field required");
+
+
     }
 
     private void setupChipListeners() {
@@ -97,10 +112,6 @@ public class AddRiceVariety extends AppCompatActivity {
     private void showAddConfirmationDialog() {
         String id = root.txtVarietyName.getText().toString().trim();
 
-        if (id.isEmpty()) {
-            Toast.makeText(this, "Variety Name is required", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         CustomDialogFragment.newInstance(
                 "Add Rice Variety",
@@ -125,6 +136,21 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private void addVarietyToDatabase() {
+
+        if (!TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please enter variety name") ||
+                !TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please enter release name") ||
+                !TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please enter breeding code") ||
+                !TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please enter year release") ||
+                !TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please enter breeder/origin") ||
+                !TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please enter maturity days") ||
+                !TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please enter plant height") ||
+                !TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please enter average yield") ||
+                !TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please enter max yield") ||
+                !TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please enter no. of tillers") ||
+                !TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please enter location")) {
+            return;
+        }
+
         firestore.collection("rice_seed_varieties")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -154,6 +180,7 @@ public class AddRiceVariety extends AppCompatActivity {
                             Toast.makeText(this, "Please select Environment, Season, and Planting Method.", Toast.LENGTH_LONG).show();
                             return;
                         }
+
 
                         RiceVariety variety = new RiceVariety(
                                 id,
