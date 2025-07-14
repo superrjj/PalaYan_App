@@ -96,8 +96,8 @@ public class AdminRiceVarietyAdapter extends RecyclerView.Adapter<AdminRiceVarie
             intent.putExtra("maturityDays", variety.maturityDays);
             intent.putExtra("plantHeight", variety.plantHeight);
             intent.putExtra("averageYield", variety.averageYield);
-            intent.putExtra("tillers", variety.tillers);
             intent.putExtra("maxYield", variety.maxYield);
+            intent.putExtra("tillers", variety.tillers);
             intent.putExtra("location", variety.location);
             intent.putExtra("environment", variety.environment);
             intent.putExtra("season", variety.season);

@@ -109,43 +109,48 @@ public class AllFragment extends Fragment implements SearchableFragment {
 
     //Firestore filtering function
     public void filterRiceVarietiesFirestore(String location, String year, String season, String plantingMethod, String environment) {
-        riceVarietyList.clear();
+        firestore.collection("rice_seed_varieties")
+                .whereEqualTo("archived", false)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    riceVarietyList.clear();
+                    for (QueryDocumentSnapshot document : snapshot) {
+                        RiceVariety variety = document.toObject(RiceVariety.class);
 
-        Query query = firestore.collection("rice_seed_varieties")
-                .whereEqualTo("archived", false);
+                        boolean matches = true;
 
-        if (location != null && !location.isEmpty()) {
-            query = query.whereEqualTo("location", location);
-        }
-        if (year != null && !year.isEmpty()) {
-            query = query.whereEqualTo("yearRelease", year);
-        }
-        if (season != null && !season.isEmpty()) {
-            query = query.whereEqualTo("season", season);
-        }
-        if (plantingMethod != null && !plantingMethod.isEmpty()) {
-            query = query.whereEqualTo("plantingMethod", plantingMethod);
-        }
-        if (environment != null && !environment.isEmpty()) {
-            query = query.whereEqualTo("environment", environment);
-        }
+                        if (location != null && !location.isEmpty() && !location.equals(variety.location)) {
+                            matches = false;
+                        }
 
-        query.get().addOnSuccessListener(snapshot -> {
-            riceVarietyList.clear();
-            for (QueryDocumentSnapshot document : snapshot) {
-                RiceVariety variety = document.toObject(RiceVariety.class);
-                riceVarietyList.add(variety);
-            }
+                        if (year != null && !year.isEmpty() && !year.equals(variety.yearRelease)) {
+                            matches = false;
+                        }
 
-            adapter.notifyDataSetChanged();
+                        if (season != null && !season.isEmpty() && (variety.season == null || !variety.season.contains(season))) {
+                            matches = false;
+                        }
 
-            if (root != null) {
-                root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
-            }
-        }).addOnFailureListener(e -> {
-            Log.e("Firestore", "Filter Error: " + e.getMessage());
-        });
+                        if (plantingMethod != null && !plantingMethod.isEmpty() && (variety.plantingMethod == null || !variety.plantingMethod.contains(plantingMethod))) {
+                            matches = false;
+                        }
+
+                        if (environment != null && !environment.isEmpty() && (variety.environment == null || !variety.environment.contains(environment))) {
+                            matches = false;
+                        }
+
+                        if (matches) {
+                            riceVarietyList.add(variety);
+                        }
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    if (root != null) {
+                        root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
+                }).addOnFailureListener(e -> Log.e("Firestore", "Filter Error: " + e.getMessage()));
     }
+
 
     @Override
     public void filter(String query) {

@@ -258,13 +258,17 @@ public class AddRiceVariety extends AppCompatActivity {
             firestore.collection("rice_seed_varieties")
                     .document(id)
                     .set(updatedVariety)
-                    .addOnSuccessListener(aVoid -> showSuccessDialog("updated", updatedVariety.getVarietyName()))
+                    .addOnSuccessListener(aVoid -> {
+                        showSuccessDialog("updated", updatedVariety.getVarietyName());
+                        finish(); //dito nagerror kanina
+                    })
                     .addOnFailureListener(e -> Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid input for numbers", Toast.LENGTH_LONG).show();
         }
     }
+
 
     //selected id's of chip group
     private String getSelectedChipsText(ChipGroup chipGroup) {
@@ -289,14 +293,18 @@ public class AddRiceVariety extends AppCompatActivity {
 
         String[] selectedTexts = chipTexts.split(", ");
         for (int i = 0; i < chipGroup.getChildCount(); i++) {
-            Chip chip = (Chip) chipGroup.getChildAt(i);
-            for (String text : selectedTexts) {
-                if (chip.getText().toString().equalsIgnoreCase(text.trim())) {
-                    chip.setChecked(true);
+            View view = chipGroup.getChildAt(i);
+            if (view instanceof Chip) {
+                Chip chip = (Chip) view;
+                for (String text : selectedTexts) {
+                    if (chip.getText().toString().equalsIgnoreCase(text.trim())) {
+                        chip.setChecked(true);
+                    }
                 }
             }
         }
     }
+
 
     //Success dialog it's either update or add
     private void showSuccessDialog(String action, String varietyName) {
