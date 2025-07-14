@@ -62,10 +62,17 @@ public class TextHelp {
 
     // Auto-hide error when a chip is selected
     public static void clearChipErrorOnSelect(ChipGroup chipGroup, TextView errorTextView) {
+        // Initially hide error if already selected
+        if (!chipGroup.getCheckedChipIds().isEmpty()) {
+            errorTextView.setVisibility(View.GONE);
+        }
+
+        // Listen to selection changes
         chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (!checkedIds.isEmpty()) {
                 errorTextView.setVisibility(View.GONE);
             }
         });
     }
+
 }

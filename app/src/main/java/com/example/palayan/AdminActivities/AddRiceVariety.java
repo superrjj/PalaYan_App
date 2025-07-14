@@ -73,21 +73,26 @@ public class AddRiceVariety extends AppCompatActivity {
             root.txtTillers.setText(String.valueOf(getIntent().getIntExtra("tillers", 0)));
             root.txtLocation.setText(getIntent().getStringExtra("location"));
             String environment = getIntent().getStringExtra("environment");
-            selectChipsFromText(chipGroupEnvironment, environment);
             String season = getIntent().getStringExtra("season");
-            selectChipsFromText(chipGroupSeason, season);
             String plantingMethod = getIntent().getStringExtra("plantingMethod");
-            selectChipsFromText(chipGroupPlanting, plantingMethod);
-
-            TextHelp.clearChipErrorOnSelect(chipGroupEnvironment, root.tvChipEnvironmentError);
-            TextHelp.clearChipErrorOnSelect(chipGroupSeason, root.tvChipSeasonError);
-            TextHelp.clearChipErrorOnSelect(chipGroupPlanting, root.tvChipMethodError);
 
             root.btnUpdateVariety.setOnClickListener(view -> {
                 String id = getIntent().getStringExtra("rice_seed_id");
                 showUpdateConfirmationDialog(id);
             });
         }
+
+        String environment = null;
+        String season = null;
+        String plantingMethod = null;
+
+        selectChipsFromText(chipGroupEnvironment, environment);
+        selectChipsFromText(chipGroupSeason, season);
+        selectChipsFromText(chipGroupPlanting, plantingMethod);
+
+        TextHelp.clearChipErrorOnSelect(chipGroupEnvironment, root.tvChipEnvironmentError);
+        TextHelp.clearChipErrorOnSelect(chipGroupSeason, root.tvChipSeasonError);
+        TextHelp.clearChipErrorOnSelect(chipGroupPlanting, root.tvChipMethodError);
 
         //Live validation
         TextHelp.addValidation(root.layoutVarietyName, root.txtVarietyName, "Field required");
@@ -212,7 +217,7 @@ public class AddRiceVariety extends AppCompatActivity {
                                 .document(id)
                                 .set(variety)
                                 .addOnSuccessListener(aVoid -> { showSuccessDialog("added", variety.getVarietyName());
-                                    finish();
+
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
@@ -238,10 +243,7 @@ public class AddRiceVariety extends AppCompatActivity {
             String season = getSelectedChipsText(chipGroupSeason);
             String plantingMethod = getSelectedChipsText(chipGroupPlanting);
 
-            if (environment.isEmpty() || season.isEmpty() || plantingMethod.isEmpty()) {
-                Toast.makeText(this, "Please select Environment, Season, and Planting Method.", Toast.LENGTH_LONG).show();
-                return;
-            }
+
 
             RiceVariety updatedVariety = new RiceVariety(
                     id,
@@ -260,7 +262,6 @@ public class AddRiceVariety extends AppCompatActivity {
                     .set(updatedVariety)
                     .addOnSuccessListener(aVoid -> {
                         showSuccessDialog("updated", updatedVariety.getVarietyName());
-                        finish(); //dito nagerror kanina
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
@@ -311,8 +312,16 @@ public class AddRiceVariety extends AppCompatActivity {
         String title = "Rice Variety " + (action.equals("updated") ? "Updated" : "Added");
         String message = varietyName + " has been successfully " + action + ".";
 
-        StatusDialogFragment.newInstance(title, message, R.drawable.ic_success, R.color.green)
-                .show(getSupportFragmentManager(), "SuccessDialog");
+        StatusDialogFragment dialog = StatusDialogFragment.newInstance(
+                title, message, R.drawable.ic_success, R.color.green
+        );
+
+        dialog.show(getSupportFragmentManager(), "SuccessDialog");
+
+        // kapag na-dismiss yung dialog, tsaka mo i-finish
+        getSupportFragmentManager().executePendingTransactions();
+        dialog.getDialog().setOnDismissListener(dialogInterface -> finish());
     }
+
 
 }
