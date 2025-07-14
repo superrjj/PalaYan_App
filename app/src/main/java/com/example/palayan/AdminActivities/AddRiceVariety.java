@@ -54,6 +54,7 @@ public class AddRiceVariety extends AppCompatActivity {
 
         root.btnAddVariety.setOnClickListener(view -> showAddConfirmationDialog());
 
+        //Editing enabled
         if (getIntent().getBooleanExtra("isEdit", false)) {
             isEditMode = true;
             root.btnAddVariety.setVisibility(View.GONE);
@@ -71,16 +72,16 @@ public class AddRiceVariety extends AppCompatActivity {
             root.txtMaxYield.setText(String.valueOf(getIntent().getDoubleExtra("maxYield", 0)));
             root.txtTillers.setText(String.valueOf(getIntent().getIntExtra("tillers", 0)));
             root.txtLocation.setText(getIntent().getStringExtra("location"));
-
-            // Restore chip selections from Intent extras
             String environment = getIntent().getStringExtra("environment");
             selectChipsFromText(chipGroupEnvironment, environment);
-
             String season = getIntent().getStringExtra("season");
             selectChipsFromText(chipGroupSeason, season);
-
             String plantingMethod = getIntent().getStringExtra("plantingMethod");
             selectChipsFromText(chipGroupPlanting, plantingMethod);
+
+            TextHelp.clearChipErrorOnSelect(chipGroupEnvironment, root.tvChipEnvironmentError);
+            TextHelp.clearChipErrorOnSelect(chipGroupSeason, root.tvChipSeasonError);
+            TextHelp.clearChipErrorOnSelect(chipGroupPlanting, root.tvChipMethodError);
 
             root.btnUpdateVariety.setOnClickListener(view -> {
                 String id = getIntent().getStringExtra("rice_seed_id");
@@ -88,6 +89,7 @@ public class AddRiceVariety extends AppCompatActivity {
             });
         }
 
+        //Live validation
         TextHelp.addValidation(root.layoutVarietyName, root.txtVarietyName, "Field required");
         TextHelp.addValidation(root.layoutReleaseName, root.txtReleaseName, "Field required");
         TextHelp.addValidation(root.layoutBreedingCode, root.txtBreedingCode, "Field required");
@@ -109,7 +111,33 @@ public class AddRiceVariety extends AppCompatActivity {
         chipGroupPlanting.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {});
     }
 
+    private boolean validateAllFields() {
+        boolean isValid = true;
+
+        // Text fields
+        isValid &= TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please enter variety name");
+        isValid &= TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please enter release name");
+        isValid &= TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please enter breeding code");
+        isValid &= TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please enter year release");
+        isValid &= TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please enter breeder/origin");
+        isValid &= TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please enter maturity days");
+        isValid &= TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please enter plant height");
+        isValid &= TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please enter average yield");
+        isValid &= TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please enter max yield");
+        isValid &= TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please enter no. of tillers");
+        isValid &= TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please enter location");
+
+        // ChipGroups
+        isValid &= TextHelp.validateChipGroup(chipGroupEnvironment, root.tvChipEnvironmentError, "Please select environment");
+        isValid &= TextHelp.validateChipGroup(chipGroupSeason, root.tvChipSeasonError, "Please select season");
+        isValid &= TextHelp.validateChipGroup(chipGroupPlanting, root.tvChipMethodError, "Please select planting method");
+
+        return isValid;
+    }
+
     private void showAddConfirmationDialog() {
+
+        if (!validateAllFields()) return;
         String id = root.txtVarietyName.getText().toString().trim();
 
 
@@ -124,6 +152,9 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private void showUpdateConfirmationDialog(String id) {
+
+        if (!validateAllFields()) return;
+
         String varietyName = root.txtVarietyName.getText().toString().trim();
         CustomDialogFragment.newInstance(
                 "Update Rice Variety",
@@ -137,19 +168,6 @@ public class AddRiceVariety extends AppCompatActivity {
 
     private void addVarietyToDatabase() {
 
-        if (!TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please enter variety name") ||
-                !TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please enter release name") ||
-                !TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please enter breeding code") ||
-                !TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please enter year release") ||
-                !TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please enter breeder/origin") ||
-                !TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please enter maturity days") ||
-                !TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please enter plant height") ||
-                !TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please enter average yield") ||
-                !TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please enter max yield") ||
-                !TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please enter no. of tillers") ||
-                !TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please enter location")) {
-            return;
-        }
 
         firestore.collection("rice_seed_varieties")
                 .get()
@@ -176,10 +194,6 @@ public class AddRiceVariety extends AppCompatActivity {
                         String season = getSelectedChipsText(chipGroupSeason);
                         String plantingMethod = getSelectedChipsText(chipGroupPlanting);
 
-                        if (environment.isEmpty() || season.isEmpty() || plantingMethod.isEmpty()) {
-                            Toast.makeText(this, "Please select Environment, Season, and Planting Method.", Toast.LENGTH_LONG).show();
-                            return;
-                        }
 
 
                         RiceVariety variety = new RiceVariety(
@@ -197,7 +211,9 @@ public class AddRiceVariety extends AppCompatActivity {
                         firestore.collection("rice_seed_varieties")
                                 .document(id)
                                 .set(variety)
-                                .addOnSuccessListener(aVoid -> showSuccessDialog("added", variety.getVarietyName()))
+                                .addOnSuccessListener(aVoid -> { showSuccessDialog("added", variety.getVarietyName());
+                                    finish();
+                                })
                                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
                     } catch (NumberFormatException e) {
@@ -205,7 +221,7 @@ public class AddRiceVariety extends AppCompatActivity {
                     }
 
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to fetch IDs: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                .addOnFailureListener(e -> Toast.makeText(this, "Error occurred: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
     private void updateVariety() {
@@ -250,18 +266,24 @@ public class AddRiceVariety extends AppCompatActivity {
         }
     }
 
+    //selected id's of chip group
     private String getSelectedChipsText(ChipGroup chipGroup) {
         StringBuilder selected = new StringBuilder();
         for (int i = 0; i < chipGroup.getChildCount(); i++) {
-            Chip chip = (Chip) chipGroup.getChildAt(i);
-            if (chip.isChecked()) {
-                if (selected.length() > 0) selected.append(", ");
-                selected.append(chip.getText().toString());
+            View view = chipGroup.getChildAt(i);
+            if (view instanceof Chip) {
+                Chip chip = (Chip) view;
+                if (chip.isChecked()) {
+                    if (selected.length() > 0) selected.append(", ");
+                    selected.append(chip.getText().toString());
+                }
             }
         }
         return selected.toString();
     }
 
+
+    //add the selected chip in the database
     private void selectChipsFromText(ChipGroup chipGroup, String chipTexts) {
         if (chipTexts == null || chipTexts.isEmpty()) return;
 
@@ -276,12 +298,13 @@ public class AddRiceVariety extends AppCompatActivity {
         }
     }
 
+    //Success dialog it's either update or add
     private void showSuccessDialog(String action, String varietyName) {
         String title = "Rice Variety " + (action.equals("updated") ? "Updated" : "Added");
         String message = varietyName + " has been successfully " + action + ".";
 
         StatusDialogFragment.newInstance(title, message, R.drawable.ic_success, R.color.green)
-                .setOnDismissListener(this::finish)
                 .show(getSupportFragmentManager(), "SuccessDialog");
     }
+
 }

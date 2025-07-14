@@ -452,16 +452,18 @@
                        android:textAppearance="@style/CustomChipTextAppearance"
                        />
 
+                   <TextView
+                       android:id="@+id/tvChipEnvironmentError"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:textColor="@android:color/holo_red_dark"
+                       android:textSize="12sp"
+                       android:visibility="gone"
+                       />
+
                </com.google.android.material.chip.ChipGroup>
 
-                <TextView
-                    android:id="@+id/tvChipEnvironmentError"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    android:text="Please select environment" />
+
             </LinearLayout>
                 <!--Environment Chip Group End-->
 
@@ -525,16 +527,17 @@
                         app:chipBackgroundColor="@color/chip_background_selector"
                         android:textAppearance="@style/CustomChipTextAppearance" />
 
+                    <TextView
+                        android:id="@+id/tvChipSeasonError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
                 </com.google.android.material.chip.ChipGroup>
 
-                <TextView
-                    android:id="@+id/tvChipSeasonError"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    android:text="Please select season" />
+
 
             </LinearLayout>
 
@@ -622,16 +625,16 @@
                         app:chipBackgroundColor="@color/chip_background_selector"
                         android:textAppearance="@style/CustomChipTextAppearance" />
 
+                    <TextView
+                        android:id="@+id/tvChipMethodError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
                 </com.google.android.material.chip.ChipGroup>
 
-                <TextView
-                    android:id="@+id/tvChipMethodError"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    android:text="Please select season" />
 
             </LinearLayout>
                 <!--Method Chip Group End-->
