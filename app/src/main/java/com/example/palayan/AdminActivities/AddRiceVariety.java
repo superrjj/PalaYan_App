@@ -60,6 +60,7 @@ public class AddRiceVariety extends AppCompatActivity {
             root.btnAddVariety.setVisibility(View.GONE);
             root.btnUpdateVariety.setVisibility(View.VISIBLE);
 
+            // SET TEXT FIELDS
             root.txtVarietyName.setText(getIntent().getStringExtra("varietyName"));
             root.txtVarietyName.setEnabled(false);
             root.txtReleaseName.setText(getIntent().getStringExtra("releaseName"));
@@ -72,9 +73,21 @@ public class AddRiceVariety extends AppCompatActivity {
             root.txtMaxYield.setText(String.valueOf(getIntent().getDoubleExtra("maxYield", 0)));
             root.txtTillers.setText(String.valueOf(getIntent().getIntExtra("tillers", 0)));
             root.txtLocation.setText(getIntent().getStringExtra("location"));
+
+            // GET CHIP VALUES
             String environment = getIntent().getStringExtra("environment");
             String season = getIntent().getStringExtra("season");
             String plantingMethod = getIntent().getStringExtra("plantingMethod");
+
+            // SET CHIP SELECTIONS
+            selectChipsFromText(chipGroupEnvironment, environment);
+            selectChipsFromText(chipGroupSeason, season);
+            selectChipsFromText(chipGroupPlanting, plantingMethod);
+
+            // CLEAR ERROR TEXT ON SELECT
+            TextHelp.clearChipErrorOnSelect(chipGroupEnvironment, root.tvChipEnvironmentError);
+            TextHelp.clearChipErrorOnSelect(chipGroupSeason, root.tvChipSeasonError);
+            TextHelp.clearChipErrorOnSelect(chipGroupPlanting, root.tvChipMethodError);
 
             root.btnUpdateVariety.setOnClickListener(view -> {
                 String id = getIntent().getStringExtra("rice_seed_id");
@@ -82,17 +95,6 @@ public class AddRiceVariety extends AppCompatActivity {
             });
         }
 
-        String environment = null;
-        String season = null;
-        String plantingMethod = null;
-
-        selectChipsFromText(chipGroupEnvironment, environment);
-        selectChipsFromText(chipGroupSeason, season);
-        selectChipsFromText(chipGroupPlanting, plantingMethod);
-
-        TextHelp.clearChipErrorOnSelect(chipGroupEnvironment, root.tvChipEnvironmentError);
-        TextHelp.clearChipErrorOnSelect(chipGroupSeason, root.tvChipSeasonError);
-        TextHelp.clearChipErrorOnSelect(chipGroupPlanting, root.tvChipMethodError);
 
         //Live validation
         TextHelp.addValidation(root.layoutVarietyName, root.txtVarietyName, "Field required");
@@ -111,9 +113,17 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private void setupChipListeners() {
-        chipGroupEnvironment.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {});
-        chipGroupSeason.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {});
-        chipGroupPlanting.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {});
+        chipGroupEnvironment.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            root.tvChipEnvironmentError.setVisibility(View.GONE);
+        });
+
+        chipGroupSeason.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            root.tvChipSeasonError.setVisibility(View.GONE);
+        });
+
+        chipGroupPlanting.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            root.tvChipMethodError.setVisibility(View.GONE);
+        });
     }
 
     private boolean validateAllFields() {
