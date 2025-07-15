@@ -126,52 +126,51 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
     private boolean validateAllFields() {
-        boolean isValid = true;
 
         //variety name
-        isValid &= TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please enter variety name");
+        if (!TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please enter variety name")) return false;
         TextHelp.addAlphaNumericSpace(root.layoutVarietyName, root.txtVarietyName, "Letters and numbers only");
 
         //release name
-        isValid &= TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please enter release name");
+        if (!TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please enter release name")) return false;
         TextHelp.addAlphaNumericSpace(root.layoutReleaseName, root.txtReleaseName, "Letters and numbers only");
 
         //breeding code
-        isValid &= TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please enter breeding code");
+        if (!TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please enter breeding code")) return false;
         TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Letters and numbers only");
 
         //year release
-        isValid &= TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please enter year release");
+        if (!TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please enter year release")) return false;
 
         //breeder origin
-        isValid &= TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please enter breeder/origin");
+        if (!TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please enter breeder/origin")) return false;
         TextHelp.addLettersSpaceAnd(root.layoutBreederOrigin, root.txtBreederOrigin, "Letters, & symbol only");
 
         //maturity
-        isValid &= TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please enter maturity days");
+        if (!TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please enter maturity days")) return false;
 
         //plant height
-        isValid &= TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please enter plant height");
+        if (!TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please enter plant height")) return false;
 
         //average yield
-        isValid &= TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please enter average yield");
+        if (!TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please enter average yield")) return false;
 
         //max yield
-        isValid &= TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please enter max yield");
+        if (!TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please enter max yield")) return false;
 
         //tillers
-        isValid &= TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please enter no. of tillers");
+        if (!TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please enter no. of tillers")) return false;
 
         //location
-        isValid &= TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please enter location");
+        if (!TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please enter location")) return false;
         TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Letters and numbers only");
 
         // ChipGroups
-        isValid &= TextHelp.validateChipGroup(chipGroupEnvironment, root.tvChipEnvironmentError, "Please select environment");
-        isValid &= TextHelp.validateChipGroup(chipGroupSeason, root.tvChipSeasonError, "Please select season");
-        isValid &= TextHelp.validateChipGroup(chipGroupPlanting, root.tvChipMethodError, "Please select planting method");
+        if (!TextHelp.validateChipGroup(chipGroupEnvironment, root.tvChipEnvironmentError, "Please select environment")) return false;
+        if (!TextHelp.validateChipGroup(chipGroupSeason, root.tvChipSeasonError, "Please select season")) return false;
+        if (!TextHelp.validateChipGroup(chipGroupPlanting, root.tvChipMethodError, "Please select planting method")) return false;
 
-        return isValid;
+        return true;
 
     }
 
