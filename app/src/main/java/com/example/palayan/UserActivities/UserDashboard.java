@@ -322,8 +322,9 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             return;
                         }
 
-                        boolean isCorrect1 = ansOne.equalsIgnoreCase(correctOne);
-                        boolean isCorrect2 = ansTwo.equalsIgnoreCase(correctTwo);
+                        boolean isCorrect1 = ansOne.equals(correctOne);
+                        boolean isCorrect2 = ansTwo.equals(correctTwo);
+
 
                         layoutSecOne.setError(null);
                         layoutSecTwo.setError(null);
