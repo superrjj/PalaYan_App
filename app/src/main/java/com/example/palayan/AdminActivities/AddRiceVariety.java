@@ -129,18 +129,43 @@ public class AddRiceVariety extends AppCompatActivity {
     private boolean validateAllFields() {
         boolean isValid = true;
 
-        // Text fields
+        //variety name
         isValid &= TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please enter variety name");
+        TextHelp.addLettersSpaceAnd(root.layoutVarietyName, root.txtVarietyName, "Letters and numbers only");
+
+        //release name
         isValid &= TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please enter release name");
+        TextHelp.addAlphaNumericSpace(root.layoutReleaseName, root.txtReleaseName, "Letters and numbers only");
+
+        //breeding code
         isValid &= TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please enter breeding code");
+        TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Letters and numbers only");
+
+        //year release
         isValid &= TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please enter year release");
+
+        //breeder origin
         isValid &= TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please enter breeder/origin");
+        TextHelp.addLettersSpaceAnd(root.layoutBreederOrigin, root.txtBreederOrigin, "Letters, & symbol only");
+
+        //maturity
         isValid &= TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please enter maturity days");
+
+        //plant height
         isValid &= TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please enter plant height");
+
+        //average yield
         isValid &= TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please enter average yield");
+
+        //max yield
         isValid &= TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please enter max yield");
+
+        //tillers
         isValid &= TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please enter no. of tillers");
+
+        //location
         isValid &= TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please enter location");
+        TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Letters and numbers only");
 
         // ChipGroups
         isValid &= TextHelp.validateChipGroup(chipGroupEnvironment, root.tvChipEnvironmentError, "Please select environment");
@@ -148,6 +173,7 @@ public class AddRiceVariety extends AppCompatActivity {
         isValid &= TextHelp.validateChipGroup(chipGroupPlanting, root.tvChipMethodError, "Please select planting method");
 
         return isValid;
+
     }
 
     private void showAddConfirmationDialog() {

@@ -3,10 +3,12 @@ package com.example.palayan.UserActivities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -14,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +51,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     private BottomNavigationView bottomNav;
     private ImageView logo;
     private FirebaseFirestore firestore;
+    AlertDialog loadingDialog;
 
     private final long HOLD_DURATION = 2000;
     private final Handler handler = new Handler();
@@ -157,6 +162,28 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 return;
             }
 
+            //Loading dialog
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.HORIZONTAL);
+            layout.setPadding(50, 50, 50, 50);
+            layout.setGravity(Gravity.CENTER_VERTICAL);
+
+            ProgressBar progressBar = new ProgressBar(this);
+            layout.addView(progressBar);
+
+            TextView message = new TextView(this);
+            message.setText("Logging in...");
+            message.setTextSize(16);
+            message.setTextColor(Color.BLACK);
+            message.setPadding(30, 0, 0, 0);
+            layout.addView(message);
+
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setCancelable(false);
+            builder1.setView(layout);
+            loadingDialog = builder1.create();
+            loadingDialog.show();
+
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
@@ -191,7 +218,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                                     .document(docId)
                                     .update("lastActive", com.google.firebase.firestore.FieldValue.serverTimestamp())
                                     .addOnSuccessListener(unused -> {
-                                        Toast.makeText(this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(UserDashboard.this, AdminDashboard.class);
                                         intent.putExtra("userId", userId);
                                         intent.putExtra("userRole", role);
@@ -208,6 +235,10 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             layoutPassword.setError("Incorrect username or password");
                             layoutUsername.setError("Incorrect username or password");
                         }
+                    })
+                    .addOnFailureListener(e -> {
+                        loadingDialog.dismiss();
+                        Toast.makeText(this, "Login failed. Try again.", Toast.LENGTH_SHORT).show();
                     });
         });
 
