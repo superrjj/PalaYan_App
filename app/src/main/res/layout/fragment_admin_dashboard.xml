@@ -30,7 +30,7 @@
 
                <!-- Card 1: Rice Varieties -->
                <androidx.cardview.widget.CardView
-                   android:layout_width="80dp"
+                   android:layout_width="75dp"
                    android:layout_height="100dp"
                    app:cardCornerRadius="10dp"
                    app:cardElevation="4dp"
@@ -48,14 +48,14 @@
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="0"
-                           android:textSize="28sp"
+                           android:textSize="30sp"
                            android:textColor="@color/dark_green"
                            android:fontFamily="@font/poppins__semibold" />
 
                        <TextView
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="Rice Seeds"
+                           android:text="Seeds"
                            android:textSize="13sp"
                            android:textAlignment="center"
                            android:textColor="@color/dark_green"
@@ -65,7 +65,7 @@
 
 
                <androidx.cardview.widget.CardView
-                   android:layout_width="80dp"
+                   android:layout_width="75dp"
                    android:layout_height="100dp"
                    app:cardCornerRadius="10dp"
                    app:cardElevation="4dp"
@@ -83,7 +83,7 @@
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="0"
-                           android:textSize="28sp"
+                           android:textSize="30sp"
                            android:textColor="@color/dark_orange"
                            android:fontFamily="@font/poppins__semibold" />
 
@@ -99,7 +99,7 @@
 
 
                <androidx.cardview.widget.CardView
-                   android:layout_width="80dp"
+                   android:layout_width="75dp"
                    android:layout_height="100dp"
                    app:cardCornerRadius="10dp"
                    app:cardElevation="4dp"
@@ -117,7 +117,7 @@
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="0"
-                           android:textSize="28sp"
+                           android:textSize="30sp"
                            android:textColor="@color/dark_red"
                            android:fontFamily="@font/poppins__semibold" />
 
@@ -133,7 +133,7 @@
 
 
                <androidx.cardview.widget.CardView
-                   android:layout_width="80dp"
+                   android:layout_width="75dp"
                    android:layout_height="100dp"
                    app:cardCornerRadius="10dp"
                    app:cardElevation="4dp"
@@ -151,7 +151,7 @@
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="0"
-                           android:textSize="28sp"
+                           android:textSize="30sp"
                            android:textColor="@color/dark_blue"
                            android:fontFamily="@font/poppins__semibold" />
 

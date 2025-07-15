@@ -213,7 +213,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                                 initials = "";
                             }
 
-
+                            //retrieving the data from the collection accounts
                             firestore.collection("accounts")
                                     .document(docId)
                                     .update("lastActive", com.google.firebase.firestore.FieldValue.serverTimestamp())
@@ -234,10 +234,10 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                         } else {
                             layoutPassword.setError("Incorrect username or password");
                             layoutUsername.setError("Incorrect username or password");
+                            loadingDialog.dismiss();
                         }
                     })
                     .addOnFailureListener(e -> {
-                        loadingDialog.dismiss();
                         Toast.makeText(this, "Login failed. Try again.", Toast.LENGTH_SHORT).show();
                     });
         });

@@ -46,6 +46,10 @@ public class AddRiceVariety extends AppCompatActivity {
         chipGroupPlanting = findViewById(R.id.chipGroupPlanting);
         setupChipListeners();
 
+        TextHelp.addChipValidation(chipGroupEnvironment, root.tvChipEnvironmentError, "Please select environment");
+        TextHelp.addChipValidation(chipGroupSeason, root.tvChipSeasonError, "Please select season");
+        TextHelp.addChipValidation(chipGroupPlanting, root.tvChipMethodError, "Please select planting method");
+
         ImageView ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(v -> onBackPressed());
 
@@ -83,11 +87,6 @@ public class AddRiceVariety extends AppCompatActivity {
             selectChipsFromText(chipGroupEnvironment, environment);
             selectChipsFromText(chipGroupSeason, season);
             selectChipsFromText(chipGroupPlanting, plantingMethod);
-
-            // CLEAR ERROR TEXT ON SELECT
-            TextHelp.clearChipErrorOnSelect(chipGroupEnvironment, root.tvChipEnvironmentError);
-            TextHelp.clearChipErrorOnSelect(chipGroupSeason, root.tvChipSeasonError);
-            TextHelp.clearChipErrorOnSelect(chipGroupPlanting, root.tvChipMethodError);
 
             root.btnUpdateVariety.setOnClickListener(view -> {
                 String id = getIntent().getStringExtra("rice_seed_id");
@@ -131,7 +130,7 @@ public class AddRiceVariety extends AppCompatActivity {
 
         //variety name
         isValid &= TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please enter variety name");
-        TextHelp.addLettersSpaceAnd(root.layoutVarietyName, root.txtVarietyName, "Letters and numbers only");
+        TextHelp.addAlphaNumericSpace(root.layoutVarietyName, root.txtVarietyName, "Letters and numbers only");
 
         //release name
         isValid &= TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please enter release name");
@@ -354,7 +353,6 @@ public class AddRiceVariety extends AppCompatActivity {
 
         dialog.show(getSupportFragmentManager(), "SuccessDialog");
 
-        // kapag na-dismiss yung dialog, tsaka mo i-finish
         getSupportFragmentManager().executePendingTransactions();
         dialog.getDialog().setOnDismissListener(dialogInterface -> finish());
     }

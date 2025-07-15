@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     app:hintTextColor="@color/green"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:hint="Release Name">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -120,7 +120,7 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     app:hintTextColor="@color/green"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:hint="Breeding Code">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -141,7 +141,7 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     app:hintTextColor="@color/green"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:hint="Year Release">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -162,7 +162,7 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     app:hintTextColor="@color/green"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:hint="Breeding/Origin">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -202,7 +202,7 @@
                             android:layout_height="wrap_content"
                             app:boxStrokeColor="@color/green"
                             app:hintTextColor="@color/green"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="15dp"
                             android:hint="Maturity">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -232,7 +232,7 @@
                             android:layout_height="wrap_content"
                             app:boxStrokeColor="@color/green"
                             app:hintTextColor="@color/green"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="15dp"
                             android:hint="Plant Height">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -268,7 +268,7 @@
                             android:layout_height="wrap_content"
                             app:boxStrokeColor="@color/green"
                             app:hintTextColor="@color/green"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="15dp"
                             android:hint="Average Yield">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -298,7 +298,7 @@
                             android:layout_height="wrap_content"
                             app:boxStrokeColor="@color/green"
                             app:hintTextColor="@color/green"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="15dp"
                             android:hint="Plant Height">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -322,7 +322,7 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     app:hintTextColor="@color/green"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:hint="No. of Tillers">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -343,7 +343,7 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     app:hintTextColor="@color/green"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:hint="Location">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -370,9 +370,9 @@
                     android:text="Select Environment*"
                     android:textColor="@color/green"
                     android:textSize="14sp"
-                    android:paddingTop="10dp"
+                    android:paddingTop="15dp"
                     android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium" />
+                    android:fontFamily="@font/poppins__semibold" />
 
                <com.google.android.material.chip.ChipGroup
                    android:id="@+id/chipGroupEnvironment"
@@ -481,8 +481,8 @@
                     android:textColor="@color/green"
                     android:textSize="14sp"
                     android:paddingBottom="5dp"
-                    android:paddingTop="10dp"
-                    android:fontFamily="@font/poppins__medium" />
+                    android:paddingTop="15dp"
+                    android:fontFamily="@font/poppins__semibold" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupSeason"
@@ -556,8 +556,9 @@
                     android:text="Select Planting Method*"
                     android:textColor="@color/green"
                     android:textSize="14sp"
+                    android:paddingTop="15dp"
                     android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium" />
+                    android:fontFamily="@font/poppins__semibold" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupPlanting"

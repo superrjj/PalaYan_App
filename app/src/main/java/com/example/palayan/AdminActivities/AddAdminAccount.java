@@ -38,10 +38,11 @@ public class AddAdminAccount extends AppCompatActivity {
 
         firestore = FirebaseFirestore.getInstance();
 
-        // Spinner with placeholder
-        String[] roles = {"Select Role", "Main Admin", "Data Manager"};
-        roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, roles);
+        //role
+        roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                getResources().getStringArray(R.array.roles_array));
         root.spRole.setAdapter(roleAdapter);
+
 
         // Default visibility
         root.btnCreate.setVisibility(View.VISIBLE);
@@ -77,7 +78,7 @@ public class AddAdminAccount extends AppCompatActivity {
                         String role = doc.getString("role");
                         int spinnerPosition = roleAdapter.getPosition(role);
                         if (spinnerPosition >= 0) {
-                            root.spRole.setSelection(spinnerPosition);
+                            root.spRole.setText(role, false);
                         }
                     }
                 })
@@ -85,6 +86,7 @@ public class AddAdminAccount extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load account.", Toast.LENGTH_SHORT).show()
                 );
     }
+
 
     private void showAddConfirmationDialog() {
         String fullName = root.txtFullName.getText().toString().trim();
@@ -167,17 +169,13 @@ public class AddAdminAccount extends AppCompatActivity {
         String password = root.txtPassword.getText().toString().trim();
         String secOne = root.txtSecOne.getText().toString().trim();
         String secTwo = root.txtSecTwo.getText().toString().trim();
-        String selectedRole = root.spRole.getSelectedItem().toString();
+        String selectedRole = root.spRole.getText().toString();
 
         if (fullName.isEmpty() || username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return null;
         }
 
-        if (selectedRole.equals("Select Role")) {
-            Toast.makeText(this, "Please select a valid role", Toast.LENGTH_SHORT).show();
-            return null;
-        }
 
         HashMap<String, Object> account = new HashMap<>();
         account.put("fullName", fullName);

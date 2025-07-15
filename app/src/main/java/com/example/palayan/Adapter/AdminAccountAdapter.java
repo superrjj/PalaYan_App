@@ -22,7 +22,9 @@ import com.example.palayan.Helper.AdminModel;
 import com.example.palayan.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapter.AccountHolder> {
@@ -48,13 +50,11 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
 
     @Override
     public void onBindViewHolder(@NonNull AccountHolder holder, int position) {
-
         AdminModel model = accountList.get(position);
 
         holder.tvFullName.setText(model.getFullName());
         holder.tvRole.setText(model.getRole());
 
-        // Generate initials
         String[] nameParts = model.getFullName().split(" ");
         String initials = "";
         if (nameParts.length >= 2) {
@@ -64,9 +64,7 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
         }
         holder.tvInitialName.setText(initials);
 
-        //check the user admin if active or inactive in 1 day
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference accountRef = db.collection("accounts").document(String.valueOf(model.getUserId()));
+        DocumentReference accountRef = firestore.collection("accounts").document(String.valueOf(model.getUserId()));
 
         String computedStatus;
         if (model.getLastActive() != null) {
@@ -84,34 +82,21 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
                 holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.dark_orange));
             }
         } else {
-            // No lastActive — treat as Active
             computedStatus = "Active";
             holder.tvStatus.setText("Active");
             holder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
         }
 
-//update Firestore only if different
         if (!model.getStatus().equals(computedStatus)) {
-            accountRef.update("status", computedStatus)
-                    .addOnSuccessListener(aVoid -> {
-                        //optional
-                        // Toast.makeText(context, "Status updated", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        //optional
-                        // Toast.makeText(context, "Failed to update status", Toast.LENGTH_SHORT).show();
-                    });
+            accountRef.update("status", computedStatus);
         }
 
-
-        //cannot delete the accounts who currently logged in
-        if(model.getUserId() == currentUserId){
+        if (model.getUserId() == currentUserId) {
             holder.ivDelete.setVisibility(View.GONE);
-        }else{
+        } else {
             holder.ivDelete.setVisibility(View.VISIBLE);
         }
 
-        // Archive button
         holder.ivDelete.setOnClickListener(v -> {
             if (context instanceof FragmentActivity) {
                 CustomDialogFragment.newInstance(
@@ -121,45 +106,34 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
                         R.drawable.ic_warning,
                         "ARCHIVE",
                         (dialog, which) -> {
-                            int currentPosition = holder.getBindingAdapterPosition();
-                            if (currentPosition != RecyclerView.NO_POSITION) {
-                                holder.ivDelete.setEnabled(false);
-
-                                firestore.collection("accounts")
-                                        .document(String.valueOf(model.getUserId()))
-                                        .update("archived", true)
-                                        .addOnSuccessListener(unused -> {
-                                            Toast.makeText(context, "Archived " + model.getFullName(), Toast.LENGTH_SHORT).show();
-
-                                            int updatedPosition = holder.getBindingAdapterPosition();
-                                            if (updatedPosition != RecyclerView.NO_POSITION && updatedPosition < accountList.size()) {
-                                                accountList.remove(updatedPosition);
-                                                notifyItemRemoved(updatedPosition);
-                                            }
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Toast.makeText(context, "Failed to archive: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            holder.ivDelete.setEnabled(true);
-                                        });
-                            }
+                            holder.ivDelete.setEnabled(false);
+                            firestore.collection("accounts")
+                                    .document(String.valueOf(model.getUserId()))
+                                    .update("archived", true)
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(context, "Archived " + model.getFullName(), Toast.LENGTH_SHORT).show();
+                                        fetchAccountList();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(context, "Failed to archive: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        holder.ivDelete.setEnabled(true);
+                                    });
                         }
                 ).show(((FragmentActivity) context).getSupportFragmentManager(), "ArchiveConfirmDialog");
             }
         });
 
-        // Update button
         holder.ivUpdate.setOnClickListener(v -> {
             Intent intent = new Intent(context, AddAdminAccount.class);
             intent.putExtra("userId", model.getUserId());
             context.startActivity(intent);
         });
 
-        holder.cvAccounts.setOnClickListener(v ->{
+        holder.cvAccounts.setOnClickListener(v -> {
             Intent intent = new Intent(context, AccountDetails.class);
             intent.putExtra("userId", model.getUserId());
             context.startActivity(intent);
         });
-
     }
 
     @Override
@@ -182,5 +156,20 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
             ivDelete = itemView.findViewById(R.id.ivDelete);
             cvAccounts = itemView.findViewById(R.id.cvAccounts);
         }
+    }
+
+    private void fetchAccountList() {
+        firestore.collection("accounts")
+                .whereEqualTo("archived", false)
+                .orderBy("userId", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    accountList.clear();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        AdminModel admin = doc.toObject(AdminModel.class);
+                        accountList.add(admin);
+                    }
+                    notifyDataSetChanged();
+                });
     }
 }

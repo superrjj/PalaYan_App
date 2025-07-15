@@ -65,142 +65,149 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Full Name*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
+                    android:text="Basic Information"
+                    android:textSize="16sp"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/poppins__semibold"
+                    android:textColor="@color/green"/>
 
-                <EditText
-                    android:id="@+id/txtFullName"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutFullName"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
                     android:layout_marginBottom="5dp"
-                    android:hint="Full Name"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    android:hint="Full Name">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Username*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtFullName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
 
-                <EditText
-                    android:id="@+id/txtUsername"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutUsername"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
                     android:layout_marginBottom="5dp"
-                    android:hint="Username"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    android:hint="Username">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Password*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtUsername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
 
-                <EditText
-                    android:id="@+id/txtPassword"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
                     android:layout_marginBottom="5dp"
-                    android:hint="Password"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    android:hint="Password">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select Role"
+                    android:layout_marginTop="15dp"
+                    app:boxStrokeColor="@color/green"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spRole"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:fontFamily="@font/poppins__medium"
+                        android:inputType="none"
+                        android:padding="12dp"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Role*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
+                    android:text="Security Verification"
+                    android:textSize="16sp"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/poppins__semibold"
+                    android:textColor="@color/green"/>
 
-                <Spinner
-                    android:id="@+id/spRole"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutSecOne"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/custom_input"
-                    android:theme="@style/InputLabel"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:spinnerMode="dropdown"
-                    android:dropDownSelector="@color/green"
-                    android:layout_marginBottom="10dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="What city where you born in?*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <EditText
-                    android:id="@+id/txtSecOne"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
+                    app:boxStrokeColor="@color/green"
                     android:layout_marginBottom="5dp"
-                    android:hint="City"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    android:hint="Password">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtSecOne"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="What is your childhood nickname?*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-
-                <EditText
-                    android:id="@+id/txtSecTwo"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutSecTwo"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="30dp"
-                    android:hint="Nickname"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginBottom="5dp"
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    android:hint="Password">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtSecTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
 
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/btnCreate"
@@ -211,6 +218,7 @@
                     android:textSize="15sp"
                     android:textColor="@color/white"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginTop="30dp"
                     android:fontFamily="@font/poppins__semibold"/>
 
                 <Button
@@ -218,11 +226,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/button_solid"
-                    android:backgroundTint="@color/dark_blue"
+                    app:backgroundTint="@color/dark_blue"
                     android:text="UPDATE ACCOUNT"
                     android:textSize="15sp"
                     android:textColor="@color/white"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginTop="30dp"
                     android:fontFamily="@font/poppins__semibold"/>
 
 

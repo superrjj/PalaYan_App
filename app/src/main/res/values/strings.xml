@@ -4,7 +4,6 @@
     <string name="close_nav"></string>
 
     <string-array name="roles_array">
-        <item>Select Role</item>
         <item>Main Admin</item>
         <item>Data Admin</item>
     </string-array>
@@ -59,6 +58,7 @@
         <item>Wet Season</item>
         <item>Summer Crop</item>
     </string-array>
+
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>

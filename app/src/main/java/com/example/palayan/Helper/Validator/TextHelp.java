@@ -116,13 +116,21 @@ public class TextHelp {
     }
 
     //auto hide error when a chip is selected
-    public static void clearChipErrorOnSelect(ChipGroup chipGroup, TextView errorTextView) {
-        if (!chipGroup.getCheckedChipIds().isEmpty()) {
+    public static void addChipValidation(ChipGroup chipGroup, TextView errorTextView, String errorMessage) {
+        // Initial check
+        if (chipGroup.getCheckedChipIds().isEmpty()) {
+            errorTextView.setText(errorMessage);
+            errorTextView.setVisibility(View.VISIBLE);
+        } else {
             errorTextView.setVisibility(View.GONE);
         }
 
+        // Listen for changes in chip selection
         chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (!checkedIds.isEmpty()) {
+            if (checkedIds.isEmpty()) {
+                errorTextView.setText(errorMessage);
+                errorTextView.setVisibility(View.VISIBLE);
+            } else {
                 errorTextView.setVisibility(View.GONE);
             }
         });
