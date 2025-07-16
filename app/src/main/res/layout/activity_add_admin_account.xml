@@ -93,6 +93,28 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select Role"
+                    android:layout_marginTop="15dp"
+                    app:boxStrokeColor="@color/green"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spRole"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:fontFamily="@font/poppins__medium"
+                        android:inputType="none"
+                        android:padding="12dp"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -121,6 +143,8 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/green"
                     android:hint="Password">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -134,26 +158,182 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!--Password requirements-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Password should be"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/poppins__semibold"
+                    android:textColor="@color/green"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvOneReq"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardCornerRadius="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp">
+                    
+                    <ImageView
+                        android:id="@+id/ivOneReq"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_check"
+                        android:layout_gravity="center"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/tvOneReq"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Password length at least 8 characters"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:textColor="@color/dark_gray"
+                    android:fontFamily="@font/poppins__medium"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvFiveReq"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:cardBackgroundColor="@color/light_gray"
+                        app:cardCornerRadius="100dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp">
+
+                        <ImageView
+                            android:id="@+id/ivFiveReq"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_check"
+                            android:layout_gravity="center"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/tvFiveReq"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Password contains one symbol"
+                        android:gravity="center|start"
+                        android:paddingStart="10dp"
+                        android:textColor="@color/dark_gray"
+                        android:fontFamily="@font/poppins__medium"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvThreeReq"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:cardBackgroundColor="@color/light_gray"
+                        app:cardCornerRadius="100dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp">
+
+                        <ImageView
+                            android:id="@+id/ivThreeReq"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_check"
+                            android:layout_gravity="center"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/tvThreeReq"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="One upper case letter is required"
+                        android:gravity="center|start"
+                        android:paddingStart="10dp"
+                        android:textColor="@color/dark_gray"
+                        android:fontFamily="@font/poppins__medium"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvFourReq"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:cardBackgroundColor="@color/light_gray"
+                        app:cardCornerRadius="100dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp">
+
+                        <ImageView
+                            android:id="@+id/ivFourReq"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_check"
+                            android:layout_gravity="center"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/tvFourReq"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="One lower case letter is required"
+                        android:gravity="center|start"
+                        android:paddingStart="10dp"
+                        android:textColor="@color/dark_gray"
+                        android:fontFamily="@font/poppins__medium"/>
+                </LinearLayout>
+
+
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutConfirmPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Role"
-                    android:layout_marginTop="15dp"
                     app:boxStrokeColor="@color/green"
-                    app:endIconMode="dropdown_menu">
+                    android:layout_marginBottom="5dp"
+                    app:hintTextColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/green"
+                    android:hint="Confirm Password">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/spRole"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtConfirmPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:fontFamily="@font/poppins__medium"
-                        android:inputType="none"
-                        android:padding="12dp"
+                        android:fontFamily="@font/poppins__regular"
                         android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        android:textSize="13sp"
+                        android:inputType="text" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -175,7 +355,7 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
-                    android:hint="Password">
+                    android:hint="Security One">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/txtSecOne"
@@ -196,7 +376,7 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
-                    android:hint="Password">
+                    android:hint="Security Two">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/txtSecTwo"

@@ -11,6 +11,7 @@ import androidx.core.view.WindowCompat;
 
 import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Dialog.StatusDialogFragment;
+import com.example.palayan.Helper.Validator.TextHelp;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddAdminAccountBinding;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -59,6 +60,35 @@ public class AddAdminAccount extends AppCompatActivity {
             }
         }
 
+        TextHelp.addValidation(root.layoutFullName, root.txtFullName, "Field required");
+        TextHelp.addValidation(root.layoutUsername, root.txtUsername, "Field required");
+        TextHelp.addValidation(root.layoutPassword, root.txtPassword, "Field required");
+        TextHelp.addValidation(root.layoutSecOne, root.txtSecOne, "Field required");
+        TextHelp.addValidation(root.layoutSecTwo, root.txtSecTwo, "Field required");
+
+        TextHelp.addPasswordRequirementsValidation(
+                root.txtPassword,
+                root.txtUsername,
+                root.cvOneReq, root.ivOneReq, root.tvOneReq,
+                root.cvThreeReq, root.ivThreeReq, root.tvThreeReq,
+                root.cvFourReq, root.ivFourReq, root.tvFourReq,
+                root.cvFiveReq, root.ivFiveReq, root.tvFiveReq,
+                getResources().getColor(R.color.green),
+                getResources().getColor(R.color.light_gray),
+                getResources().getColor(R.color.green),
+                getResources().getColor(R.color.dark_gray),
+                getResources().getColor(R.color.white),
+                getResources().getColor(R.color.black)
+        );
+
+        TextHelp.addConfirmPasswordValidation(
+                root.layoutConfirmPass,
+                root.txtPassword,
+                root.txtConfirmPassword,
+                "Password does not match"
+        );
+
+
         root.btnCreate.setOnClickListener(v -> showAddConfirmationDialog());
         root.btnUpdateAccount.setOnClickListener(v -> showUpdateConfirmationDialog());
     }
@@ -87,13 +117,33 @@ public class AddAdminAccount extends AppCompatActivity {
                 );
     }
 
+    private boolean validateAllFields(){
+
+        if (!TextHelp.isFilled(root.layoutFullName, root.txtFullName, "Please enter full name")) return false;
+        TextHelp.addLetterOnly(root.layoutFullName, root.txtFullName, "Letters only");
+
+        if (!TextHelp.isFilled(root.layoutUsername, root.txtUsername, "Please enter username")) return false;
+
+
+        if (!TextHelp.isFilled(root.layoutPassword, root.txtPassword, "Please enter password")) return false;
+        String password = root.txtPassword.getText().toString();
+        String confirmPassword = root.txtConfirmPassword.getText().toString();
+        if (!password.equals(confirmPassword)) {
+            root.layoutConfirmPass.setError("Password does not match");
+            return false;
+        }
+
+        if (!TextHelp.isFilled(root.layoutSecOne, root.txtSecOne, "Please enter security one")) return false;
+        if (!TextHelp.isFilled(root.layoutSecTwo, root.txtSecTwo, "Please enter security two")) return false;
+
+        return true;
+    }
 
     private void showAddConfirmationDialog() {
+
+        if (!validateAllFields()) return;
         String fullName = root.txtFullName.getText().toString().trim();
-        if (fullName.isEmpty()) {
-            Toast.makeText(this, "Full Name is required", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
 
         CustomDialogFragment.newInstance(
                 "Add Admin Account",
@@ -203,4 +253,5 @@ public class AddAdminAccount extends AppCompatActivity {
                 ).setOnDismissListener(() -> finish())
                 .show(getSupportFragmentManager(), "SuccessDialog");
     }
+
 }
