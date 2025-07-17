@@ -83,7 +83,13 @@ public class AddPest extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
-        root.ivBack.setOnClickListener(v -> onBackPressed());
+        root.ivBack.setOnClickListener(v -> {
+            if (hasInput()) {
+                showDiscardDialog();
+            } else {
+                finish();
+            }
+        });
 
         View.OnClickListener uploadClick = v -> showImagePickerDialog();
         root.ivUploadImage.setOnClickListener(uploadClick);
@@ -323,4 +329,35 @@ public class AddPest extends AppCompatActivity {
                 ).setOnDismissListener(this::finish)
                 .show(getSupportFragmentManager(), "SuccessDialog");
     }
+
+    @Override
+    public void onBackPressed() {
+        if (hasInput()) {
+            showDiscardDialog();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean hasInput() {
+        return !root.txtPestName.getText().toString().trim().isEmpty()
+                || !root.txtScientificName.getText().toString().trim().isEmpty()
+                || !root.txtDescription.getText().toString().trim().isEmpty()
+                || !root.txtSymptoms.getText().toString().trim().isEmpty()
+                || !root.txtCause.getText().toString().trim().isEmpty()
+                || !root.txtTreatments.getText().toString().trim().isEmpty()
+                || imageUri != null;
+    }
+
+    private void showDiscardDialog() {
+        CustomDialogFragment.newInstance(
+                "Discard Changes?",
+                "Are you sure you want to discard the entered information?",
+                "All unsaved changes will be lost.",
+                R.drawable.ic_warning,
+                "DISCARD",
+                (dialog, which) -> finish()
+        ).show(getSupportFragmentManager(), "DiscardDialog");
+    }
+
 }

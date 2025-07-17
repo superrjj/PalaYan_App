@@ -50,8 +50,13 @@ public class AddRiceVariety extends AppCompatActivity {
         TextHelp.addChipValidation(chipGroupSeason, root.tvChipSeasonError, "Please select season");
         TextHelp.addChipValidation(chipGroupPlanting, root.tvChipMethodError, "Please select planting method");
 
-        ImageView ivBack = findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(v -> onBackPressed());
+        root.ivBack.setOnClickListener(v -> {
+            if (hasInput()) {
+                showDiscardDialog();
+            } else {
+                finish();
+            }
+        });
 
         root.btnAddVariety.setVisibility(View.VISIBLE);
         root.btnUpdateVariety.setVisibility(View.GONE);
@@ -356,5 +361,41 @@ public class AddRiceVariety extends AppCompatActivity {
         dialog.getDialog().setOnDismissListener(dialogInterface -> finish());
     }
 
+    @Override
+    public void onBackPressed() {
+        if (hasInput()) {
+            showDiscardDialog();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean hasInput() {
+        return !root.txtVarietyName.getText().toString().trim().isEmpty()
+                || !root.txtReleaseName.getText().toString().trim().isEmpty()
+                || !root.txtBreedingCode.getText().toString().trim().isEmpty()
+                || !root.txtYearRelease.getText().toString().trim().isEmpty()
+                || !root.txtBreederOrigin.getText().toString().trim().isEmpty()
+                || !root.txtMaturity.getText().toString().trim().isEmpty()
+                || !root.txtPlantHeight.getText().toString().trim().isEmpty()
+                || !root.txtAverageYield.getText().toString().trim().isEmpty()
+                || !root.txtMaxYield.getText().toString().trim().isEmpty()
+                || !root.txtTillers.getText().toString().trim().isEmpty()
+                || !root.txtLocation.getText().toString().trim().isEmpty()
+                || chipGroupEnvironment.getCheckedChipIds().size() > 0
+                || chipGroupSeason.getCheckedChipIds().size() > 0
+                || chipGroupPlanting.getCheckedChipIds().size() > 0;
+    }
+
+    private void showDiscardDialog() {
+        CustomDialogFragment.newInstance(
+                "Discard Changes?",
+                "Are you sure you want to discard the entered information?",
+                "All unsaved changes will be lost.",
+                R.drawable.ic_warning,
+                "DISCARD",
+                (dialog, which) -> finish()
+        ).show(getSupportFragmentManager(), "DiscardDialog");
+    }
 
 }
