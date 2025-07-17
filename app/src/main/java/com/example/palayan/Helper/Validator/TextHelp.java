@@ -1,8 +1,11 @@
 package com.example.palayan.Helper.Validator;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextWatcher;
 import android.text.Editable;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,7 +14,10 @@ import androidx.cardview.widget.CardView;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 public class TextHelp {
@@ -169,6 +175,7 @@ public class TextHelp {
             final TextInputEditText passwordEditText,
             final TextInputEditText usernameEditText,
             final CardView cvOneReq, final ImageView ivOneReq, final TextView tvOneReq,
+            final CardView cvTwoReq, final ImageView ivTwoReq, final TextView tvTwoReq,
             final CardView cvThreeReq, final ImageView ivThreeReq, final TextView tvThreeReq,
             final CardView cvFourReq, final ImageView ivFourReq, final TextView tvFourReq,
             final CardView cvFiveReq, final ImageView ivFiveReq, final TextView tvFiveReq,
@@ -186,12 +193,19 @@ public class TextHelp {
                 Pattern uppercase = Pattern.compile(".*[A-Z].*");
                 Pattern lowercase = Pattern.compile(".*[a-z].*");
                 Pattern symbol = Pattern.compile(".*[^a-zA-Z0-9].*");
+                Pattern number = Pattern.compile(".*[0-9].*");
 
                 // At least 8 characters
                 boolean lengthOk = password.length() >= 8;
                 cvOneReq.setCardBackgroundColor(lengthOk ? activeColor : inactiveColor);
                 tvOneReq.setTextColor(lengthOk ? activeTextColor : inactiveTextColor);
                 ivOneReq.setColorFilter(lengthOk ? activeIconColor : inactiveIconColor);
+
+                // At least 1 number ✅
+                boolean hasNumber = number.matcher(password).matches();
+                cvTwoReq.setCardBackgroundColor(hasNumber ? activeColor : inactiveColor);
+                tvTwoReq.setTextColor(hasNumber ? activeTextColor : inactiveTextColor);
+                ivTwoReq.setColorFilter(hasNumber ? activeIconColor : inactiveIconColor);
 
                 // At least 1 uppercase
                 boolean hasUppercase = uppercase.matcher(password).matches();
@@ -242,5 +256,101 @@ public class TextHelp {
         txtConfirm.addTextChangedListener(watcher);
     }
 
+    public static void addAutoCompleteValidation(final TextInputLayout layout, final AutoCompleteTextView autoCompleteTextView, final String errorMessage) {
+        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                layout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = s.toString().trim();
+                if (input.isEmpty()) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+            }
+        });
+
+        autoCompleteTextView.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String text = autoCompleteTextView.getText() != null ? autoCompleteTextView.getText().toString().trim() : "";
+                if (text.isEmpty()) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+            }
+        });
+
+        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+            layout.setError(null);
+        });
+    }
+
+
+    public interface OnUsernameCheckListener {
+        void onCheckComplete(boolean exists);
+    }
+
+    public static void checkUsernameExists(FirebaseFirestore firestore, String username, OnUsernameCheckListener listener) {
+        firestore.collection("accounts")
+                .whereEqualTo("username", username)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    boolean exists = !querySnapshot.isEmpty();
+                    listener.onCheckComplete(exists);
+                })
+                .addOnFailureListener(e -> {
+                    listener.onCheckComplete(false);
+                });
+    }
+
+    public static TextWatcher createUsernameLiveChecker(FirebaseFirestore firestore, TextInputLayout layoutUsername, String originalUsername, boolean isEditMode) {
+        return new TextWatcher() {
+            private Timer timer = new Timer();
+            private final long DELAY = 100;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                layoutUsername.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                timer.cancel();
+                timer = new Timer();
+
+                String username = s.toString().trim();
+                if (username.isEmpty()) return;
+
+                // Don’t re-check if it’s the same as original (in edit mode)
+                if (isEditMode && username.equals(originalUsername)) return;
+
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        // UI thread para safe mag setError
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            checkUsernameExists(firestore, username, exists -> {
+                                if (exists) {
+                                    layoutUsername.setError("Username is already taken");
+                                } else {
+                                    layoutUsername.setError(null);
+                                }
+                            });
+                        });
+                    }
+                }, DELAY);
+            }
+        };
+    }
+
 }
+
 

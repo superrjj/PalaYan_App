@@ -93,6 +93,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutRole"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Select Role"
@@ -162,7 +163,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Password should be"
+                    android:text="Password should"
                     android:textSize="15sp"
                     android:layout_marginTop="15dp"
                     android:fontFamily="@font/poppins__semibold"
@@ -197,7 +198,7 @@
                     android:id="@+id/tvOneReq"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Password length at least 8 characters"
+                    android:text=" Be at least 8 characters long"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
                     android:textColor="@color/dark_gray"
@@ -212,7 +213,7 @@
                     android:layout_gravity="center">
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cvFiveReq"
+                        android:id="@+id/cvTwoReq"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         app:cardBackgroundColor="@color/light_gray"
@@ -221,7 +222,7 @@
                         android:layout_marginLeft="10dp">
 
                         <ImageView
-                            android:id="@+id/ivFiveReq"
+                            android:id="@+id/ivTwoReq"
                             android:layout_width="10dp"
                             android:layout_height="10dp"
                             android:src="@drawable/ic_check"
@@ -230,15 +231,16 @@
                     </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:id="@+id/tvFiveReq"
+                        android:id="@+id/tvTwoReq"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="Password contains one symbol"
+                        android:text="Contain at least one number"
                         android:gravity="center|start"
                         android:paddingStart="10dp"
                         android:textColor="@color/dark_gray"
                         android:fontFamily="@font/poppins__medium"/>
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -269,7 +271,7 @@
                         android:id="@+id/tvThreeReq"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="One upper case letter is required"
+                        android:text="Contain at least one uppercase letter"
                         android:gravity="center|start"
                         android:paddingStart="10dp"
                         android:textColor="@color/dark_gray"
@@ -305,13 +307,49 @@
                         android:id="@+id/tvFourReq"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="One lower case letter is required"
+                        android:text="Contain at least one lowercase letter"
                         android:gravity="center|start"
                         android:paddingStart="10dp"
                         android:textColor="@color/dark_gray"
                         android:fontFamily="@font/poppins__medium"/>
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvFiveReq"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:cardBackgroundColor="@color/light_gray"
+                        app:cardCornerRadius="100dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp">
+
+                        <ImageView
+                            android:id="@+id/ivFiveReq"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:src="@drawable/ic_check"
+                            android:layout_gravity="center"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/tvFiveReq"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Contain at least one symbol"
+                        android:gravity="center|start"
+                        android:paddingStart="10dp"
+                        android:textColor="@color/dark_gray"
+                        android:fontFamily="@font/poppins__medium"/>
+                </LinearLayout>
 
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -355,7 +393,7 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
-                    android:hint="Security One">
+                    android:hint="What city where you born in?">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/txtSecOne"
@@ -376,7 +414,7 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
-                    android:hint="Security Two">
+                    android:hint="What is your childhood nickname?">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/txtSecTwo"

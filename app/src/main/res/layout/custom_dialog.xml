@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="24dp"
     android:background="@color/semi_white">
@@ -56,9 +57,9 @@
             android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/button_solid"
-            android:backgroundTint="@color/light_gray"
-            android:textColor="@color/white"
+            android:background="@drawable/button_outline"
+            app:backgroundTint="@null"
+            android:textColor="@color/green"
             android:fontFamily="@font/poppins__semibold"
             android:text="CANCEL"
             android:layout_height="wrap_content" />
