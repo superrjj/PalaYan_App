@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.palayan.AdminActivities.AdminDashboard;
 import com.example.palayan.AdminActivities.ViewAccounts;
 import com.example.palayan.AdminActivities.ViewPest;
 import com.example.palayan.AdminActivities.ViewRiceVarieties;
@@ -74,9 +75,18 @@ public class AdminDashboardFragment extends Fragment {
                 });
 
         //intent for the specific card view
-        root.cvRiceVarieties.setOnClickListener(v -> startActivity(new Intent(getActivity(), ViewRiceVarieties.class)));
-        root.cvPest.setOnClickListener(v -> startActivity(new Intent(getActivity(), ViewPest.class)));
+        root.cvRiceVarieties.setOnClickListener(v -> {
+            ((AdminDashboard) requireActivity()).setUserLeavingFalse();
+            startActivity(new Intent(getActivity(), ViewRiceVarieties.class));
+        });
+
+        root.cvPest.setOnClickListener(v -> {
+            ((AdminDashboard) requireActivity()).setUserLeavingFalse();
+            startActivity(new Intent(getActivity(), ViewPest.class));
+        });
+
         root.cvAccounts.setOnClickListener(v -> {
+            ((AdminDashboard) requireActivity()).setUserLeavingFalse();
             Intent intent = new Intent(getActivity(), ViewAccounts.class);
             intent.putExtra("userId", userId);
             startActivity(intent);

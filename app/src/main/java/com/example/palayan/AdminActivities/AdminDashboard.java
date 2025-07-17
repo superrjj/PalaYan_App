@@ -107,14 +107,10 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
                 .show();
     }
 
-    @Override
-    protected void onUserLeaveHint() {
-        // Called when home button pressed or app backgrounded
-        if (isUserLeaving) {
-            logoutToMain();
-        }
-        super.onUserLeaveHint();
+    public void setUserLeavingFalse() {
+        isUserLeaving = false;
     }
+
 
     private void logoutToMain() {
         Intent intent = new Intent(AdminDashboard.this, MainActivity.class);

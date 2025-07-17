@@ -34,8 +34,6 @@ public class AddAdminAccount extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
-        ImageView ivBack = findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(v -> onBackPressed());
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -48,6 +46,14 @@ public class AddAdminAccount extends AppCompatActivity {
         // Default visibility
         root.btnCreate.setVisibility(View.VISIBLE);
         root.btnUpdateAccount.setVisibility(View.GONE);
+
+        root.ivBack.setOnClickListener(v -> {
+            if (hasInput()) {
+                showDiscardDialog();
+            } else {
+                finish();
+            }
+        });
 
         // If edit mode
         if (getIntent() != null && getIntent().hasExtra("userId")) {
@@ -252,6 +258,36 @@ public class AddAdminAccount extends AppCompatActivity {
                         R.color.green
                 ).setOnDismissListener(() -> finish())
                 .show(getSupportFragmentManager(), "SuccessDialog");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (hasInput()) {
+            showDiscardDialog();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean hasInput() {
+        return !root.txtFullName.getText().toString().trim().isEmpty()
+                || !root.txtUsername.getText().toString().trim().isEmpty()
+                || !root.txtPassword.getText().toString().trim().isEmpty()
+                || !root.txtConfirmPassword.getText().toString().trim().isEmpty()
+                || !root.txtSecOne.getText().toString().trim().isEmpty()
+                || !root.txtSecTwo.getText().toString().trim().isEmpty()
+                || !root.spRole.getText().toString().trim().isEmpty();
+    }
+
+    private void showDiscardDialog() {
+        CustomDialogFragment.newInstance(
+                "Discard Changes?",
+                "Are you sure you want to discard the entered information?",
+                "All unsaved changes will be lost.",
+                R.drawable.ic_warning,
+                "DISCARD",
+                (dialog, which) -> finish()
+        ).show(getSupportFragmentManager(), "DiscardDialog");
     }
 
 }
