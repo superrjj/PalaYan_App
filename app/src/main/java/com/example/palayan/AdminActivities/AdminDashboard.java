@@ -25,6 +25,8 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
     private NavigationView navView;
     private TextView tvAdminInitials, tvAdminFullName, tvRole;
 
+    private boolean isUserLeaving = true;  // Used to track if user pressed logout manually
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,18 +55,18 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
         View headerView = navView.getHeaderView(0);
         tvAdminInitials = headerView.findViewById(R.id.tvInitialName);
         tvAdminFullName = headerView.findViewById(R.id.tvFullName);
-        tvRole = headerView.findViewById(R.id.tvRole);  // NEW: get tvRole from header layout
+        tvRole = headerView.findViewById(R.id.tvRole);  // Get tvRole from header layout
 
         // Set values to header views
         tvAdminInitials.setText(initials != null ? initials : "--");
         tvAdminFullName.setText(fullName != null ? fullName : "Admin User");
-        tvRole.setText(userRole != null ? userRole : "Unknown Role");  // Set role display
+        tvRole.setText(userRole != null ? userRole : "Unknown Role");
 
         // Load dashboard fragment and pass role and other data
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
             bundle.putInt("userId", userId);
-            bundle.putString("userRole", tvRole.getText().toString());  // Pass role from TextView
+            bundle.putString("userRole", tvRole.getText().toString());
             bundle.putString("fullName", fullName);
             bundle.putString("initials", initials);
 
@@ -81,12 +83,43 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
         if (id == R.id.nav_logout) {
-            Intent intent = new Intent(AdminDashboard.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            isUserLeaving = false;
+            logoutToMain();
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        // Show a confirmation dialog before logging out
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    isUserLeaving = false;
+                    logoutToMain();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.dismiss(); // Just close the dialog
+                })
+                .setCancelable(true)
+                .show();
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        // Called when home button pressed or app backgrounded
+        if (isUserLeaving) {
+            logoutToMain();
+        }
+        super.onUserLeaveHint();
+    }
+
+    private void logoutToMain() {
+        Intent intent = new Intent(AdminDashboard.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

@@ -154,7 +154,7 @@
                         android:fontFamily="@font/poppins__regular"
                         android:textColor="@color/black"
                         android:textSize="13sp"
-                        android:inputType="text" />
+                        android:inputType="textPassword"  />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -177,8 +177,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cvOneReq"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     app:cardBackgroundColor="@color/light_gray"
                     app:cardCornerRadius="100dp"
                     android:layout_gravity="center"
@@ -186,8 +186,8 @@
                     
                     <ImageView
                         android:id="@+id/ivOneReq"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:src="@drawable/ic_check"
                         android:layout_gravity="center"/>
 
@@ -213,8 +213,8 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvFiveReq"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         app:cardBackgroundColor="@color/light_gray"
                         app:cardCornerRadius="100dp"
                         android:layout_gravity="center"
@@ -222,8 +222,8 @@
 
                         <ImageView
                             android:id="@+id/ivFiveReq"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
                             android:src="@drawable/ic_check"
                             android:layout_gravity="center"/>
 
@@ -249,8 +249,8 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvThreeReq"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         app:cardBackgroundColor="@color/light_gray"
                         app:cardCornerRadius="100dp"
                         android:layout_gravity="center"
@@ -258,8 +258,8 @@
 
                         <ImageView
                             android:id="@+id/ivThreeReq"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
                             android:src="@drawable/ic_check"
                             android:layout_gravity="center"/>
 
@@ -285,8 +285,8 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvFourReq"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         app:cardBackgroundColor="@color/light_gray"
                         app:cardCornerRadius="100dp"
                         android:layout_gravity="center"
@@ -294,8 +294,8 @@
 
                         <ImageView
                             android:id="@+id/ivFourReq"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
                             android:src="@drawable/ic_check"
                             android:layout_gravity="center"/>
 
@@ -333,7 +333,7 @@
                         android:fontFamily="@font/poppins__regular"
                         android:textColor="@color/black"
                         android:textSize="13sp"
-                        android:inputType="text" />
+                        android:inputType="textPassword"  />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
