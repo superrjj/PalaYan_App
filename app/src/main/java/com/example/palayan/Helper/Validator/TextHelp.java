@@ -221,7 +221,7 @@ public class TextHelp {
             final TextInputEditText txtConfirm,
             final String errorMessage) {
 
-        txtConfirm.addTextChangedListener(new TextWatcher() {
+        TextWatcher watcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
@@ -230,32 +230,17 @@ public class TextHelp {
                 String pass = txtPassword.getText() != null ? txtPassword.getText().toString() : "";
                 String confirm = txtConfirm.getText() != null ? txtConfirm.getText().toString() : "";
 
-                if (!confirm.equals(pass)) {
-                    layoutConfirm.setError(errorMessage);
+                if (!confirm.isEmpty() && !pass.equals(confirm)) {
+                    layoutConfirm.setError(errorMessage); // Show error if not matching
                 } else {
-                    layoutConfirm.setError(null);
+                    layoutConfirm.setError(null); // Clear error if match or empty
                 }
             }
-        });
+        };
 
-        // Para ma-trigger din kapag password ang nabago
-        txtPassword.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String pass = txtPassword.getText() != null ? txtPassword.getText().toString() : "";
-                String confirm = txtConfirm.getText() != null ? txtConfirm.getText().toString() : "";
-
-                if (!confirm.equals(pass)) {
-                    layoutConfirm.setError(errorMessage);
-                } else {
-                    layoutConfirm.setError(null);
-                }
-            }
-        });
+        txtPassword.addTextChangedListener(watcher);
+        txtConfirm.addTextChangedListener(watcher);
     }
 
-
 }
+
