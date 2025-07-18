@@ -135,7 +135,7 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
             context.startActivity(intent);
         });
     }
-
+    //Edited
     @Override
     public int getItemCount() {
         return accountList.size();
