@@ -19,7 +19,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/admin_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:elevation="5dp"
             style="@style/CustomToolbar"
             android:background="@color/green"
