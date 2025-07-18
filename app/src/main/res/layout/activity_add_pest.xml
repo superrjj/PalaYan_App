@@ -79,6 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/image_border"
                     android:contentDescription="Upload Image" />
 
                 <TextView
@@ -100,182 +101,150 @@
                 android:paddingLeft="15dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Pest Name*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <EditText
-                    android:id="@+id/txtPestName"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutPestName"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="5dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:hint="Pest Name"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Scientific Name*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:hint="Pest Name">
 
-                <EditText
-                    android:id="@+id/txtScientificName"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtPestName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutScientificName"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Scientific Name"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:hintTextColor="@color/green"
+                    android:hint="Scientific Name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtScientificName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
 
             </LinearLayout>
 
 
         </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Description*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
-
-                <EditText
-                    android:id="@+id/txtDescription"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:maxLines="5"
-                    android:gravity="top|start"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:lines="5"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Description"
-                    android:justificationMode="inter_word"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:hintTextColor="@color/green"
+                    android:hint="Description">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Symptoms*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="5"
+                        android:lines="5"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word"
+                        android:paddingEnd="12dp"/>
 
-                <EditText
-                    android:id="@+id/txtSymptoms"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutSymptoms"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:maxLines="5"
-                    android:gravity="top|start"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:lines="5"
-                    android:paddingEnd="12dp"
-                    android:justificationMode="inter_word"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Symptoms"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:hintTextColor="@color/green"
+                    android:hint="Symptoms">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Cause*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtSymptoms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="5"
+                        android:lines="5"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word"
+                        android:paddingEnd="12dp"/>
 
-                <EditText
-                    android:id="@+id/txtCause"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutCause"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:maxLines="5"
-                    android:gravity="top|start"
-                    android:paddingTop="5dp"
-                    android:lines="5"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:paddingEnd="12dp"
-                    android:justificationMode="inter_word"
-                    android:layout_marginBottom="5dp"
-                    android:hint="Cause"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:hintTextColor="@color/green"
+                    android:hint="Cause">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtCause"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="5"
+                        android:lines="5"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word"
+                        android:paddingEnd="12dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Treatments*"
-                    android:textColor="@color/green"
-                    android:textSize="13sp"
-                    android:paddingBottom="5dp"
-                    android:fontFamily="@font/poppins__medium" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-
-                <EditText
-                    android:id="@+id/txtTreatments"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutTreatments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:textSize="14sp"
-                    android:paddingStart="12dp"
-                    android:maxLines="5"
-                    android:gravity="top|start"
-                    android:paddingTop="5dp"
-                    android:justificationMode="inter_word"
-                    android:lines="5"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:paddingEnd="12dp"
-                    android:layout_marginBottom="30dp"
-                    android:hint="Treatments"
-                    android:background="@drawable/custom_input"
-                    android:fontFamily="@font/poppins__medium"/>
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:hintTextColor="@color/green"
+                    android:hint="Treatments">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtTreatments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="5"
+                        android:lines="5"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word"
+                        android:paddingEnd="12dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/btnAddPest"
@@ -286,6 +255,7 @@
                     android:textSize="15sp"
                     android:textColor="@color/white"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginTop="40dp"
                     android:fontFamily="@font/poppins__semibold"/>
 
                 <Button
@@ -297,6 +267,7 @@
                     android:text="UPDATE PEST"
                     android:textSize="15sp"
                     android:textColor="@color/white"
+                    android:layout_marginTop="40dp"
                     android:fontFamily="@font/poppins__semibold"/>
 
             </LinearLayout>
