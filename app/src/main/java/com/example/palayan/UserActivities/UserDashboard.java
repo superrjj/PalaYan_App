@@ -72,11 +72,13 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         NavigationView navView = findViewById(R.id.nav_view);
         navView.setNavigationItemSelectedListener(this);
 
+        //action bar
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolBar,
                 R.string.open_nav, R.string.close_nav);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        //menu for bottom nav
         bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -88,6 +90,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             return true;
         });
 
+        //default fragment
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
             bottomNav.setSelectedItemId(R.id.bot_nav_home);
@@ -96,6 +99,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         View headerView = navView.getHeaderView(0);
         logo = headerView.findViewById(R.id.img_logo);
 
+        //for long press admin login
         if (logo != null) {
             logo.setOnTouchListener((v, event) -> {
                 switch (event.getAction()) {
@@ -119,6 +123,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
     }
 
+    //for the menu drawer
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
@@ -133,6 +138,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         return true;
     }
 
+    //show admin login dialog
     private void showAdminLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.admin_login_dialog, null);
@@ -162,7 +168,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 return;
             }
 
-            //Loading dialog
+            //loading dialog
             LinearLayout layout = new LinearLayout(this);
             layout.setOrientation(LinearLayout.HORIZONTAL);
             layout.setPadding(50, 50, 50, 50);
@@ -199,6 +205,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             String fullName = queryDocumentSnapshots.getDocuments().get(0).getString("fullName");
                             int userId = queryDocumentSnapshots.getDocuments().get(0).getLong("userId").intValue();
 
+                            //get the initial name of the admin
                             String initials;
                             if (fullName != null) {
                                 String[] nameParts = fullName.split(" ");
@@ -232,6 +239,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                                     });
 
                         } else {
+                            //validation for wrong username or password
                             layoutPassword.setError("Incorrect username or password");
                             layoutUsername.setError("Incorrect username or password");
                             loadingDialog.dismiss();
@@ -242,6 +250,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                     });
         });
 
+        //text view for forgot password
         TextView btnForgotPassword = dialogView.findViewById(R.id.tv_forgot_password);
         btnForgotPassword.setOnClickListener(v -> {
             dialog.dismiss();
@@ -250,6 +259,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
     }
 
+    //show the forgot password
     private void showForgotPasswordUsernameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_forgot_password, null);
@@ -257,18 +267,22 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         AlertDialog dialog = builder.create();
         dialog.show();
 
+        //initialize the text layout, text input, button
         TextInputEditText txtEnterUsername = dialogView.findViewById(R.id.txtEnterUsername);
         Button btnNext = dialogView.findViewById(R.id.btnNextUsername);
         TextInputLayout layoutEnter = dialogView.findViewById(R.id.layoutEnterUsername);
+        //live validation for username
         TextHelp.addValidation(layoutEnter, txtEnterUsername, "Field required");
 
         btnNext.setOnClickListener(v -> {
+            //validation for empty field
             String username = txtEnterUsername.getText().toString().trim();
             if (username.isEmpty()) {
                TextHelp.isFilled(layoutEnter, txtEnterUsername, "Please enter username");
                 return;
             }
 
+            //retrieve the username
             firestore.collection("accounts")
                     .whereEqualTo("username", username)
                     .whereEqualTo("archived", false)
@@ -282,12 +296,14 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                             dialog.dismiss();
                             showSecurityQuestionsDialog(docId, secQ1, secQ2);
                         } else {
+                            //if the username is not already created
                            layoutEnter.setError("Username not found");
                         }
                     });
         });
     }
 
+    //show the security question
     private void showSecurityQuestionsDialog(String docId, String secQ1, String secQ2) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_security_questions, null);
@@ -295,15 +311,18 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         AlertDialog dialog = builder.create();
         dialog.show();
 
+        //initialize the text input
         TextInputEditText txtSecOne = dialogView.findViewById(R.id.txtSecOne);
         TextInputEditText txtSecTwo = dialogView.findViewById(R.id.txtSecTwo);
         Button btnNextSec = dialogView.findViewById(R.id.btnConfirm);
 
+        //initialize the text layout
         TextInputLayout layoutSecOne = dialogView.findViewById(R.id.layoutSecOne);
         TextInputLayout layoutSecTwo = dialogView.findViewById(R.id.layoutSecTwo);
 
 
         btnNextSec.setOnClickListener(v -> {
+            //validation for empty fields
             if (!TextHelp.isFilled(layoutSecOne, txtSecOne, "Please answer this question") ||
                     !TextHelp.isFilled(layoutSecTwo, txtSecTwo, "Please answer this question")) {
                 return;
@@ -312,16 +331,12 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             String ansOne = txtSecOne.getText().toString().trim();
             String ansTwo = txtSecTwo.getText().toString().trim();
 
+            //retrieve the correct answer
             firestore.collection("accounts").document(docId).get()
                     .addOnSuccessListener(document -> {
                         String correctOne = document.getString("security1");
                         String correctTwo = document.getString("security2");
 
-                        if (correctOne == null || correctTwo == null) {
-                            Toast.makeText(this, "Security answers not reset. Please contact admin.", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                            return;
-                        }
 
                         boolean isCorrect1 = ansOne.equals(correctOne);
                         boolean isCorrect2 = ansTwo.equals(correctTwo);
@@ -330,10 +345,12 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                         layoutSecOne.setError(null);
                         layoutSecTwo.setError(null);
 
+                        //dismiss the dialog if correct the answer
                         if (isCorrect1 && isCorrect2) {
                             dialog.dismiss();
                             showNewPasswordDialog(docId);
                         } else {
+                            //validation for wrong answer
                             if (!isCorrect1) layoutSecOne.setError("Incorrect answer");
                             if (!isCorrect2) layoutSecTwo.setError("Incorrect answer");
                         }
@@ -342,6 +359,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
     }
 
+    //show the dialog for reset password
     private void showNewPasswordDialog(String docId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_new_password, null);
@@ -349,12 +367,15 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         AlertDialog dialog = builder.create();
         dialog.show();
 
+        //initialize the text input
         TextInputEditText etNewPass = view.findViewById(R.id.txtNewPassword);
         TextInputEditText etConfirmPass = view.findViewById(R.id.txtConfirmPass);
         Button btnConfirm = view.findViewById(R.id.btnSubmit);
 
+        //initialize the text layout
         TextInputLayout layoutNewPass = view.findViewById(R.id.layoutNewPass);
         TextInputLayout layoutConfirmPass = view.findViewById(R.id.layoutConfrimPass);
+        //live validation for text change
         TextHelp.addValidation(layoutNewPass, etNewPass, "Field required");
         TextHelp.addValidation(layoutConfirmPass, etConfirmPass, "Field required");
 
@@ -362,17 +383,13 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             String newPass = etNewPass.getText().toString().trim();
             String confirmPass = etConfirmPass.getText().toString().trim();
 
-
-            if (newPass.isEmpty()) {
-                Toast.makeText(this, "Please fill both fields.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
+            //validation for empty fields
             if (!TextHelp.isFilled(layoutNewPass, etNewPass, "Please enter new password") ||
-                    !TextHelp.isFilled(layoutConfirmPass, etConfirmPass, "Please confirm new password")) {
+                    !TextHelp.isFilled(layoutConfirmPass, etConfirmPass, "Please enter confirm new password")) {
                 return;
             }
 
+            //validations for password match
             if (!newPass.equals(confirmPass)) {
                 layoutConfirmPass.setError("Passwords do not match");
                 return;
@@ -380,7 +397,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 layoutConfirmPass.setError(null);
             }
 
-
+            //reset the password
             firestore.collection("accounts").document(docId)
                     .update("password", newPass)
                     .addOnSuccessListener(unused -> {
@@ -391,6 +408,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         });
     }
 
+    //to check the internet if available
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo active = cm.getActiveNetworkInfo();

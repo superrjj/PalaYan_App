@@ -37,7 +37,7 @@ public class AddAdminAccount extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(root.getRoot());
 
-
+        //instatiate the database
         firestore = FirebaseFirestore.getInstance();
 
         //role
@@ -46,10 +46,11 @@ public class AddAdminAccount extends AppCompatActivity {
         root.spRole.setAdapter(roleAdapter);
 
 
-        // Default visibility
+        //default visibility
         root.btnCreate.setVisibility(View.VISIBLE);
         root.btnUpdateAccount.setVisibility(View.GONE);
 
+        //for back button
         root.ivBack.setOnClickListener(v -> {
             if (hasInput()) {
                 showDiscardDialog();
@@ -58,7 +59,7 @@ public class AddAdminAccount extends AppCompatActivity {
             }
         });
 
-        // If edit mode
+        //if update mode
         if (getIntent() != null && getIntent().hasExtra("userId")) {
             isEditMode = true;
             userId = getIntent().getIntExtra("userId", -1);
@@ -69,6 +70,7 @@ public class AddAdminAccount extends AppCompatActivity {
             }
         }
 
+        //live validation for text change
         TextHelp.addValidation(root.layoutFullName, root.txtFullName, "Field required");
         TextHelp.addValidation(root.layoutUsername, root.txtUsername, "Field required");
         TextHelp.addValidation(root.layoutPassword, root.txtPassword, "Field required");
@@ -76,7 +78,7 @@ public class AddAdminAccount extends AppCompatActivity {
         TextHelp.addValidation(root.layoutSecTwo, root.txtSecTwo, "Field required");
         TextHelp.addAutoCompleteValidation(root.layoutRole, root.spRole, "Selection required");
 
-
+        //validation for password requirements
         TextHelp.addPasswordRequirementsValidation(
                 root.txtPassword,
                 root.txtUsername,
@@ -93,6 +95,7 @@ public class AddAdminAccount extends AppCompatActivity {
                 getResources().getColor(R.color.black)
         );
 
+        //validation for not match
         TextHelp.addConfirmPasswordValidation(
                 root.layoutConfirmPass,
                 root.txtPassword,
@@ -100,6 +103,7 @@ public class AddAdminAccount extends AppCompatActivity {
                 "Password does not match"
         );
 
+        //live validation
         root.txtUsername.addTextChangedListener(
                 TextHelp.createUsernameLiveChecker(firestore, root.layoutUsername, originalUsername, isEditMode)
         );
@@ -110,6 +114,7 @@ public class AddAdminAccount extends AppCompatActivity {
         root.btnUpdateAccount.setOnClickListener(v -> showUpdateConfirmationDialog());
     }
 
+    //retrieving the account
     private void loadAccountDetails(int userId) {
         firestore.collection("accounts")
                 .document(String.valueOf(userId))
@@ -134,6 +139,7 @@ public class AddAdminAccount extends AppCompatActivity {
                 );
     }
 
+    //validation for all fields
     private boolean validateAllFields(){
 
         if (!TextHelp.isFilled(root.layoutFullName, root.txtFullName, "Please enter full name")) return false;
@@ -166,6 +172,7 @@ public class AddAdminAccount extends AppCompatActivity {
         return true;
     }
 
+    //to show the confirm dialog
     private void showAddConfirmationDialog() {
 
         if (!validateAllFields()) return;
@@ -182,6 +189,7 @@ public class AddAdminAccount extends AppCompatActivity {
         ).show(getSupportFragmentManager(), "AddConfirmDialog");
     }
 
+    //to show the update dialog
     private void showUpdateConfirmationDialog() {
         String fullName = root.txtFullName.getText().toString().trim();
         if (fullName.isEmpty()) {
@@ -199,6 +207,7 @@ public class AddAdminAccount extends AppCompatActivity {
         ).show(getSupportFragmentManager(), "UpdateConfirmDialog");
     }
 
+    //inserting data to the database
     private void addNewAccountToDatabase() {
         HashMap<String, Object> account = collectFormInput();
         if (account == null) return;
@@ -225,6 +234,7 @@ public class AddAdminAccount extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to fetch ID.", Toast.LENGTH_SHORT).show());
     }
 
+    //for update account
     private void updateAccount() {
         if (userId == -1) return;
 
@@ -240,6 +250,7 @@ public class AddAdminAccount extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to update account.", Toast.LENGTH_SHORT).show());
     }
 
+    //get the input
     private HashMap<String, Object> collectFormInput() {
         String fullName = root.txtFullName.getText().toString().trim();
         String username = root.txtUsername.getText().toString().trim();
@@ -247,11 +258,6 @@ public class AddAdminAccount extends AppCompatActivity {
         String secOne = root.txtSecOne.getText().toString().trim();
         String secTwo = root.txtSecTwo.getText().toString().trim();
         String selectedRole = root.spRole.getText().toString();
-
-        if (fullName.isEmpty() || username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
-            return null;
-        }
 
 
         HashMap<String, Object> account = new HashMap<>();
@@ -267,6 +273,7 @@ public class AddAdminAccount extends AppCompatActivity {
         return account;
     }
 
+    //to show the success dialog
     private void showSuccessDialog(String action) {
         String fullName = root.txtFullName.getText().toString().trim();
         String title = "Admin Account " + (action.equals("updated") ? "Updated" : "Added");
@@ -281,6 +288,7 @@ public class AddAdminAccount extends AppCompatActivity {
                 .show(getSupportFragmentManager(), "SuccessDialog");
     }
 
+    //when clicked the back
     @Override
     public void onBackPressed() {
         if (hasInput()) {
@@ -290,6 +298,7 @@ public class AddAdminAccount extends AppCompatActivity {
         }
     }
 
+    //when text field contains input
     private boolean hasInput() {
         return !root.txtFullName.getText().toString().trim().isEmpty()
                 || !root.txtUsername.getText().toString().trim().isEmpty()
@@ -300,6 +309,7 @@ public class AddAdminAccount extends AppCompatActivity {
                 || !root.spRole.getText().toString().trim().isEmpty();
     }
 
+    //to show discard dialog
     private void showDiscardDialog() {
         CustomDialogFragment.newInstance(
                 "Discard Changes?",
