@@ -144,7 +144,10 @@ public class AllFragment extends Fragment implements SearchableFragment {
                         }
                     }
 
-                    adapter.notifyDataSetChanged();
+                    if (adapter != null) {
+                        adapter.notifyDataSetChanged();
+                    }
+
                     if (root != null) {
                         root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
                     }
