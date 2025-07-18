@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal">
-        
+
         <ImageView
             android:layout_width="320dp"
             android:layout_height="320dp"
@@ -28,7 +28,7 @@
             android:layout_height="50dp"
             android:indeterminateTint="@color/green"
             android:visibility="visible"/>
-        
+
     </LinearLayout>
 
 

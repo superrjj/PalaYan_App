@@ -83,8 +83,17 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
         if (id == R.id.nav_logout) {
-            isUserLeaving = false;
-            logoutToMain();
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setMessage("Are you sure you want to log out?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        isUserLeaving = false;
+                        logoutToMain();
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .setCancelable(true)
+                    .show();
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -95,7 +104,7 @@ public class AdminDashboard extends AppCompatActivity implements NavigationView.
 
         // Show a confirmation dialog before logging out
         new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setMessage("Are you sure you want to logout?")
+                .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     isUserLeaving = false;
                     logoutToMain();

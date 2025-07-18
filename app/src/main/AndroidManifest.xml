@@ -17,21 +17,24 @@
         android:theme="@style/Theme.PalaYan"
         tools:targetApi="31">
         <activity
-            android:name=".PestDetails"
-            android:theme="@style/Theme.PalaYan"
+            android:name=".UserActivities.CameraScanner"
             android:exported="false" />
+        <activity
+            android:name=".PestDetails"
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".AdminActivities.AccountDetails"
-            android:theme="@style/Theme.PalaYan"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".AdminActivities.ViewAccounts"
-            android:theme="@style/Theme.PalaYan"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".AdminActivities.AddAdminAccount"
-            android:theme="@style/Theme.PalaYan"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -45,28 +48,28 @@
 
         <activity
             android:name=".AdminActivities.AddPest"
-            android:theme="@style/Theme.PalaYan"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".AdminActivities.ViewPest"
-            android:theme="@style/Theme.PalaYan"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".RiceVarietyInformation"
-            android:theme="@style/Theme.PalaYan"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".AdminActivities.AddRiceVariety"
-            android:theme="@style/Theme.PalaYan"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".AdminActivities.ViewRiceVarieties"
-            android:theme="@style/Theme.PalaYan"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".AdminActivities.AdminDashboard"
             android:exported="false"
-            android:theme="@style/Theme.PalaYan"/>
+            android:theme="@style/Theme.PalaYan" />
         <activity
             android:name=".UserActivities.UserDashboard"
             android:exported="false"

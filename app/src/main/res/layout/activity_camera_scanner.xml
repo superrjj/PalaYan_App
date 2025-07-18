@@ -1,0 +1,53 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cameraLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".UserActivities.CameraScanner">
+
+    <!-- CameraX Preview inside FrameLayout for layering -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- CameraX Preview -->
+        <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Scan frame overlay -->
+        <ImageView
+            android:id="@+id/overlayFrame"
+            android:layout_width="300dp"
+            android:layout_height="350dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/ic_scan"
+            android:scaleType="fitCenter"
+            app:tint="@color/white"
+            android:contentDescription="Scan Frame"
+            android:alpha="0.9" />
+    </FrameLayout>
+
+    <!-- Take Picture Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btnCapture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Capture"
+            android:backgroundTint="@color/green"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</LinearLayout>

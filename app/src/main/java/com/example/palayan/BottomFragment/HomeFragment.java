@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 
 import android.Manifest;
 import com.example.palayan.R;
+import com.example.palayan.UserActivities.CameraScanner;
 
 
 public class HomeFragment extends Fragment {
@@ -50,16 +51,9 @@ public class HomeFragment extends Fragment {
            }
        });
 
-       btnCamera.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                   Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                   startActivityForResult(intent, 1);
-               } else {
-                   requestPermissions(new String[]{Manifest.permission.CAMERA}, 100);
-               }
-           }
+       btnCamera.setOnClickListener(v ->{
+           Intent intent = new Intent(getContext(), CameraScanner.class);
+           startActivity(intent);
        });
 
         return view;

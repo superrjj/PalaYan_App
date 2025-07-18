@@ -86,7 +86,7 @@ public class RiceFilterBottomSheetDialogFragment extends BottomSheetDialogFragme
         super.onStart();
         BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
         if (dialog != null) {
-            dialog.getBehavior().setPeekHeight(600);
+            dialog.getBehavior().setPeekHeight(900);
             View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             if (bottomSheet != null) {
                 bottomSheet.setBackgroundResource(R.drawable.dialog_background);
