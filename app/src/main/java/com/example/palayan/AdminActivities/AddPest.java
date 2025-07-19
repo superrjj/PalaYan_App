@@ -23,8 +23,10 @@ import com.bumptech.glide.Glide;
 import com.example.palayan.Dialog.CustomDialogFragment;
 import com.example.palayan.Dialog.StatusDialogFragment;
 import com.example.palayan.Helper.Pest;
+import com.example.palayan.Helper.Validator.TextHelp;
 import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityAddPestBinding;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -124,7 +126,47 @@ public class AddPest extends AppCompatActivity {
             root.btnUpdatePest.setVisibility(View.GONE);
             root.btnAddPest.setOnClickListener(view -> showAddConfirmationDialog());
         }
+
+        TextHelp.addValidation(root.layoutPestName, root.txtPestName, "Field required");
+        TextHelp.addValidation(root.layoutScientificName, root.txtScientificName, "Field required");
+        TextHelp.addValidation(root.layoutDescription, root.txtDescription, "Field required");
+        TextHelp.addValidation(root.layoutSymptoms, root.txtSymptoms, "Field required");
+        TextHelp.addValidation(root.layoutCause, root.txtCause, "Field required");
+        TextHelp.addValidation(root.layoutTreatments, root.txtTreatments, "Field required");
+
     }
+
+    private boolean validateAllField()
+    {
+
+        boolean isValid = true;
+
+        if(!TextHelp.isFilled(root.layoutPestName, root.txtPestName, "Please enter pest name"))return false;
+        TextHelp.addLetterOnly(root.layoutPestName, root.txtPestName, "Letter only");
+
+        if(!TextHelp.isFilled(root.layoutScientificName, root.txtScientificName, "Please enter scientific name")) return false;
+        TextHelp.addLetterOnly(root.layoutScientificName, root.txtScientificName, "Letter only");
+
+        if(!TextHelp.isFilled(root.layoutDescription, root.txtDescription, "Please enter description")) return false;
+        TextHelp.addLetterOnly(root.layoutDescription, root.txtDescription, "Letter only");
+
+        if(!TextHelp.isFilled(root.layoutCause, root.txtCause, "Please enter cause")) return false;
+        TextHelp.addLetterOnly(root.layoutCause, root.txtCause, "Letter only");
+
+        if(!TextHelp.isFilled(root.layoutSymptoms, root.txtSymptoms, "Please enter symptoms")) return false;
+        TextHelp.addLetterOnly(root.layoutSymptoms, root.txtSymptoms, "Letter only");
+
+        if(!TextHelp.isFilled(root.layoutTreatments, root.txtTreatments, "Please enter treatments")) return  false;
+        TextHelp.addLetterOnly(root.layoutTreatments, root.txtTreatments, "Letter only");
+
+        if (!isEditMode && imageUri == null) {
+            Snackbar.make(root.imageUploadFrame, "Please upload an image!", Snackbar.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
 
     private void showImagePickerDialog() {
         String[] options = {"Take a Photo", "Choose from Gallery"};
@@ -169,11 +211,8 @@ public class AddPest extends AppCompatActivity {
     }
 
     private void showAddConfirmationDialog() {
+        if (!validateAllField()) return;
         String name = root.txtPestName.getText().toString().trim();
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Pest name is required", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         CustomDialogFragment.newInstance(
                 "Add Pest",
@@ -186,6 +225,7 @@ public class AddPest extends AppCompatActivity {
     }
 
     private void showUpdateConfirmationDialog(String id) {
+        if (!validateAllField()) return;
         String name = root.txtPestName.getText().toString().trim();
 
         CustomDialogFragment.newInstance(
@@ -199,16 +239,13 @@ public class AddPest extends AppCompatActivity {
     }
 
     private void addPestToFirestore(String name) {
+
         String sciName = root.txtScientificName.getText().toString().trim();
         String desc = root.txtDescription.getText().toString().trim();
         String symp = root.txtSymptoms.getText().toString().trim();
         String cause = root.txtCause.getText().toString().trim();
         String treat = root.txtTreatments.getText().toString().trim();
 
-        if (sciName.isEmpty() || desc.isEmpty() || cause.isEmpty() || treat.isEmpty() || imageUri == null) {
-            Toast.makeText(this, "Please complete all fields and select an image", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Uploading...");
@@ -267,6 +304,8 @@ public class AddPest extends AppCompatActivity {
 
 
     private void updatePest(String pestId) {
+        if (!validateAllField()) return;
+
         String name = root.txtPestName.getText().toString().trim();
         String sciName = root.txtScientificName.getText().toString().trim();
         String desc = root.txtDescription.getText().toString().trim();
@@ -274,10 +313,6 @@ public class AddPest extends AppCompatActivity {
         String cause = root.txtCause.getText().toString().trim();
         String treat = root.txtTreatments.getText().toString().trim();
 
-        if (sciName.isEmpty() || desc.isEmpty() || cause.isEmpty() || treat.isEmpty()) {
-            Toast.makeText(this, "All fields must be filled", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Updating...");
