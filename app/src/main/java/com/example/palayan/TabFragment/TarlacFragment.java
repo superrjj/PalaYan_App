@@ -5,21 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.palayan.Adapter.UserRiceVarietyAdapter;
-import com.example.palayan.Helper.DeviceUtils;
+import com.example.palayan.Helper.AppHelper.DeviceUtils;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.Helper.SearchQuery.SearchableFragment;
 import com.example.palayan.databinding.FragmentTarlacBinding;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.HashSet;

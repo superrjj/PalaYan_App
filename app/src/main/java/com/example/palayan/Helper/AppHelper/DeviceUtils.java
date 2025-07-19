@@ -1,4 +1,4 @@
-package com.example.palayan.Helper;
+package com.example.palayan.Helper.AppHelper;
 
 import android.content.Context;
 import android.provider.Settings;

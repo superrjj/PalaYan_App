@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.palayan.Helper.DeviceUtils;
+import com.example.palayan.Helper.AppHelper.DeviceUtils;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
 import com.example.palayan.RiceVarietyInformation;
