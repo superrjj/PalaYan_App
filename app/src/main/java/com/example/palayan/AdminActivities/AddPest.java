@@ -160,9 +160,13 @@ public class AddPest extends AppCompatActivity {
         TextHelp.addLetterOnly(root.layoutTreatments, root.txtTreatments, "Letter only");
 
         if (!isEditMode && imageUri == null) {
-            Snackbar.make(root.imageUploadFrame, "Please upload an image!", Snackbar.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(root.imageUploadFrame, "Please upload an image!", Snackbar.LENGTH_SHORT);
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.dark_red));
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
+            snackbar.show();
             return false;
         }
+
 
         return true;
     }
