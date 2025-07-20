@@ -142,10 +142,10 @@ public class AddAdminAccount extends AppCompatActivity {
     //validation for all fields
     private boolean validateAllFields(){
 
-        if (!TextHelp.isFilled(root.layoutFullName, root.txtFullName, "Please enter full name")) return false;
-        TextHelp.addLetterOnly(root.layoutFullName, root.txtFullName, "Letters only");
+        if (!TextHelp.isFilled(root.layoutFullName, root.txtFullName, "Please fill out this field.")) return false;
+        TextHelp.addLetterOnly(root.layoutFullName, root.txtFullName, "Oops! That should only contain letters.");
 
-        if (!TextHelp.isFilled(root.layoutUsername, root.txtUsername, "Please enter username")) return false;
+        if (!TextHelp.isFilled(root.layoutUsername, root.txtUsername, "Please fill out this field.")) return false;
 
         if (root.spRole.getText().toString().trim().isEmpty()) {
             root.layoutRole.setError("Please select a role");
@@ -155,7 +155,7 @@ public class AddAdminAccount extends AppCompatActivity {
         }
 
 
-        if (!TextHelp.isFilled(root.layoutPassword, root.txtPassword, "Please enter password")) return false;
+        if (!TextHelp.isFilled(root.layoutPassword, root.txtPassword, "Please fill out this field.")) return false;
         String password = root.txtPassword.getText().toString();
         String confirmPassword = root.txtConfirmPassword.getText().toString();
         if (!password.equals(confirmPassword)) {
@@ -163,11 +163,11 @@ public class AddAdminAccount extends AppCompatActivity {
             return false;
         }
 
-        if (!TextHelp.isFilled(root.layoutSecOne, root.txtSecOne, "Please enter security one")) return false;
-        TextHelp.addLetterOnly(root.layoutSecOne, root.txtSecOne, "Letters only");
+        if (!TextHelp.isFilled(root.layoutSecOne, root.txtSecOne, "Please fill out this field.")) return false;
+        TextHelp.addLetterOnly(root.layoutSecOne, root.txtSecOne, "Oops! That should only contain letters.");
 
-        if (!TextHelp.isFilled(root.layoutSecTwo, root.txtSecTwo, "Please enter security two")) return false;
-        TextHelp.addLetterOnly(root.layoutSecTwo, root.txtSecTwo, "Letters only");
+        if (!TextHelp.isFilled(root.layoutSecTwo, root.txtSecTwo, "Please fill out this field.")) return false;
+        TextHelp.addLetterOnly(root.layoutSecTwo, root.txtSecTwo, "Oops! That should only contain letters.");
 
         return true;
     }

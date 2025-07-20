@@ -141,23 +141,23 @@ public class AddPest extends AppCompatActivity {
 
         boolean isValid = true;
 
-        if(!TextHelp.isFilled(root.layoutPestName, root.txtPestName, "Please enter pest name"))return false;
-        TextHelp.addLetterOnly(root.layoutPestName, root.txtPestName, "Letter only");
+        if(!TextHelp.isFilled(root.layoutPestName, root.txtPestName, "Please fill out this field."))return false;
+        TextHelp.addLetterOnly(root.layoutPestName, root.txtPestName, "Oops! That should only contain letters.");
 
-        if(!TextHelp.isFilled(root.layoutScientificName, root.txtScientificName, "Please enter scientific name")) return false;
-        TextHelp.addLetterOnly(root.layoutScientificName, root.txtScientificName, "Letter only");
+        if(!TextHelp.isFilled(root.layoutScientificName, root.txtScientificName, "Please fill out this field.")) return false;
+        TextHelp.addLetterOnly(root.layoutScientificName, root.txtScientificName, "Oops! That should only contain letters.");
 
-        if(!TextHelp.isFilled(root.layoutDescription, root.txtDescription, "Please enter description")) return false;
-        TextHelp.addLetterOnly(root.layoutDescription, root.txtDescription, "Letter only");
+        if(!TextHelp.isFilled(root.layoutDescription, root.txtDescription, "Please fill out this field.")) return false;
+        TextHelp.addLetterOnly(root.layoutDescription, root.txtDescription, "Oops! That should only contain letters.");
 
-        if(!TextHelp.isFilled(root.layoutCause, root.txtCause, "Please enter cause")) return false;
-        TextHelp.addLetterOnly(root.layoutCause, root.txtCause, "Letter only");
+        if(!TextHelp.isFilled(root.layoutCause, root.txtCause, "Please fill out this field.")) return false;
+        TextHelp.addLetterOnly(root.layoutCause, root.txtCause, "Oops! That should only contain letters.");
 
-        if(!TextHelp.isFilled(root.layoutSymptoms, root.txtSymptoms, "Please enter symptoms")) return false;
-        TextHelp.addLetterOnly(root.layoutSymptoms, root.txtSymptoms, "Letter only");
+        if(!TextHelp.isFilled(root.layoutSymptoms, root.txtSymptoms, "Please fill out this field.")) return false;
+        TextHelp.addLetterOnly(root.layoutSymptoms, root.txtSymptoms, "Oops! That should only contain letters.");
 
-        if(!TextHelp.isFilled(root.layoutTreatments, root.txtTreatments, "Please enter treatments")) return  false;
-        TextHelp.addLetterOnly(root.layoutTreatments, root.txtTreatments, "Letter only");
+        if(!TextHelp.isFilled(root.layoutTreatments, root.txtTreatments, "Please fill out this field.")) return  false;
+        TextHelp.addLetterOnly(root.layoutTreatments, root.txtTreatments, "Oops! That should only contain letters.");
 
         if (!isEditMode && imageUri == null) {
             Snackbar snackbar = Snackbar.make(root.imageUploadFrame, "Please upload an image!", Snackbar.LENGTH_SHORT);
