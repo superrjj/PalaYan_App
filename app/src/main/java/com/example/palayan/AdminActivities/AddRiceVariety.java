@@ -114,6 +114,18 @@ public class AddRiceVariety extends AppCompatActivity {
         TextHelp.addValidation(root.layoutLocation, root.txtLocation, "Field required");
 
 
+        TextHelp.enableClearIcon(root.layoutVarietyName, root.txtVarietyName);
+        TextHelp.enableClearIcon(root.layoutReleaseName, root.txtReleaseName);
+        TextHelp.enableClearIcon(root.layoutBreedingCode, root.txtBreedingCode);
+        TextHelp.enableClearIcon(root.layoutYearRelease, root.txtYearRelease);
+        TextHelp.enableClearIcon(root.layoutBreederOrigin, root.txtBreederOrigin);
+        TextHelp.enableClearIcon(root.layoutMaturity, root.txtMaturity);
+        TextHelp.enableClearIcon(root.layoutPlantHeight, root.txtPlantHeight);
+        TextHelp.enableClearIcon(root.layoutAverageYield, root.txtAverageYield);
+        TextHelp.enableClearIcon(root.layoutMaxYield, root.txtMaxYield);
+        TextHelp.enableClearIcon(root.layoutTillers, root.txtTillers);
+        TextHelp.enableClearIcon(root.layoutLocation, root.txtLocation);
+
     }
 
     private void setupChipListeners() {
