@@ -351,6 +351,30 @@ public class TextHelp {
         };
     }
 
+    // Shows the clear icon only when field is focused and has content
+    public static void enableClearIcon(final TextInputLayout layout, final TextInputEditText editText) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                layout.setEndIconVisible(editText.getText().length() > 0);
+            } else {
+                layout.setEndIconVisible(false); // hide on blur
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (editText.hasFocus()) {
+                    layout.setEndIconVisible(s.length() > 0);
+                }
+            }
+        });
+    }
+
+
 }
 
 

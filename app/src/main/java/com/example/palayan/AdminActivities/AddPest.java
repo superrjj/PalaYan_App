@@ -134,6 +134,13 @@ public class AddPest extends AppCompatActivity {
         TextHelp.addValidation(root.layoutCause, root.txtCause, "Field required");
         TextHelp.addValidation(root.layoutTreatments, root.txtTreatments, "Field required");
 
+        TextHelp.enableClearIcon(root.layoutPestName, root.txtPestName);
+        TextHelp.enableClearIcon(root.layoutScientificName, root.txtScientificName);
+        TextHelp.enableClearIcon(root.layoutDescription, root.txtDescription);
+        TextHelp.enableClearIcon(root.layoutCause, root.txtCause);
+        TextHelp.enableClearIcon(root.layoutTreatments, root.txtTreatments);
+        TextHelp.enableClearIcon(root.layoutSymptoms, root.txtSymptoms);
+
     }
 
     private boolean validateAllField()
