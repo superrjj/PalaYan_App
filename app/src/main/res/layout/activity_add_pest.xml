@@ -107,6 +107,8 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     android:hint="Pest Name">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -126,6 +128,8 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     android:layout_marginTop="15dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     app:hintTextColor="@color/green"
                     android:hint="Scientific Name">
 
@@ -152,6 +156,8 @@
                     app:boxStrokeColor="@color/green"
                     android:layout_marginTop="15dp"
                     app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     android:hint="Description">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -177,6 +183,8 @@
                     app:boxStrokeColor="@color/green"
                     android:layout_marginTop="15dp"
                     app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     android:hint="Symptoms">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -202,6 +210,8 @@
                     app:boxStrokeColor="@color/green"
                     android:layout_marginTop="15dp"
                     app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     android:hint="Cause">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -226,6 +236,8 @@
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="@color/green"
                     android:layout_marginTop="15dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     app:hintTextColor="@color/green"
                     android:hint="Treatments">
 
