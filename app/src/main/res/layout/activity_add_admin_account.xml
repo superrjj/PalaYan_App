@@ -79,6 +79,8 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     android:hint="Full Name">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -123,6 +125,8 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     android:hint="Username">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -393,6 +397,8 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     android:hint="What city where you born in?">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -414,6 +420,8 @@
                     android:layout_marginBottom="5dp"
                     app:hintTextColor="@color/green"
                     android:layout_marginTop="15dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
                     android:hint="What is your childhood nickname?">
 
                     <com.google.android.material.textfield.TextInputEditText
