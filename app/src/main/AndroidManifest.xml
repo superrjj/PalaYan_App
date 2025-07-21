@@ -17,9 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PalaYan"
         tools:targetApi="31">
-        <activity
-            android:name=".UserActivities.ValidationImage"
-            android:exported="false" />
+
         <activity
             android:name=".UserActivities.CameraScanner"
             android:exported="false" />

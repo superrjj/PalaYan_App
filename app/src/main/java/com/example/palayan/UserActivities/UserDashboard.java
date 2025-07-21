@@ -163,8 +163,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             }
 
             //check the fields if not empty
-            if (!TextHelp.isFilled(layoutUsername, etUsername, "Please enter username") ||
-                    !TextHelp.isFilled(layoutPassword, etPassword, "Please enter password")) {
+            if (!TextHelp.isFilled(layoutUsername, etUsername, "Please fill out this field.") ||
+                    !TextHelp.isFilled(layoutPassword, etPassword, "Please fill out this field.")) {
                 return;
             }
 
@@ -240,8 +240,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
                         } else {
                             //validation for wrong username or password
-                            layoutPassword.setError("Incorrect username or password");
-                            layoutUsername.setError("Incorrect username or password");
+                            layoutPassword.setError("Incorrect username or password.");
+                            layoutUsername.setError("Incorrect username or password.");
                             loadingDialog.dismiss();
                         }
                     })
@@ -278,7 +278,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             //validation for empty field
             String username = txtEnterUsername.getText().toString().trim();
             if (username.isEmpty()) {
-               TextHelp.isFilled(layoutEnter, txtEnterUsername, "Please enter username");
+               TextHelp.isFilled(layoutEnter, txtEnterUsername, "Please fill out this field.");
                 return;
             }
 
@@ -323,8 +323,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
         btnNextSec.setOnClickListener(v -> {
             //validation for empty fields
-            if (!TextHelp.isFilled(layoutSecOne, txtSecOne, "Please answer this question") ||
-                    !TextHelp.isFilled(layoutSecTwo, txtSecTwo, "Please answer this question")) {
+            if (!TextHelp.isFilled(layoutSecOne, txtSecOne, "Please fill out this field.") ||
+                    !TextHelp.isFilled(layoutSecTwo, txtSecTwo, "Please fill out this field.")) {
                 return;
             }
 
@@ -384,8 +384,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             String confirmPass = etConfirmPass.getText().toString().trim();
 
             //validation for empty fields
-            if (!TextHelp.isFilled(layoutNewPass, etNewPass, "Please enter new password") ||
-                    !TextHelp.isFilled(layoutConfirmPass, etConfirmPass, "Please enter confirm new password")) {
+            if (!TextHelp.isFilled(layoutNewPass, etNewPass, "Please fill out this field.") ||
+                    !TextHelp.isFilled(layoutConfirmPass, etConfirmPass, "Please fill out this field.")) {
                 return;
             }
 

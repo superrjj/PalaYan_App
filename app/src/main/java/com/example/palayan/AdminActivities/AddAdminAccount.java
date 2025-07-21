@@ -71,17 +71,13 @@ public class AddAdminAccount extends AppCompatActivity {
         }
 
         //live validation for text change
-        TextHelp.addValidation(root.layoutFullName, root.txtFullName, "Field required");
-        TextHelp.addValidation(root.layoutUsername, root.txtUsername, "Field required");
-        TextHelp.addValidation(root.layoutPassword, root.txtPassword, "Field required");
-        TextHelp.addValidation(root.layoutSecOne, root.txtSecOne, "Field required");
-        TextHelp.addValidation(root.layoutSecTwo, root.txtSecTwo, "Field required");
+        TextHelp.enableClearIcon(root.layoutFullName, root.txtFullName, "Field required");
+        TextHelp.enableClearIcon(root.layoutUsername, root.txtUsername, "Field required");
+        TextHelp.enableClearIcon(root.layoutPassword, root.txtPassword, "Field required");
+        TextHelp.enableClearIcon(root.layoutSecOne, root.txtSecOne, "Field required");
+        TextHelp.enableClearIcon(root.layoutSecTwo, root.txtSecTwo, "Field required");
         TextHelp.addAutoCompleteValidation(root.layoutRole, root.spRole, "Selection required");
 
-        TextHelp.enableClearIcon(root.layoutFullName, root.txtFullName);
-        TextHelp.enableClearIcon(root.layoutUsername, root.txtUsername);
-        TextHelp.enableClearIcon(root.layoutSecOne, root.txtSecOne);
-        TextHelp.enableClearIcon(root.layoutSecTwo, root.txtSecTwo);
 
 
         //validation for password requirements

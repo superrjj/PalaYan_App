@@ -24,15 +24,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <!-- Scanning Line -->
-        <View
-            android:id="@+id/scanningLine"
-            android:layout_width="250dp"
-            android:layout_height="3dp"
-            android:background="@drawable/scanner_line"
-            android:layout_gravity="center_horizontal"
-            android:visibility="visible" />
-
 
         <!-- Warning Text -->
         <TextView

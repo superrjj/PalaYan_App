@@ -99,31 +99,19 @@ public class AddRiceVariety extends AppCompatActivity {
             });
         }
 
-
         //Live validation
-        TextHelp.addValidation(root.layoutVarietyName, root.txtVarietyName, "Field required");
-        TextHelp.addValidation(root.layoutReleaseName, root.txtReleaseName, "Field required");
-        TextHelp.addValidation(root.layoutBreedingCode, root.txtBreedingCode, "Field required");
-        TextHelp.addValidation(root.layoutYearRelease, root.txtYearRelease, "Field required");
-        TextHelp.addValidation(root.layoutBreederOrigin, root.txtBreederOrigin, "Field required");
-        TextHelp.addValidation(root.layoutMaturity, root.txtMaturity, "Field required");
-        TextHelp.addValidation(root.layoutPlantHeight, root.txtPlantHeight, "Field required");
-        TextHelp.addValidation(root.layoutAverageYield, root.txtAverageYield, "Field required");
-        TextHelp.addValidation(root.layoutMaxYield, root.txtMaxYield, "Field required");
-        TextHelp.addValidation(root.layoutTillers, root.txtTillers, "Field required");
-        TextHelp.addValidation(root.layoutLocation, root.txtLocation, "Field required");
+        TextHelp.enableClearIcon(root.layoutVarietyName, root.txtVarietyName, "Field required");
+        TextHelp.enableClearIcon(root.layoutReleaseName, root.txtReleaseName, "Field required");
+        TextHelp.enableClearIcon(root.layoutBreedingCode, root.txtBreedingCode, "Field required");
+        TextHelp.enableClearIcon(root.layoutYearRelease, root.txtYearRelease, "Field required");
+        TextHelp.enableClearIcon(root.layoutBreederOrigin, root.txtBreederOrigin, "Field required");
+        TextHelp.enableClearIcon(root.layoutMaturity, root.txtMaturity, "Field required");
+        TextHelp.enableClearIcon(root.layoutPlantHeight, root.txtPlantHeight, "Field required");
+        TextHelp.enableClearIcon(root.layoutAverageYield, root.txtAverageYield, "Field required");
+        TextHelp.enableClearIcon(root.layoutMaxYield, root.txtMaxYield, "Field required");
+        TextHelp.enableClearIcon(root.layoutTillers, root.txtTillers, "Field required");
+        TextHelp.enableClearIcon(root.layoutLocation, root.txtLocation, "Field required");
 
-        TextHelp.enableClearIcon(root.layoutVarietyName, root.txtVarietyName);
-        TextHelp.enableClearIcon(root.layoutReleaseName, root.txtReleaseName);
-        TextHelp.enableClearIcon(root.layoutBreedingCode, root.txtBreedingCode);
-        TextHelp.enableClearIcon(root.layoutYearRelease, root.txtYearRelease);
-        TextHelp.enableClearIcon(root.layoutBreederOrigin, root.txtBreederOrigin);
-        TextHelp.enableClearIcon(root.layoutMaturity, root.txtMaturity);
-        TextHelp.enableClearIcon(root.layoutPlantHeight, root.txtPlantHeight);
-        TextHelp.enableClearIcon(root.layoutAverageYield, root.txtAverageYield);
-        TextHelp.enableClearIcon(root.layoutMaxYield, root.txtMaxYield);
-        TextHelp.enableClearIcon(root.layoutTillers, root.txtTillers);
-        TextHelp.enableClearIcon(root.layoutLocation, root.txtLocation);
 
     }
 
@@ -144,42 +132,42 @@ public class AddRiceVariety extends AppCompatActivity {
     private boolean validateAllFields() {
 
         //variety name
-        if (!TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please enter variety name")) return false;
-        TextHelp.addAlphaNumericSpace(root.layoutVarietyName, root.txtVarietyName, "Letters and numbers only");
+        if (!TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please fill out this field.")) return false;
+        TextHelp.addAlphaNumericSpace(root.layoutVarietyName, root.txtVarietyName, "Oops! That should only contain letters and numbers.");
 
         //release name
-        if (!TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please enter release name")) return false;
-        TextHelp.addAlphaNumericSpace(root.layoutReleaseName, root.txtReleaseName, "Letters and numbers only");
+        if (!TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please fill out this field.")) return false;
+        TextHelp.addAlphaNumericSpace(root.layoutReleaseName, root.txtReleaseName, "Oops! That should only contain letters and numbers.");
 
         //breeding code
-        if (!TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please enter breeding code")) return false;
-        TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Letters and numbers only");
+        if (!TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please fill out this field.")) return false;
+        TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Oops! That should only contain letters and numbers.");
 
         //year release
-        if (!TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please enter year release")) return false;
+        if (!TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please fill out this field.")) return false;
 
         //breeder origin
-        if (!TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please enter breeder/origin")) return false;
-        TextHelp.addLettersSpaceAnd(root.layoutBreederOrigin, root.txtBreederOrigin, "Letters, & symbol only");
+        if (!TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please fill out this field.")) return false;
+        TextHelp.addLettersSpaceAnd(root.layoutBreederOrigin, root.txtBreederOrigin, "Oops! That should only contain letters and symbols.");
 
         //maturity
-        if (!TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please enter maturity days")) return false;
+        if (!TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please fill out this field.")) return false;
 
         //plant height
-        if (!TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please enter plant height")) return false;
+        if (!TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please fill out this field.")) return false;
 
         //average yield
-        if (!TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please enter average yield")) return false;
+        if (!TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please fill out this field.")) return false;
 
         //max yield
-        if (!TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please enter max yield")) return false;
+        if (!TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please fill out this field.")) return false;
 
         //tillers
-        if (!TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please enter no. of tillers")) return false;
+        if (!TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please fill out this field.")) return false;
 
         //location
-        if (!TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please enter location")) return false;
-        TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Letters and numbers only");
+        if (!TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please fill out this field.")) return false;
+        TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Oops! That should only contain letters and numbers.");
 
         // ChipGroups
         if (!TextHelp.validateChipGroup(chipGroupEnvironment, root.tvChipEnvironmentError, "Please select environment")) return false;
