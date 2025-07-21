@@ -78,6 +78,12 @@ public class AddAdminAccount extends AppCompatActivity {
         TextHelp.addValidation(root.layoutSecTwo, root.txtSecTwo, "Field required");
         TextHelp.addAutoCompleteValidation(root.layoutRole, root.spRole, "Selection required");
 
+        TextHelp.enableClearIcon(root.layoutFullName, root.txtFullName);
+        TextHelp.enableClearIcon(root.layoutUsername, root.txtUsername);
+        TextHelp.enableClearIcon(root.layoutSecOne, root.txtSecOne);
+        TextHelp.enableClearIcon(root.layoutSecTwo, root.txtSecTwo);
+
+
         //validation for password requirements
         TextHelp.addPasswordRequirementsValidation(
                 root.txtPassword,

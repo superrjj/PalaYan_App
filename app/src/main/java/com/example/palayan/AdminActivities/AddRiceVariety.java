@@ -113,7 +113,6 @@ public class AddRiceVariety extends AppCompatActivity {
         TextHelp.addValidation(root.layoutTillers, root.txtTillers, "Field required");
         TextHelp.addValidation(root.layoutLocation, root.txtLocation, "Field required");
 
-
         TextHelp.enableClearIcon(root.layoutVarietyName, root.txtVarietyName);
         TextHelp.enableClearIcon(root.layoutReleaseName, root.txtReleaseName);
         TextHelp.enableClearIcon(root.layoutBreedingCode, root.txtBreedingCode);
