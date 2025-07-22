@@ -171,14 +171,71 @@ public class TextHelp {
 
     //live validation for numbers only
     public static void addNumericOnly(final TextInputLayout layout, final TextInputEditText editText, final String errorMessage) {
+
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String input = editText.getText() != null ? editText.getText().toString().trim() : "";
+                if (input.isEmpty()) {
+                    layout.setError("This field is required.");
+                } else if (!input.matches("^[0-9]+$")) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+            }
+        });
+
         editText.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {
+
+                String input = s != null ? s.toString().trim() : "";
+                if (!editText.isFocused()) return;
+
+                if (input.isEmpty()) {
+                    layout.setError("This field is required.");
+                } else if (!input.matches("^[0-9]+$")) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = editText.getText() != null ? editText.getText().toString().trim() : "";
-                if (!text.matches("^[0-9]+$")) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+    }
+
+    public static void addDecimalOnly(
+            final TextInputLayout layout,
+            final TextInputEditText editText,
+            final String errorMessage
+    ) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String input = editText.getText() != null ? editText.getText().toString().trim() : "";
+                if (input.isEmpty()) {
+                    layout.setError("This field is required.");
+                } else if (!input.matches("^\\d*(\\.\\d+)?$")) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = s != null ? s.toString().trim() : "";
+                if (!editText.isFocused()) return;
+
+                if (input.isEmpty()) {
+                    layout.setError("This field is required.");
+                } else if (!input.matches("^\\d*(\\.\\d+)?$")) {
                     layout.setError(errorMessage);
                 } else {
                     layout.setError(null);

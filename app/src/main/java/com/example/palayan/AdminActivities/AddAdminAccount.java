@@ -64,7 +64,7 @@ public class AddAdminAccount extends AppCompatActivity {
             isEditMode = true;
             userId = getIntent().getIntExtra("userId", -1);
             if (userId != -1) {
-                loadAccountDetails(userId);
+                loadAccounts(userId);
                 root.btnCreate.setVisibility(View.GONE);
                 root.btnUpdateAccount.setVisibility(View.VISIBLE);
             }
@@ -125,7 +125,7 @@ public class AddAdminAccount extends AppCompatActivity {
     }
 
     //retrieving the account
-    private void loadAccountDetails(int userId) {
+    private void loadAccounts(int userId) {
         firestore.collection("accounts")
                 .document(String.valueOf(userId))
                 .get()
@@ -152,11 +152,13 @@ public class AddAdminAccount extends AppCompatActivity {
     //validation for all fields
     private boolean validateAllFields(){
 
-        if (!TextHelp.isFilled(root.layoutFullName, root.txtFullName, "Please fill out this field.")) return false;
+        if (!TextHelp.isFilled(root.layoutFullName, root.txtFullName, "Please fill out this field.")
+        || root.layoutFullName.getError() != null) return false;
         TextHelp.addLetterOnly(root.layoutFullName, root.txtFullName, "Oops! That should only contain letters.");
         if (root.layoutFullName.getError() != null) return false;
 
-        if (!TextHelp.isFilled(root.layoutUsername, root.txtUsername, "Please fill out this field.")) return false;
+        if (!TextHelp.isFilled(root.layoutUsername, root.txtUsername, "Please fill out this field.")
+                || root.layoutUsername.getError() != null) return false;
 
         if (root.spRole.getText().toString().trim().isEmpty()) {
             root.layoutRole.setError("Please select a role");
@@ -166,7 +168,8 @@ public class AddAdminAccount extends AppCompatActivity {
         }
 
 
-        if (!TextHelp.isFilled(root.layoutPassword, root.txtPassword, "Please fill out this field.")) return false;
+        if (!TextHelp.isFilled(root.layoutPassword, root.txtPassword, "Please fill out this field.")
+                || root.layoutPassword.getError() != null) return false;
         String password = root.txtPassword.getText().toString();
         String confirmPassword = root.txtConfirmPassword.getText().toString();
         if (!password.equals(confirmPassword)) {
@@ -174,11 +177,13 @@ public class AddAdminAccount extends AppCompatActivity {
             return false;
         }
 
-        if (!TextHelp.isFilled(root.layoutSecOne, root.txtSecOne, "Please fill out this field.")) return false;
+        if (!TextHelp.isFilled(root.layoutSecOne, root.txtSecOne, "Please fill out this field.")
+                || root.layoutSecOne.getError() != null) return false;
         TextHelp.addLetterOnly(root.layoutSecOne, root.txtSecOne, "Oops! That should only contain letters.");
         if (root.layoutSecOne.getError() != null) return false;
 
-        if (!TextHelp.isFilled(root.layoutSecTwo, root.txtSecTwo, "Please fill out this field.")) return false;
+        if (!TextHelp.isFilled(root.layoutSecTwo, root.txtSecTwo, "Please fill out this field.")
+                || root.layoutSecTwo.getError() != null) return false;
         TextHelp.addLetterOnly(root.layoutSecTwo, root.txtSecTwo, "Oops! That should only contain letters.");
         if (root.layoutSecTwo.getError() != null) return false;
 
@@ -197,7 +202,7 @@ public class AddAdminAccount extends AppCompatActivity {
                 "This admin account will be added to the application.",
                 R.drawable.ic_account_logo,
                 "ADD",
-                (dialog, which) -> addNewAccountToDatabase()
+                (dialog, which) -> addNewAccount()
         ).show(getSupportFragmentManager(), "AddConfirmDialog");
     }
 
@@ -220,7 +225,7 @@ public class AddAdminAccount extends AppCompatActivity {
     }
 
     //inserting data to the database
-    private void addNewAccountToDatabase() {
+    private void addNewAccount() {
         HashMap<String, Object> account = collectFormInput();
         if (account == null) return;
 
