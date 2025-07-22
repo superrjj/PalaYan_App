@@ -105,17 +105,17 @@ public class AddRiceVariety extends AppCompatActivity {
         }
 
         //Live validation
-        TextHelp.enableClearIcon(root.layoutVarietyName, root.txtVarietyName, "Field required");
-        TextHelp.enableClearIcon(root.layoutReleaseName, root.txtReleaseName, "Field required");
-        TextHelp.enableClearIcon(root.layoutBreedingCode, root.txtBreedingCode, "Field required");
-        TextHelp.enableClearIcon(root.layoutYearRelease, root.txtYearRelease, "Field required");
-        TextHelp.enableClearIcon(root.layoutBreederOrigin, root.txtBreederOrigin, "Field required");
-        TextHelp.enableClearIcon(root.layoutMaturity, root.txtMaturity, "Field required");
-        TextHelp.enableClearIcon(root.layoutPlantHeight, root.txtPlantHeight, "Field required");
-        TextHelp.enableClearIcon(root.layoutAverageYield, root.txtAverageYield, "Field required");
-        TextHelp.enableClearIcon(root.layoutMaxYield, root.txtMaxYield, "Field required");
-        TextHelp.enableClearIcon(root.layoutTillers, root.txtTillers, "Field required");
-        TextHelp.enableClearIcon(root.layoutLocation, root.txtLocation, "Field required");
+        TextHelp.enableClearIcon(root.layoutVarietyName, root.txtVarietyName, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutReleaseName, root.txtReleaseName, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutBreedingCode, root.txtBreedingCode, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutYearRelease, root.txtYearRelease, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutBreederOrigin, root.txtBreederOrigin, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutMaturity, root.txtMaturity, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutPlantHeight, root.txtPlantHeight, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutAverageYield, root.txtAverageYield, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutMaxYield, root.txtMaxYield, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutTillers, root.txtTillers, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutLocation, root.txtLocation, "This field is required.");
 
         TextHelp.addAlphaNumericSpace(root.layoutVarietyName, root.txtVarietyName, "Oops! That should only contain letters and numbers.");
         TextHelp.addAlphaNumericSpace(root.layoutReleaseName, root.txtReleaseName, "Oops! That should only contain letters and numbers.");

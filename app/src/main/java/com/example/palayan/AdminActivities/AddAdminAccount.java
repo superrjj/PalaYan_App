@@ -71,14 +71,16 @@ public class AddAdminAccount extends AppCompatActivity {
         }
 
         //live validation for text change
-        TextHelp.enableClearIcon(root.layoutFullName, root.txtFullName, "Field required");
-        TextHelp.enableClearIcon(root.layoutUsername, root.txtUsername, "Field required");
-        TextHelp.enableClearIcon(root.layoutPassword, root.txtPassword, "Field required");
-        TextHelp.enableClearIcon(root.layoutSecOne, root.txtSecOne, "Field required");
-        TextHelp.enableClearIcon(root.layoutSecTwo, root.txtSecTwo, "Field required");
+        TextHelp.enableClearIcon(root.layoutFullName, root.txtFullName, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutUsername, root.txtUsername, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutPassword, root.txtPassword, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutSecOne, root.txtSecOne, "This field is required.");
+        TextHelp.enableClearIcon(root.layoutSecTwo, root.txtSecTwo, "This field is required.");
         TextHelp.addAutoCompleteValidation(root.layoutRole, root.spRole, "Selection required");
 
-
+        TextHelp.addLetterOnly(root.layoutFullName, root.txtFullName, "Oops! That should only contain letters.");
+        TextHelp.addLetterOnly(root.layoutSecOne, root.txtSecOne, "Oops! That should only contain letters.");
+        TextHelp.addLetterOnly(root.layoutSecTwo, root.txtSecTwo, "Oops! That should only contain letters.");
 
         //validation for password requirements
         TextHelp.addPasswordRequirementsValidation(
@@ -111,9 +113,15 @@ public class AddAdminAccount extends AppCompatActivity {
         );
 
 
-        root.btnCreate.setOnClickListener(v -> showAddConfirmationDialog());
+        root.btnCreate.setOnClickListener(v -> {
+            if (!validateAllFields()) return;
+            showAddConfirmationDialog();
+        });
 
-        root.btnUpdateAccount.setOnClickListener(v -> showUpdateConfirmationDialog());
+        root.btnUpdateAccount.setOnClickListener(v -> {
+            if (!validateAllFields()) return;
+            showUpdateConfirmationDialog();
+        });
     }
 
     //retrieving the account
@@ -146,6 +154,7 @@ public class AddAdminAccount extends AppCompatActivity {
 
         if (!TextHelp.isFilled(root.layoutFullName, root.txtFullName, "Please fill out this field.")) return false;
         TextHelp.addLetterOnly(root.layoutFullName, root.txtFullName, "Oops! That should only contain letters.");
+        if (root.layoutFullName.getError() != null) return false;
 
         if (!TextHelp.isFilled(root.layoutUsername, root.txtUsername, "Please fill out this field.")) return false;
 
@@ -167,9 +176,11 @@ public class AddAdminAccount extends AppCompatActivity {
 
         if (!TextHelp.isFilled(root.layoutSecOne, root.txtSecOne, "Please fill out this field.")) return false;
         TextHelp.addLetterOnly(root.layoutSecOne, root.txtSecOne, "Oops! That should only contain letters.");
+        if (root.layoutSecOne.getError() != null) return false;
 
         if (!TextHelp.isFilled(root.layoutSecTwo, root.txtSecTwo, "Please fill out this field.")) return false;
         TextHelp.addLetterOnly(root.layoutSecTwo, root.txtSecTwo, "Oops! That should only contain letters.");
+        if (root.layoutSecTwo.getError() != null) return false;
 
         return true;
     }
@@ -177,7 +188,6 @@ public class AddAdminAccount extends AppCompatActivity {
     //to show the confirm dialog
     private void showAddConfirmationDialog() {
 
-        if (!validateAllFields()) return;
         String fullName = root.txtFullName.getText().toString().trim();
 
 

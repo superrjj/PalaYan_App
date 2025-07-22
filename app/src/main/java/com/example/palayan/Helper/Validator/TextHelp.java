@@ -63,7 +63,7 @@ public class TextHelp {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
-                    layout.setError("Field required");
+                    layout.setError("This field is required.");
                 } else if (!input.matches("^[a-zA-Z& ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -81,7 +81,7 @@ public class TextHelp {
                 if (!editText.isFocused()) return;
 
                 if (input.isEmpty()) {
-                    layout.setError("Field required");
+                    layout.setError("This field is required.");
                 } else if (!input.matches("^[a-zA-Z& ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -101,7 +101,7 @@ public class TextHelp {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
-                    layout.setError("Field required");
+                    layout.setError("This field is required.");
                 } else if (!input.matches("^[a-zA-Z ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -119,7 +119,7 @@ public class TextHelp {
                 if (!editText.isFocused()) return;
 
                 if (input.isEmpty()) {
-                    layout.setError("Field required");
+                    layout.setError("This field is required.");
                 } else if (!input.matches("^[a-zA-Z ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -140,7 +140,7 @@ public class TextHelp {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
-                    layout.setError("Field required");
+                    layout.setError("This field is required.");
                 } else if (!input.matches("^[a-zA-Z0-9 ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -158,7 +158,7 @@ public class TextHelp {
                 if (!editText.isFocused()) return; // Skip live validation kung wala sa focus
 
                 if (input.isEmpty()) {
-                    layout.setError("Field required");
+                    layout.setError("This field is required.");
                 } else if (!input.matches("^[a-zA-Z0-9 ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -192,7 +192,7 @@ public class TextHelp {
         String input = editText.getText() != null ? editText.getText().toString().trim() : "";
 
         if (input.isEmpty()) {
-            layout.setError("Field required");
+            layout.setError("This field is required.");
             editText.requestFocus();
             return false;
         } else if (layout.getError() != null) {
