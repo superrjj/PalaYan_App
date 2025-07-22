@@ -1,5 +1,6 @@
 package com.example.palayan.Helper.Validator;
 
+import android.content.res.ColorStateList;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextWatcher;
@@ -10,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
+import com.example.palayan.R;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -25,9 +28,43 @@ public class TextHelp {
     //live validation for required validation only
     public static void addValidation(final TextInputLayout layout, final TextInputEditText editText, final String errorMessage) {
         editText.setOnFocusChangeListener((v, hasFocus) -> {
+            String input = editText.getText() != null ? editText.getText().toString().trim() : "";
+            if (!hasFocus && input.isEmpty()) {
+                layout.setError(errorMessage); // kapag nawalan ng focus at empty
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String input = s.toString().trim();
+
+                if (input.isEmpty()) {
+                    layout.setError(errorMessage); // ito ‘yung kulang mo — live check sa empty field
+                } else {
+                    layout.setError(null);
+                }
+            }
+
+            @Override public void afterTextChanged(Editable s) {}
+        });
+    }
+
+
+    //live validation for letters, spaces and &
+    public static void addLettersSpaceAnd(
+            final TextInputLayout layout,
+            final TextInputEditText editText,
+            final String errorMessage
+    ) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
+                    layout.setError("Field required");
+                } else if (!input.matches("^[a-zA-Z& ]+$")) {
                     layout.setError(errorMessage);
                 } else {
                     layout.setError(null);
@@ -37,66 +74,15 @@ public class TextHelp {
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                layout.setError(null);
-            }
-        });
-    }
-
-    //live validation for letters, spaces and &
-    public static void addLettersSpaceAnd(final TextInputLayout layout, final TextInputEditText editText, final String errorMessage) {
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = editText.getText() != null ? editText.getText().toString().trim() : "";
-                if (!text.matches("^[a-zA-Z& ]*$")) {
-                    layout.setError(errorMessage);
-                } else {
-                    layout.setError(null);
-                }
-            }
-        });
-    }
-
-    public static void addLetterOnly(final TextInputLayout layout, final TextInputEditText editText, final String errorMessage){
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = editText.getText() != null ? editText.getText().toString().trim() : "";
-                if (!text.matches("^[a-zA-Z ]*$")) {
-                    layout.setError(errorMessage);
-                } else {
-                    layout.setError(null);
-                }
-            }
-
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
+                String input = s != null ? s.toString().trim() : "";
+                if (!editText.isFocused()) return;
 
-            }
-        });
-    }
-
-    //live validation for alphanumeric and space
-    public static void addAlphaNumericSpace(final TextInputLayout layout, final TextInputEditText editText, final String errorMessage) {
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = editText.getText() != null ? editText.getText().toString().trim() : "";
-                if (!text.matches("^[a-zA-Z0-9 ]*$")) {
+                if (input.isEmpty()) {
+                    layout.setError("Field required");
+                } else if (!input.matches("^[a-zA-Z& ]+$")) {
                     layout.setError(errorMessage);
                 } else {
                     layout.setError(null);
@@ -104,6 +90,84 @@ public class TextHelp {
             }
         });
     }
+
+
+    public static void addLetterOnly(
+            final TextInputLayout layout,
+            final TextInputEditText editText,
+            final String errorMessage
+    ) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String input = editText.getText() != null ? editText.getText().toString().trim() : "";
+                if (input.isEmpty()) {
+                    layout.setError("Field required");
+                } else if (!input.matches("^[a-zA-Z ]+$")) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = s != null ? s.toString().trim() : "";
+                if (!editText.isFocused()) return;
+
+                if (input.isEmpty()) {
+                    layout.setError("Field required");
+                } else if (!input.matches("^[a-zA-Z ]+$")) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+            }
+        });
+    }
+
+
+    //live validation for alphanumeric and space
+    public static void addAlphaNumericSpace(
+            final TextInputLayout layout,
+            final TextInputEditText editText,
+            final String errorMessage
+    ) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String input = editText.getText() != null ? editText.getText().toString().trim() : "";
+                if (input.isEmpty()) {
+                    layout.setError("Field required");
+                } else if (!input.matches("^[a-zA-Z0-9 ]+$")) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = s != null ? s.toString().trim() : "";
+                if (!editText.isFocused()) return; // Skip live validation kung wala sa focus
+
+                if (input.isEmpty()) {
+                    layout.setError("Field required");
+                } else if (!input.matches("^[a-zA-Z0-9 ]+$")) {
+                    layout.setError(errorMessage);
+                } else {
+                    layout.setError(null);
+                }
+            }
+        });
+    }
+
 
     //live validation for numbers only
     public static void addNumericOnly(final TextInputLayout layout, final TextInputEditText editText, final String errorMessage) {
@@ -128,11 +192,14 @@ public class TextHelp {
         String input = editText.getText() != null ? editText.getText().toString().trim() : "";
 
         if (input.isEmpty()) {
-            layout.setError(errorMessage);
+            layout.setError("Field required");
+            editText.requestFocus();
+            return false;
+        } else if (layout.getError() != null) {
             editText.requestFocus();
             return false;
         } else {
-            layout.setError(null);
+            layout.setError(null); // Clear any previous errors
             return true;
         }
     }
@@ -353,39 +420,74 @@ public class TextHelp {
 
     // Shows the clear icon only when field is focused and has content
     public static void enableClearIcon(final TextInputLayout layout, final TextInputEditText editText, final String errorMessage) {
+        layout.setEndIconMode(TextInputLayout.END_ICON_CLEAR_TEXT);
+
+        // Listener kapag nag-focus o nawalan ng focus
         editText.setOnFocusChangeListener((v, hasFocus) -> {
-            String text = editText.getText() != null ? editText.getText().toString().trim() : "";
-
-            //For clear icon
-            layout.setEndIconVisible(hasFocus && text.length() > 0);
-
-            //For validation on blur
+            String text = editText.getText().toString().trim();
             if (!hasFocus) {
                 if (text.isEmpty()) {
                     layout.setError(errorMessage);
+                    layout.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(layout.getContext(), R.color.dark_red)));
                 } else {
                     layout.setError(null);
+                    layout.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(layout.getContext(), R.color.green)));
                 }
             }
         });
 
+        // TextWatcher para sa live validation at icon color
         editText.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Live: hide error when typing
-                layout.setError(null);
+                String text = s.toString().trim();
 
-                // Icon show/hide
-                if (editText.hasFocus()) {
-                    layout.setEndIconVisible(s.length() > 0);
+                if (text.isEmpty()) {
+                    layout.setError(errorMessage);
+                    layout.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(layout.getContext(), R.color.dark_red)));
+                } else {
+                    layout.setError(null);
+                    layout.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(layout.getContext(), R.color.green)));
                 }
+
+                // Show or hide clear icon depending on text and focus
+                if (text.isEmpty() || !editText.isFocused()) {
+                    layout.setEndIconVisible(false);
+                } else {
+                    layout.setEndIconVisible(true);
+                }
+            }
+
+            @Override public void afterTextChanged(Editable s) {}
+        });
+
+        // Clear button click behavior
+        layout.setEndIconOnClickListener(v -> {
+            editText.setText("");
+            layout.setError(errorMessage);
+            layout.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(layout.getContext(), R.color.dark_red)));
+        });
+
+        // Optional: show/hide clear icon based on focus change too
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            String text = editText.getText().toString().trim();
+            if (hasFocus && !text.isEmpty()) {
+                layout.setEndIconVisible(true);
+            } else {
+                layout.setEndIconVisible(false);
+            }
+
+            if (text.isEmpty()) {
+                layout.setError(errorMessage);
+                layout.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(layout.getContext(), R.color.dark_red)));
+            } else {
+                layout.setError(null);
+                layout.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(layout.getContext(), R.color.green)));
             }
         });
     }
-
 
 
 }
