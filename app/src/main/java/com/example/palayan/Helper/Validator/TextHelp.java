@@ -63,7 +63,7 @@ public class TextHelp {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^[a-zA-Z& ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -81,7 +81,7 @@ public class TextHelp {
                 if (!editText.isFocused()) return;
 
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^[a-zA-Z& ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -101,7 +101,7 @@ public class TextHelp {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^[a-zA-Z ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -119,7 +119,7 @@ public class TextHelp {
                 if (!editText.isFocused()) return;
 
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^[a-zA-Z ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -140,7 +140,7 @@ public class TextHelp {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^[a-zA-Z0-9 ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -158,7 +158,7 @@ public class TextHelp {
                 if (!editText.isFocused()) return; // Skip live validation kung wala sa focus
 
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^[a-zA-Z0-9 ]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -176,7 +176,7 @@ public class TextHelp {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^[0-9]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -193,7 +193,7 @@ public class TextHelp {
                 if (!editText.isFocused()) return;
 
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^[0-9]+$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -216,7 +216,7 @@ public class TextHelp {
             if (!hasFocus) {
                 String input = editText.getText() != null ? editText.getText().toString().trim() : "";
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^\\d*(\\.\\d+)?$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -234,7 +234,7 @@ public class TextHelp {
                 if (!editText.isFocused()) return;
 
                 if (input.isEmpty()) {
-                    layout.setError("This field is required.");
+                    layout.setError("Please fill out this field.");
                 } else if (!input.matches("^\\d*(\\.\\d+)?$")) {
                     layout.setError(errorMessage);
                 } else {
@@ -249,7 +249,7 @@ public class TextHelp {
         String input = editText.getText() != null ? editText.getText().toString().trim() : "";
 
         if (input.isEmpty()) {
-            layout.setError("This field is required.");
+            layout.setError("Please fill out this field.");
             editText.requestFocus();
             return false;
         } else if (layout.getError() != null) {

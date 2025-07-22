@@ -159,7 +159,7 @@
                         android:fontFamily="@font/poppins__regular"
                         android:textColor="@color/black"
                         android:textSize="13sp"
-                        android:inputType="number" />
+                        android:inputType="text" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

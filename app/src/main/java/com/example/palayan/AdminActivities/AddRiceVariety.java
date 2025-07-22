@@ -63,7 +63,6 @@ public class AddRiceVariety extends AppCompatActivity {
         root.btnUpdateVariety.setVisibility(View.GONE);
 
         root.btnAddVariety.setOnClickListener(view -> {
-            if (!validateAllFields()) return;
             showAddConfirmationDialog();
         });
 
@@ -99,7 +98,6 @@ public class AddRiceVariety extends AppCompatActivity {
 
             root.btnUpdateVariety.setOnClickListener(view -> {
                 String id = getIntent().getStringExtra("rice_seed_id");
-                if (!validateAllFields()) return;
                 showUpdateConfirmationDialog(id);
             });
         }
@@ -122,6 +120,7 @@ public class AddRiceVariety extends AppCompatActivity {
         TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Oops! That should only contain letters and numbers.");
         TextHelp.addLettersSpaceAnd(root.layoutBreederOrigin, root.txtBreederOrigin, "Oops! That should only contain letters and symbols.");
         TextHelp.addAlphaNumericSpace(root.layoutLocation, root.txtLocation, "Oops! That should only contain letters and numbers.");
+        TextHelp.addNumericOnly(root.layoutYearRelease, root.txtYearRelease, "Oops! That should only contain numbers.");
         TextHelp.addNumericOnly(root.layoutMaturity, root.txtMaturity, "Oops! That should only contain numbers.");
         TextHelp.addNumericOnly(root.layoutPlantHeight, root.txtPlantHeight, "Oops! That should only contain numbers.");
         TextHelp.addDecimalOnly(root.layoutMaxYield, root.txtMaxYield, "Oops! That should only contain decimal point.");
@@ -133,79 +132,53 @@ public class AddRiceVariety extends AppCompatActivity {
 
 
     private boolean validateAllFields() {
+        boolean isValid = true;
 
-        //variety name
-        if (!TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please fill out this field.")
-                || root.layoutVarietyName.getError() != null) return false;
-        TextHelp.addAlphaNumericSpace(root.layoutVarietyName, root.txtVarietyName, "Oops! That should only contain letters and numbers.");
-        if (root.layoutVarietyName.getError() != null) return false;
+        //empty fields
+        if (!TextHelp.isFilled(root.layoutVarietyName, root.txtVarietyName, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please fill out this field.")) isValid = false;
+        if (!TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please fill out this field.")) isValid = false;
 
-        //release name
-        if (!TextHelp.isFilled(root.layoutReleaseName, root.txtReleaseName, "Please fill out this field.")
-                || root.layoutReleaseName.getError() != null) return false;
-        TextHelp.addAlphaNumericSpace(root.layoutReleaseName, root.txtReleaseName, "Oops! That should only contain letters and numbers.");
-        if (root.layoutVarietyName.getError() != null) return false;
+        //chipgroups
+        if (!TextHelp.validateChipGroup(chipGroupEnvironment, root.tvChipEnvironmentError, "Please select environment")) isValid = false;
+        if (!TextHelp.validateChipGroup(chipGroupSeason, root.tvChipSeasonError, "Please select season")) isValid = false;
+        if (!TextHelp.validateChipGroup(chipGroupPlanting, root.tvChipMethodError, "Please select planting method")) isValid = false;
 
-        //breeding code
-        if (!TextHelp.isFilled(root.layoutBreedingCode, root.txtBreedingCode, "Please fill out this field.")
-                || root.layoutBreedingCode.getError() != null) return false;
-        TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Oops! That should only contain letters and numbers.");
-        if (root.layoutVarietyName.getError() != null) return false;
+        //format
+        if (root.layoutVarietyName.getError() == null)
+            TextHelp.addAlphaNumericSpace(root.layoutVarietyName, root.txtVarietyName, "Oops! That should only contain letters and numbers.");
+        if (root.layoutReleaseName.getError() == null)
+            TextHelp.addAlphaNumericSpace(root.layoutReleaseName, root.txtReleaseName, "Oops! That should only contain letters and numbers.");
+        if (root.layoutBreedingCode.getError() == null)
+            TextHelp.addAlphaNumericSpace(root.layoutBreedingCode, root.txtBreedingCode, "Oops! That should only contain letters and numbers.");
+        if(root.layoutYearRelease.getError() == null)
+            TextHelp.addNumericOnly(root.layoutYearRelease, root.txtYearRelease, "Oops! That should only contain numbers.");
+        if (root.layoutBreederOrigin.getError() == null)
+            TextHelp.addLettersSpaceAnd(root.layoutBreederOrigin, root.txtBreederOrigin, "Oops! That should only contain letters and symbols.");
+        if (root.layoutMaturity.getError() == null)
+            TextHelp.addNumericOnly(root.layoutMaturity, root.txtMaturity, "Oops! That should only contain numbers.");
+        if (root.layoutPlantHeight.getError() == null)
+            TextHelp.addDecimalOnly(root.layoutPlantHeight, root.txtPlantHeight, "Oops! That should only contain decimal point.");
+        if (root.layoutAverageYield.getError() == null)
+            TextHelp.addDecimalOnly(root.layoutAverageYield, root.txtAverageYield, "Oops! That should only contain decimal point.");
+        if (root.layoutMaxYield.getError() == null)
+            TextHelp.addDecimalOnly(root.layoutMaxYield, root.txtMaxYield, "Oops! That should only contain decimal point.");
+        if (root.layoutTillers.getError() == null)
+            TextHelp.addNumericOnly(root.layoutTillers, root.txtTillers, "Oops! That should only contain numbers.");
+        if (root.layoutLocation.getError() == null)
+            TextHelp.addAlphaNumericSpace(root.layoutLocation, root.txtLocation, "Oops! That should only contain letters and numbers.");
 
-        //year release
-        if (!TextHelp.isFilled(root.layoutYearRelease, root.txtYearRelease, "Please fill out this field.")
-                || root.layoutYearRelease.getError() != null) return false;
-
-        //breeder origin
-        if (!TextHelp.isFilled(root.layoutBreederOrigin, root.txtBreederOrigin, "Please fill out this field.")
-                || root.layoutBreederOrigin.getError() != null) return false;
-        TextHelp.addLettersSpaceAnd(root.layoutBreederOrigin, root.txtBreederOrigin, "Oops! That should only contain letters and symbols.");
-        if (root.layoutVarietyName.getError() != null) return false;
-
-        //maturity
-        if (!TextHelp.isFilled(root.layoutMaturity, root.txtMaturity, "Please fill out this field.")
-                || root.layoutMaturity.getError() != null) return false;
-        TextHelp.addNumericOnly(root.layoutMaturity, root.txtMaturity, "Oops! That should only contain numbers.");
-        if (root.layoutMaturity.getError() != null) return false;
-
-        //plant height
-        if (!TextHelp.isFilled(root.layoutPlantHeight, root.txtPlantHeight, "Please fill out this field.")
-                || root.layoutPlantHeight.getError() != null) return false;
-        TextHelp.addDecimalOnly(root.layoutMaxYield, root.txtMaxYield, "Oops! That should only contain decimal point.");
-        if (root.layoutPlantHeight.getError() != null) return false;
-
-        //average yield
-        if (!TextHelp.isFilled(root.layoutAverageYield, root.txtAverageYield, "Please fill out this field.")
-                || root.layoutAverageYield.getError() != null) return false;
-        TextHelp.addDecimalOnly(root.layoutAverageYield, root.txtAverageYield, "Oops! That should only contain decimal point.");
-        if (root.layoutAverageYield.getError() != null) return false;
-
-        //max yield
-        if (!TextHelp.isFilled(root.layoutMaxYield, root.txtMaxYield, "Please fill out this field.")
-                || root.layoutMaxYield.getError() != null) return false;
-        TextHelp.addDecimalOnly(root.layoutMaxYield, root.txtMaxYield, "Oops! That should only contain decimal point.");
-        if (root.layoutMaxYield.getError() != null) return false;
-
-        //tillers
-        if (!TextHelp.isFilled(root.layoutTillers, root.txtTillers, "Please fill out this field.")
-                || root.layoutTillers.getError() != null) return false;
-        TextHelp.addNumericOnly(root.layoutTillers, root.txtTillers, "Oops! That should only contain numbers.");
-        if (root.layoutTillers.getError() != null) return false;
-
-
-        //location
-        if (!TextHelp.isFilled(root.layoutLocation, root.txtLocation, "Please fill out this field.")
-                || root.layoutLocation.getError() != null) return false;
-        TextHelp.addAlphaNumericSpace(root.layoutLocation, root.txtLocation, "Oops! That should only contain letters and numbers.");
-        if (root.layoutVarietyName.getError() != null) return false;
-
-        //chip groups
-        if (!TextHelp.validateChipGroup(chipGroupEnvironment, root.tvChipEnvironmentError, "Please select environment")) return false;
-        if (!TextHelp.validateChipGroup(chipGroupSeason, root.tvChipSeasonError, "Please select season")) return false;
-        if (!TextHelp.validateChipGroup(chipGroupPlanting, root.tvChipMethodError, "Please select planting method")) return false;
-
-        return true;
+        return isValid;
     }
+
 
     private void setupChipListeners() {
         chipGroupEnvironment.setOnCheckedStateChangeListener((group, checkedIds) -> {
@@ -224,6 +197,7 @@ public class AddRiceVariety extends AppCompatActivity {
 
     private void showAddConfirmationDialog() {
 
+        if (!validateAllFields()) return;
         String id = root.txtVarietyName.getText().toString().trim();
 
 
@@ -239,6 +213,7 @@ public class AddRiceVariety extends AppCompatActivity {
 
     private void showUpdateConfirmationDialog(String id) {
 
+        if (!validateAllFields()) return;
         String varietyName = root.txtVarietyName.getText().toString().trim();
         CustomDialogFragment.newInstance(
                 "Update Rice Variety",
