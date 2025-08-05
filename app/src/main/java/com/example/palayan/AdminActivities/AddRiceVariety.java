@@ -127,9 +127,7 @@ public class AddRiceVariety extends AppCompatActivity {
         TextHelp.addDecimalOnly(root.layoutAverageYield, root.txtAverageYield, "Oops! That should only contain decimal point.");
         TextHelp.addNumericOnly(root.layoutTillers, root.txtTillers, "Oops! That should only contain numbers.");
 
-
     }
-
 
     private boolean validateAllFields() {
         boolean isValid = true;
@@ -207,7 +205,7 @@ public class AddRiceVariety extends AppCompatActivity {
                 "This rice variety will be added to the application and made available for selection and reporting",
                 R.drawable.ic_rice_logo,
                 "ADD",
-                (dialog, which) -> addVarietyToDatabase()
+                (dialog, which) -> addRiceVariety()
         ).show(getSupportFragmentManager(), "AddConfirmDialog");
     }
 
@@ -221,11 +219,11 @@ public class AddRiceVariety extends AppCompatActivity {
                 "The changes will be saved and take effect immediately.",
                 R.drawable.ic_edit,
                 "UPDATE",
-                (dialog, which) -> updateVariety()
+                (dialog, which) -> updateRiceVariety()
         ).show(getSupportFragmentManager(), "UpdateConfirmDialog");
     }
 
-    private void addVarietyToDatabase() {
+    private void addRiceVariety() {
 
 
         firestore.collection("rice_seed_varieties")
@@ -283,7 +281,7 @@ public class AddRiceVariety extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Error occurred: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
-    private void updateVariety() {
+    private void updateRiceVariety() {
         String id = getIntent().getStringExtra("rice_seed_id");
 
         try {
@@ -324,7 +322,6 @@ public class AddRiceVariety extends AppCompatActivity {
         }
     }
 
-
     //selected id's of chip group
     private String getSelectedChipsText(ChipGroup chipGroup) {
         StringBuilder selected = new StringBuilder();
@@ -361,7 +358,7 @@ public class AddRiceVariety extends AppCompatActivity {
     }
 
 
-    //Success dialog it's either update or add
+    //success dialog it's either update or add
     private void showSuccessDialog(String action, String varietyName) {
         String title = "Rice Variety " + (action.equals("updated") ? "Updated" : "Added");
         String message = varietyName + " has been successfully " + action + ".";

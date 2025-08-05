@@ -112,6 +112,15 @@ public class AddAdminAccount extends AppCompatActivity {
                 TextHelp.createUsernameLiveChecker(firestore, root.layoutUsername, originalUsername, isEditMode)
         );
 
+//        root.txtUsername.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (!hasFocus) {
+//                String text = root.txtUsername.getText() != null ? root.txtUsername.getText().toString().trim() : "";
+//                if (text.isEmpty()) {
+//                    root.layoutUsername.setError("This field is required.");
+//                }
+//            }
+//        });
+
 
         root.btnCreate.setOnClickListener(v -> {
             if (!validateAllFields()) return;

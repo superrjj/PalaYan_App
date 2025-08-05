@@ -325,7 +325,7 @@ public class TextHelp {
                 tvOneReq.setTextColor(lengthOk ? activeTextColor : inactiveTextColor);
                 ivOneReq.setColorFilter(lengthOk ? activeIconColor : inactiveIconColor);
 
-                // At least 1 number ✅
+                // At least 1 number
                 boolean hasNumber = number.matcher(password).matches();
                 cvTwoReq.setCardBackgroundColor(hasNumber ? activeColor : inactiveColor);
                 tvTwoReq.setTextColor(hasNumber ? activeTextColor : inactiveTextColor);
@@ -451,7 +451,15 @@ public class TextHelp {
                 timer = new Timer();
 
                 String username = s.toString().trim();
-                if (username.isEmpty()) return;
+                if (username.isEmpty()) {
+                    layoutUsername.setError("Please fill out this field.");
+                    return;
+                }
+
+                if (!username.matches("^[a-zA-Z][a-zA-Z0-9_]{5,19}$")) {
+                    layoutUsername.setError("Use 6–20 characters. Letters, numbers, and underscore only.");
+                    return;
+                }
 
                 // Don’t re-check if it’s the same as original (in edit mode)
                 if (isEditMode && username.equals(originalUsername)) return;
