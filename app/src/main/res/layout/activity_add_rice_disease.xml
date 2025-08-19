@@ -1,10 +1,252 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/semi_white"
     tools:context=".Adapter.AddRiceDisease">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/green"
+            android:elevation="4dp"
+            app:title=""
+            app:contentInsetStart="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_back_final"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins__medium"/>
+
+            </LinearLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="15dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardElevation="4dp"
+                        android:background="@color/light_gray">
+
+                        <FrameLayout
+                            android:id="@+id/imageUploadFrame"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_margin="15dp"
+                            android:layout_gravity="start"
+                            android:background="@drawable/image_border">
+
+                            <ImageView
+                                android:id="@+id/ivUploadImage"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/image_border"
+                                android:contentDescription="Upload Image" />
+
+                            <TextView
+                                android:id="@+id/tvTapToUpload"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="Add photo"
+                                android:textColor="@color/green"
+                                android:textSize="13sp"
+                                android:fontFamily="@font/poppins__semibold"
+                                android:background="#40FFFFFF" />
+                        </FrameLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+
+
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
+                    android:hint="Description">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="5"
+                        android:lines="5"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word"
+                        android:paddingEnd="12dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutSymptoms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
+                    android:hint="Symptoms">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtSymptoms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="5"
+                        android:lines="5"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word"
+                        android:paddingEnd="12dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutCause"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
+                    android:hint="Cause">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtCause"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="5"
+                        android:lines="5"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word"
+                        android:paddingEnd="12dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutTreatments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:hint="Treatments">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtTreatments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="5"
+                        android:lines="5"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word"
+                        android:paddingEnd="12dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btnAddPest"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_solid"
+                    android:text="ADD PEST"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="40dp"
+                    android:fontFamily="@font/poppins__semibold"/>
+
+                <Button
+                    android:id="@+id/btnUpdatePest"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_solid"
+                    android:backgroundTint="@color/dark_blue"
+                    android:text="UPDATE PEST"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="40dp"
+                    android:fontFamily="@font/poppins__semibold"/>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>
