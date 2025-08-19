@@ -46,7 +46,7 @@ public class CameraOverlayView extends View {
 
         // Transparent cutout rectangle
         float rectWidth = 800f;
-        float rectHeight = 500f;
+        float rectHeight = 800f;
 
         float left = (getWidth() - rectWidth) / 2;
         float top = (getHeight() - rectHeight) / 2;
