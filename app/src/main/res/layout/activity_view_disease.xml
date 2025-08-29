@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/semi_white"
+    tools:context=".AdminActivities.ViewDisease">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/green"
+            android:elevation="4dp"
+            app:title=""
+            app:contentInsetStart="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_back_final"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins__medium"/>
+
+            </LinearLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp">
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/sv_SearchBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/search_bar_outline"
+                    android:queryHint="Search for rice variety"
+                    android:iconifiedByDefault="true"
+                    android:theme="@style/CustomSearchView"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="10dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycleViewer_Pest"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/list_view_pest_admin"
+                    android:paddingBottom="5dp"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/green"
+        app:tint="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tvNoData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No pest data found"
+        android:textSize="18sp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:fontFamily="@font/poppins__semibold"/>
+
+</FrameLayout>

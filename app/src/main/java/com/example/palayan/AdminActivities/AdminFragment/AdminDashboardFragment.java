@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.palayan.AdminActivities.AdminDashboard;
 import com.example.palayan.AdminActivities.ViewAccounts;
+import com.example.palayan.AdminActivities.ViewDisease;
 import com.example.palayan.AdminActivities.ViewPest;
 import com.example.palayan.AdminActivities.ViewRiceVarieties;
 import com.example.palayan.databinding.FragmentAdminDashboardBinding;
@@ -84,6 +85,12 @@ public class AdminDashboardFragment extends Fragment {
             ((AdminDashboard) requireActivity()).setUserLeavingFalse();
             startActivity(new Intent(getActivity(), ViewPest.class));
         });
+
+        root.cvDisease.setOnClickListener(v -> {
+            ((AdminDashboard) requireActivity()).setUserLeavingFalse();
+            startActivity(new Intent(getActivity(), ViewDisease.class));
+        });
+
 
         root.cvAccounts.setOnClickListener(v -> {
             ((AdminDashboard) requireActivity()).setUserLeavingFalse();

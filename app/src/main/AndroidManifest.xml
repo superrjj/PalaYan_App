@@ -18,7 +18,11 @@
         android:theme="@style/Theme.PalaYan"
         tools:targetApi="31">
         <activity
-            android:name=".Adapter.AddRiceDisease"
+            android:name=".AdminActivities.ViewDisease"
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
+        <activity
+            android:name=".AdminActivities.AddRiceDisease"
             android:exported="false" />
         <activity
             android:name=".UserActivities.CameraScanner"
