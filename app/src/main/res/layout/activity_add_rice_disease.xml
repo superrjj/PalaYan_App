@@ -68,23 +68,12 @@
                     android:orientation="vertical">
 
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="24dp"
-                        app:cardPreventCornerOverlap="true"
-                        app:cardElevation="4dp"
-                        android:background="@color/light_gray">
-
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvImageRiceDiseases"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
                             android:nestedScrollingEnabled="false"/>
-
-
-                    </androidx.cardview.widget.CardView>
 
                     <TextView
                         android:id="@+id/tvViewAll"
@@ -100,6 +89,49 @@
                         android:layout_marginTop="8dp"/>
 
                 </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutDiseaseName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
+                    android:hint="Pest Name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtDiseaseName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutScientificName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="15dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
+                    app:hintTextColor="@color/green"
+                    android:hint="Scientific Name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtScientificName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutDescription"

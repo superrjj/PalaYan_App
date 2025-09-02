@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="All Images"
+        android:textColor="@color/green"
+        android:fontFamily="@font/poppins__medium"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAllImages"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:overScrollMode="never"/>
+
+</LinearLayout>
