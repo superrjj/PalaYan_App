@@ -210,7 +210,7 @@ public class AddRiceDisease extends AppCompatActivity {
         return true;
     }
 
-    // Actual save implementation
+    //Actual save implementation
     private void performSaveRiceDisease() {
         String diseaseName = root.txtDiseaseName.getText().toString().trim();
         String scientificName = root.txtScientificName.getText().toString().trim();
@@ -230,7 +230,7 @@ public class AddRiceDisease extends AppCompatActivity {
         final int finalTotal = totalImagesToUpload;
         final int[] uploadedCount = {0};
 
-        // Show progress dialog
+        //Show progress dialog
         showProgressDialog("Uploading images...");
 
         for (ImageUploadItem item : imageList) {
