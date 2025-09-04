@@ -1,11 +1,13 @@
 package com.example.palayan.AdminActivities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,33 +28,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
 public class AddRiceDisease extends AppCompatActivity {
-
     private ActivityAddRiceDiseaseBinding root;
     private ImageUploadAdapter adapter;
     private List<ImageUploadItem> imageList = new ArrayList<>();
-
     private FirebaseFirestore firestore;
     private StorageReference storageRef;
-
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
-
     private Uri cameraImageUri;
     private AlertDialog progressDialog;
 
@@ -87,7 +75,6 @@ public class AddRiceDisease extends AppCompatActivity {
         adapter = new ImageUploadAdapter(imageList, uri -> showImageSourceDialog());
         root.rvImageRiceDiseases.setLayoutManager(new GridLayoutManager(this, 3));
         root.rvImageRiceDiseases.setAdapter(adapter);
-
         imageList.add(new ImageUploadItem(null, true)); // placeholder
         adapter.notifyDataSetChanged();
     }
@@ -128,7 +115,8 @@ public class AddRiceDisease extends AppCompatActivity {
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         File photoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                                 UUID.randomUUID().toString() + ".jpg");
-                        cameraImageUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", photoFile);
+                        cameraImageUri = FileProvider.getUriForFile(this,
+                                getPackageName() + ".provider", photoFile);
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri);
                         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -180,8 +168,8 @@ public class AddRiceDisease extends AppCompatActivity {
     // Show confirmation dialog before saving
     private void showAddConfirmationDialog() {
         if (!validateAllFields()) return;
-        String diseaseName = root.txtDiseaseName.getText().toString().trim();
 
+        String diseaseName = root.txtDiseaseName.getText().toString().trim();
         CustomDialogFragment.newInstance(
                 "Add Rice Disease",
                 "Are you sure you want to add \"" + diseaseName + "\"?",
@@ -201,8 +189,8 @@ public class AddRiceDisease extends AppCompatActivity {
         String cause = root.txtCause.getText().toString().trim();
         String treatments = root.txtTreatments.getText().toString().trim();
 
-        if (diseaseName.isEmpty() || scientificName.isEmpty() || description.isEmpty()
-                || symptoms.isEmpty() || cause.isEmpty() || treatments.isEmpty()) {
+        if (diseaseName.isEmpty() || scientificName.isEmpty() || description.isEmpty() ||
+                symptoms.isEmpty() || cause.isEmpty() || treatments.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -248,7 +236,6 @@ public class AddRiceDisease extends AppCompatActivity {
         for (ImageUploadItem item : imageList) {
             if (!item.isPlaceholder() && item.getImageUrl() != null) {
                 Uri fileUri = Uri.parse(item.getImageUrl());
-
                 StorageReference fileRef = storageRef.child(diseaseName.replaceAll("\\s+", "_"))
                         .child(UUID.randomUUID().toString() + ".jpg");
 
@@ -257,19 +244,19 @@ public class AddRiceDisease extends AppCompatActivity {
                                 .addOnSuccessListener(uri -> {
                                     imageUrls.add(uri.toString());
                                     uploadedCount[0]++;
-
                                     if (uploadedCount[0] == finalTotal) {
-                                        saveToFirestore(diseaseName, scientificName, description, symptoms, cause, treatments, imageUrls);
+                                        saveToFirestore(diseaseName, scientificName, description,
+                                                symptoms, cause, treatments, imageUrls);
                                     }
                                 }))
                         .addOnFailureListener(e -> {
                             uploadedCount[0]++;
                             Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-
                             if (uploadedCount[0] == finalTotal) {
                                 hideProgressDialog();
                                 if (!imageUrls.isEmpty()) {
-                                    saveToFirestore(diseaseName, scientificName, description, symptoms, cause, treatments, imageUrls);
+                                    saveToFirestore(diseaseName, scientificName, description,
+                                            symptoms, cause, treatments, imageUrls);
                                 } else {
                                     Toast.makeText(this, "No images uploaded successfully!", Toast.LENGTH_SHORT).show();
                                 }
@@ -300,8 +287,8 @@ public class AddRiceDisease extends AppCompatActivity {
         }
     }
 
-    private void saveToFirestore(String diseaseName, String scientificName, String description, String symptoms,
-                                 String cause, String treatments, List<String> imageUrls) {
+    private void saveToFirestore(String diseaseName, String scientificName, String description,
+                                 String symptoms, String cause, String treatments, List<String> imageUrls) {
         String docId = diseaseName.replaceAll("\\s+", "_");
         DocumentReference docRef = firestore.collection("rice_local_disease").document(docId);
 
@@ -310,12 +297,12 @@ public class AddRiceDisease extends AppCompatActivity {
                 hideProgressDialog();
                 Toast.makeText(this, "Disease already exists! Choose another name.", Toast.LENGTH_LONG).show();
             } else {
-                docRef.set(new RiceDiseaseModel(diseaseName, scientificName, description, symptoms, cause, treatments, imageUrls))
+                docRef.set(new RiceDiseaseModel(diseaseName, scientificName, description,
+                                symptoms, cause, treatments, imageUrls))
                         .addOnSuccessListener(unused -> {
                             hideProgressDialog();
-                            Toast.makeText(this, "Rice disease added successfully!", Toast.LENGTH_SHORT).show();
-                            triggerRetrain(diseaseName);
-                            finish(); // Go back to previous screen
+                            Toast.makeText(this, "Rice disease added successfully! Training will start automatically.", Toast.LENGTH_LONG).show();
+                            finish();
                         })
                         .addOnFailureListener(e -> {
                             hideProgressDialog();
@@ -330,47 +317,6 @@ public class AddRiceDisease extends AppCompatActivity {
         });
     }
 
-    private void triggerRetrain(String diseaseName) {
-        String retrainUrl = "https://my-colab-server.ngrok.io/retrain";
-        OkHttpClient client = new OkHttpClient();
-
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("diseaseName", diseaseName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        RequestBody body = RequestBody.create(
-                jsonBody.toString(),
-                okhttp3.MediaType.parse("application/json; charset=utf-8")
-        );
-
-        Request request = new Request.Builder()
-                .url(retrainUrl)
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(AddRiceDisease.this, "Retrain trigger failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                runOnUiThread(() -> {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(AddRiceDisease.this, "Model retraining started for: " + diseaseName, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(AddRiceDisease.this, "Retrain trigger error: " + response.message(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-    }
 
     @Override
     protected void onDestroy() {
@@ -398,7 +344,7 @@ public class AddRiceDisease extends AppCompatActivity {
             this.images = images;
         }
 
-        // All getters - REQUIRED for Firestore
+        // All getters
         public String getDiseaseName() { return diseaseName; }
         public String getScientificName() { return scientificName; }
         public String getDescription() { return description; }
