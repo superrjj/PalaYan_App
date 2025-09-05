@@ -18,6 +18,9 @@
         android:theme="@style/Theme.PalaYan"
         tools:targetApi="31">
         <activity
+            android:name=".PredictResult"
+            android:exported="false" />
+        <activity
             android:name=".AdminActivities.ViewDisease"
             android:exported="false"
             android:theme="@style/Theme.PalaYan" />

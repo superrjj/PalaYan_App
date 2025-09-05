@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PredictResult">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="Disease Image"
+                android:background="@color/material_dynamic_primary90" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Powdery Mildew"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:id="@+id/scientificName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Erysiphe necator"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:textColor="#555555"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/descriptionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/descriptionText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Powdery mildew is a fungal disease affecting leaves, stems, and buds."
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Symptoms"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• White powdery spots on leaves\n• Leaf curling and distortion\n• Reduced fruit quality"
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Causes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Fungal infection\n• High humidity\n• Poor airflow"
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Treatments"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Apply fungicide\n• Prune infected leaves\n• Improve airflow"
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:layout_marginBottom="80dp" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
