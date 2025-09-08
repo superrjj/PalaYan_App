@@ -18,6 +18,9 @@
         android:theme="@style/Theme.PalaYan"
         tools:targetApi="31">
         <activity
+            android:name=".TextBased"
+            android:exported="false" />
+        <activity
             android:name=".PredictResult"
             android:exported="false" />
         <activity

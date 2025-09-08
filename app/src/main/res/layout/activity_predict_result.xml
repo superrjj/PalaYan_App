@@ -23,7 +23,7 @@
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
                 android:contentDescription="Disease Image"
-                android:background="@color/material_dynamic_primary90" />
+                android:background="@color/deam_green" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
                 android:layout_marginTop="12dp" />
 
             <TextView
-                android:id="@+id/scientificName"
+                android:id=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Erysiphe necator"
@@ -45,7 +45,7 @@
                 android:layout_marginBottom="16dp" />
 
             <TextView
-                android:id="@+id/descriptionLabel"
+                android:id=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Description"
@@ -55,7 +55,7 @@
                 android:layout_marginTop="8dp" />
 
             <TextView
-                android:id="@+id/descriptionText"
+                android:id=""
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Powdery mildew is a fungal disease affecting leaves, stems, and buds."
