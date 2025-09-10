@@ -1,24 +1,33 @@
 package com.example.palayan;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.example.palayan.databinding.ActivityPredictResultBinding;
+
+import java.io.File;
 
 public class PredictResult extends AppCompatActivity {
+
+    private ActivityPredictResultBinding root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_predict_result);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        root = ActivityPredictResultBinding.inflate(getLayoutInflater());
+        setContentView(root.getRoot());
+
+        // Get file path from intent
+        String imagePath = getIntent().getStringExtra("imagePath");
+        if (imagePath != null) {
+            File imgFile = new File(imagePath);
+            if (imgFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                root.ivDiseaseImage.setImageBitmap(bitmap);
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@
             android:padding="16dp">
 
             <ImageView
+                android:id="@+id/ivDiseaseImage"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
@@ -26,6 +27,7 @@
                 android:background="@color/deam_green" />
 
             <TextView
+                android:id="@+id/tvDiseaseName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Powdery Mildew"
@@ -35,7 +37,7 @@
                 android:layout_marginTop="12dp" />
 
             <TextView
-                android:id=""
+                android:id="@+id/tvSciName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Erysiphe necator"
@@ -45,7 +47,7 @@
                 android:layout_marginBottom="16dp" />
 
             <TextView
-                android:id=""
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Description"
@@ -55,7 +57,7 @@
                 android:layout_marginTop="8dp" />
 
             <TextView
-                android:id=""
+                android:id="@+id/tvDiseaseDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Powdery mildew is a fungal disease affecting leaves, stems, and buds."
@@ -73,6 +75,7 @@
                 android:layout_marginTop="8dp" />
 
             <TextView
+                android:id="@+id/tvSymptoms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="• White powdery spots on leaves\n• Leaf curling and distortion\n• Reduced fruit quality"
@@ -90,6 +93,7 @@
                 android:layout_marginTop="8dp" />
 
             <TextView
+                android:id="@+id/tvCause"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="• Fungal infection\n• High humidity\n• Poor airflow"
@@ -107,6 +111,7 @@
                 android:layout_marginTop="8dp" />
 
             <TextView
+                android:id="@+id/tvTreatments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="• Apply fungicide\n• Prune infected leaves\n• Improve airflow"
