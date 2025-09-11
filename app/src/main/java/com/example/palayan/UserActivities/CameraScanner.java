@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -12,8 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
@@ -29,6 +34,7 @@ import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityCameraScannerBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
@@ -43,7 +49,6 @@ public class CameraScanner extends AppCompatActivity {
     private ExecutorService cameraExecutor;
     private boolean isCapturing = false;
     private TextView tvWarning;
-
     private ActivityCameraScannerBinding root;
 
     @Override
@@ -52,9 +57,9 @@ public class CameraScanner extends AppCompatActivity {
         root = ActivityCameraScannerBinding.inflate(getLayoutInflater());
         setContentView(root.getRoot());
 
-        previewView = findViewById(R.id.previewView);
-        tvWarning = findViewById(R.id.tvWarning);
-        Button btnCapture = findViewById(R.id.btnCapture);
+        previewView = root.previewView;
+        tvWarning = root.tvWarning;
+        Button btnCapture = root.btnCapture;
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -80,7 +85,7 @@ public class CameraScanner extends AppCompatActivity {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
 
                 Preview preview = new Preview.Builder().build();
-                preview.setSurfaceProvider(previewView.getSurfaceProvider()); // ✅ tama na
+                preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
                 imageCapture = new ImageCapture.Builder().build();
 
@@ -102,41 +107,24 @@ public class CameraScanner extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
-   private void takePhoto() {
+    private void takePhoto() {
         isCapturing = true;
 
-        imageCapture.takePicture(ContextCompat.getMainExecutor(this),
-                new ImageCapture.OnImageCapturedCallback() {
+        File cachePath = new File(getCacheDir(), "images");
+        cachePath.mkdirs();
+        File file = new File(cachePath, "captured.jpg");
+
+        ImageCapture.OutputFileOptions outputOptions =
+                new ImageCapture.OutputFileOptions.Builder(file).build();
+
+        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
                     @Override
-                    public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         isCapturing = false;
-                        Bitmap bitmap = imageProxyToBitmap(imageProxy);
-                        imageProxy.close();
-
-                        if (bitmap != null) {
-                            try {
-                                // Save bitmap to cache dir as file
-                                File cachePath = new File(getCacheDir(), "images");
-                                cachePath.mkdirs(); // make dir if not exists
-                                File file = new File(cachePath, "captured.png");
-                                FileOutputStream stream = new FileOutputStream(file);
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-                                stream.close();
-
-                                // Pass file URI instead of byte array
-                                Intent intent = new Intent(CameraScanner.this, PredictResult.class);
-                                intent.putExtra("imagePath", file.getAbsolutePath());
-                                startActivity(intent);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(CameraScanner.this,
-                                        "Failed to save image", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(CameraScanner.this,
-                                    "Failed to capture image", Toast.LENGTH_SHORT).show();
-                        }
+                        Intent intent = new Intent(CameraScanner.this, PredictResult.class);
+                        intent.putExtra("imagePath", file.getAbsolutePath());
+                        startActivity(intent);
                     }
 
                     @Override
@@ -148,7 +136,6 @@ public class CameraScanner extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void analyzeFrame(ImageProxy imageProxy) {
         Bitmap bitmap = imageProxyToBitmap(imageProxy);
@@ -172,11 +159,39 @@ public class CameraScanner extends AppCompatActivity {
         }
     }
 
+    // Fixed ImageProxy -> Bitmap conversion
+    @OptIn(markerClass = ExperimentalGetImage.class)
     private Bitmap imageProxyToBitmap(ImageProxy imageProxy) {
-        ByteBuffer buffer = imageProxy.getPlanes()[0].getBuffer();
-        byte[] bytes = new byte[buffer.remaining()];
-        buffer.get(bytes);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        try {
+            if (imageProxy.getImage() == null) return null;
+
+            if (imageProxy.getFormat() == ImageFormat.YUV_420_888) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                YuvImage yuvImage;
+                ByteBuffer yBuffer = imageProxy.getPlanes()[0].getBuffer();
+                ByteBuffer uBuffer = imageProxy.getPlanes()[1].getBuffer();
+                ByteBuffer vBuffer = imageProxy.getPlanes()[2].getBuffer();
+
+                int ySize = yBuffer.remaining();
+                int uSize = uBuffer.remaining();
+                int vSize = vBuffer.remaining();
+
+                byte[] nv21 = new byte[ySize + uSize + vSize];
+
+                yBuffer.get(nv21, 0, ySize);
+                vBuffer.get(nv21, ySize, vSize);
+                uBuffer.get(nv21, ySize + vSize, uSize);
+
+                yuvImage = new YuvImage(nv21, ImageFormat.NV21, imageProxy.getWidth(), imageProxy.getHeight(), null);
+                yuvImage.compressToJpeg(new Rect(0, 0, imageProxy.getWidth(), imageProxy.getHeight()), 90, out);
+
+                byte[] imageBytes = out.toByteArray();
+                return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private double calculateBlur(Bitmap bitmap) {
@@ -187,15 +202,15 @@ public class CameraScanner extends AppCompatActivity {
 
         long sum = 0;
         for (int pixel : pixels) {
-            int gray = (pixel >> 16 & 0xff) + (pixel >> 8 & 0xff) + (pixel & 0xff);
-            sum += gray / 3;
+            int gray = ((pixel >> 16 & 0xff) + (pixel >> 8 & 0xff) + (pixel & 0xff)) / 3;
+            sum += gray;
         }
         double mean = sum / (double) pixels.length;
 
         long varianceSum = 0;
         for (int pixel : pixels) {
-            int gray = (pixel >> 16 & 0xff) + (pixel >> 8 & 0xff) + (pixel & 0xff);
-            varianceSum += Math.pow((gray / 3) - mean, 2);
+            int gray = ((pixel >> 16 & 0xff) + (pixel >> 8 & 0xff) + (pixel & 0xff)) / 3;
+            varianceSum += Math.pow(gray - mean, 2);
         }
         return varianceSum / (double) pixels.length;
     }
@@ -214,9 +229,7 @@ public class CameraScanner extends AppCompatActivity {
             int g = (pixel >> 8) & 0xff;
             int b = pixel & 0xff;
 
-            if (g > r && g > b) {
-                sampleCount++;
-            }
+            if (g > r && g > b) sampleCount++;
         }
         return (double) sampleCount / totalPixels;
     }
