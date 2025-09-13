@@ -30,18 +30,20 @@
                 android:id="@+id/tvDiseaseName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Powdery Mildew"
-                android:textSize="22sp"
-                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:text="#####"
+                android:fontFamily="@font/poppins__medium"
                 android:textColor="@color/black"
-                android:layout_marginTop="12dp" />
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvSciName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Erysiphe necator"
+                android:text="######"
                 android:textSize="16sp"
+                android:fontFamily="@font/poppins__italic"
                 android:textStyle="italic"
                 android:textColor="#555555"
                 android:layout_marginBottom="16dp" />
@@ -52,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:text="Description"
                 android:textSize="18sp"
+                android:fontFamily="@font/poppins__medium"
                 android:textStyle="bold"
                 android:textColor="#000000"
                 android:layout_marginTop="8dp" />
@@ -60,9 +63,10 @@
                 android:id="@+id/tvDiseaseDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Powdery mildew is a fungal disease affecting leaves, stems, and buds."
+                android:text="######"
+                android:fontFamily="@font/poppins__medium"
                 android:textSize="16sp"
-                android:textColor="#444444"
+                android:textColor="@color/black"
                 android:layout_marginBottom="12dp" />
 
             <TextView
@@ -70,6 +74,7 @@
                 android:layout_height="wrap_content"
                 android:text="Symptoms"
                 android:textSize="18sp"
+                android:fontFamily="@font/poppins__medium"
                 android:textStyle="bold"
                 android:textColor="#000000"
                 android:layout_marginTop="8dp" />
@@ -78,9 +83,10 @@
                 android:id="@+id/tvSymptoms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="• White powdery spots on leaves\n• Leaf curling and distortion\n• Reduced fruit quality"
+                android:text="#####"
+                android:fontFamily="@font/poppins__medium"
                 android:textSize="16sp"
-                android:textColor="#444444"
+                android:textColor="@color/black"
                 android:layout_marginBottom="12dp" />
 
             <TextView
@@ -88,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:text="Causes"
                 android:textSize="18sp"
+                android:fontFamily="@font/poppins__medium"
                 android:textStyle="bold"
                 android:textColor="#000000"
                 android:layout_marginTop="8dp" />
@@ -96,9 +103,10 @@
                 android:id="@+id/tvCause"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="• Fungal infection\n• High humidity\n• Poor airflow"
+                android:text="#####"
                 android:textSize="16sp"
-                android:textColor="#444444"
+                android:fontFamily="@font/poppins__medium"
+                android:textColor="@color/black"
                 android:layout_marginBottom="12dp" />
 
             <TextView
@@ -107,16 +115,18 @@
                 android:text="Treatments"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:fontFamily="@font/poppins__medium"
+                android:textColor="@color/black"
                 android:layout_marginTop="8dp" />
 
             <TextView
                 android:id="@+id/tvTreatments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="• Apply fungicide\n• Prune infected leaves\n• Improve airflow"
+                android:text="#####"
                 android:textSize="16sp"
-                android:textColor="#444444"
+                android:fontFamily="@font/poppins__medium"
+                android:textColor="@color/black"
                 android:layout_marginBottom="80dp" />
         </LinearLayout>
 
