@@ -12,6 +12,7 @@ import com.example.palayan.API.ApiClient;
 import com.example.palayan.API.ApiService;
 import com.example.palayan.API.PredictResponse;
 import com.example.palayan.databinding.ActivityPredictResultBinding;
+import com.example.palayan.UserActivities.LoadingDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,6 +27,7 @@ public class PredictResult extends AppCompatActivity {
 
     private ActivityPredictResultBinding root;
     private Bitmap capturedBitmap;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +35,14 @@ public class PredictResult extends AppCompatActivity {
         root = ActivityPredictResultBinding.inflate(getLayoutInflater());
         setContentView(root.getRoot());
 
-        // Get image path from intent
+        loadingDialog = new LoadingDialog(this);
+
         String imagePath = getIntent().getStringExtra("imagePath");
         if (imagePath != null) {
             File imgFile = new File(imagePath);
             if (imgFile.exists()) {
                 capturedBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 root.ivDiseaseImage.setImageBitmap(capturedBitmap);
-
-                // Call API instead of local prediction
                 callPredictionAPI();
             } else {
                 Toast.makeText(this, "Image file not found", Toast.LENGTH_SHORT).show();
@@ -56,8 +57,7 @@ public class PredictResult extends AppCompatActivity {
             Toast.makeText(this, "No image to predict", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // I-add mo yung retry mechanism
+        if (!isFinishing()) loadingDialog.show("Loading result...");
         callPredictionAPIWithRetry(0);
     }
 
@@ -67,10 +67,9 @@ public class PredictResult extends AppCompatActivity {
             return;
         }
 
-        final int MAX_RETRIES = 3;
+        final int MAX_RETRIES = 100;
 
         try {
-            // Convert bitmap to byte array
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             capturedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
             byte[] imageBytes = baos.toByteArray();
@@ -79,13 +78,18 @@ public class PredictResult extends AppCompatActivity {
             Log.d("PredictResult", "API URL: " + ApiClient.getBaseUrl() + "predict_disease");
             Log.d("PredictResult", "Retry attempt: " + (retryCount + 1));
 
-            // Create multipart body
+            if (loadingDialog != null) {
+                String msg = retryCount == 0
+                        ? "Loading result..."
+                        : "Loading result... Attempt " + (retryCount + 1) + "/100";
+                loadingDialog.setMessage(msg);
+            }
+
             okhttp3.RequestBody requestFile = okhttp3.RequestBody.create(
                     okhttp3.MediaType.parse("image/jpeg"), imageBytes);
             MultipartBody.Part imagePart = MultipartBody.Part.createFormData(
                     "image", "image.jpg", requestFile);
 
-            // Call API
             ApiService apiService = ApiClient.getApiService();
             Call<PredictResponse> call = apiService.predictDisease(imagePart);
 
@@ -95,25 +99,25 @@ public class PredictResult extends AppCompatActivity {
                     Log.d("PredictResult", "Response code: " + response.code());
 
                     if (response.isSuccessful() && response.body() != null) {
+                        if (loadingDialog != null) loadingDialog.dismiss();
                         PredictResponse result = response.body();
                         Log.d("PredictResult", "Success! Predicted: " + result.predicted_disease);
                         displayPredictionResult(result);
                     } else {
                         String errorBody = "";
                         try {
-                            errorBody = response.errorBody().string();
+                            errorBody = response.errorBody() != null ? response.errorBody().string() : "";
                             Log.e("PredictResult", "Error body: " + errorBody);
                         } catch (Exception e) {
                             errorBody = "Could not read error body";
                         }
 
-                        // I-try mo ulit kung may error
                         if (retryCount < MAX_RETRIES) {
-                            Log.d("PredictResult", "Retrying... Attempt " + (retryCount + 2));
                             new android.os.Handler().postDelayed(() -> {
                                 callPredictionAPIWithRetry(retryCount + 1);
-                            }, 2000); // Wait 2 seconds before retry
+                            }, 2000);
                         } else {
+                            if (loadingDialog != null) loadingDialog.dismiss();
                             Toast.makeText(PredictResult.this,
                                     "API Error: " + response.code() + " - " + errorBody,
                                     Toast.LENGTH_LONG).show();
@@ -127,16 +131,18 @@ public class PredictResult extends AppCompatActivity {
                     String errorMessage = "Network Error: " + t.getMessage();
                     Log.e("PredictResult", "Network Error", t);
 
-                    // I-try mo ulit kung may network error
                     if (retryCount < MAX_RETRIES) {
-                        Log.d("PredictResult", "Retrying due to network error... Attempt " + (retryCount + 2));
+                        if (loadingDialog != null) {
+                            String msg = "Network error, retrying... Attempt " + (retryCount + 2) + "/3";
+                            loadingDialog.setMessage(msg);
+                        }
                         new android.os.Handler().postDelayed(() -> {
                             callPredictionAPIWithRetry(retryCount + 1);
-                        }, 2000); // Wait 2 seconds before retry
+                        }, 2000);
                     } else {
+                        if (loadingDialog != null) loadingDialog.dismiss();
                         Toast.makeText(PredictResult.this, errorMessage, Toast.LENGTH_LONG).show();
 
-                        // I-add mo to para sa better error diagnosis
                         if (t instanceof java.net.UnknownHostException) {
                             Log.e("PredictResult", "Unknown host - check your URL");
                             Toast.makeText(PredictResult.this, "Cannot connect to server. Check your internet connection.", Toast.LENGTH_LONG).show();
@@ -155,6 +161,7 @@ public class PredictResult extends AppCompatActivity {
             });
 
         } catch (Exception e) {
+            if (loadingDialog != null) loadingDialog.dismiss();
             Toast.makeText(this, "Error preparing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("PredictResult", "Error preparing image", e);
         }
@@ -162,25 +169,20 @@ public class PredictResult extends AppCompatActivity {
 
     private void displayPredictionResult(PredictResponse result) {
         try {
-            // Display prediction results
             root.tvDiseaseName.setText(result.predicted_disease);
             root.tvSciName.setText(result.disease_info.scientific_name);
 
-            // Format description (flexible - sentences or bullet points)
             if (result.disease_info.description != null) {
                 String formattedDesc = formatText(result.disease_info.description);
                 root.tvDiseaseDesc.setText(formattedDesc);
             }
 
-            // Format symptoms - I-update mo to para ma-handle both String at List
             StringBuilder symptomsText = new StringBuilder();
             if (result.disease_info.symptoms != null) {
                 if (result.disease_info.symptoms instanceof String) {
-                    // If symptoms is a string, format it
                     String symptomsStr = (String) result.disease_info.symptoms;
                     symptomsText.append(formatText(symptomsStr));
                 } else if (result.disease_info.symptoms instanceof List) {
-                    // If symptoms is a list, format as bullet points
                     List<?> symptomsList = (List<?>) result.disease_info.symptoms;
                     for (Object symptom : symptomsList) {
                         symptomsText.append("• ").append(symptom.toString()).append("\n");
@@ -189,15 +191,12 @@ public class PredictResult extends AppCompatActivity {
             }
             root.tvSymptoms.setText(symptomsText.toString());
 
-            // Format treatments - I-update mo din to
             StringBuilder treatmentsText = new StringBuilder();
             if (result.disease_info.treatments != null) {
                 if (result.disease_info.treatments instanceof String) {
-                    // If treatments is a string, format it
                     String treatmentsStr = (String) result.disease_info.treatments;
                     treatmentsText.append(formatText(treatmentsStr));
                 } else if (result.disease_info.treatments instanceof List) {
-                    // If treatments is a list, format as bullet points
                     List<?> treatmentsList = (List<?>) result.disease_info.treatments;
                     for (Object treatment : treatmentsList) {
                         treatmentsText.append("• ").append(treatment.toString()).append("\n");
@@ -206,13 +205,11 @@ public class PredictResult extends AppCompatActivity {
             }
             root.tvTreatments.setText(treatmentsText.toString());
 
-            // Format cause (flexible - sentences or bullet points)
             if (result.disease_info.cause != null) {
                 String formattedCause = formatText(result.disease_info.cause);
                 root.tvCause.setText(formattedCause);
             }
 
-            // Show confidence
             String confidenceText = "Confidence: " + String.format("%.1f%%", result.confidence * 100);
             Toast.makeText(this, confidenceText, Toast.LENGTH_LONG).show();
 
@@ -226,20 +223,13 @@ public class PredictResult extends AppCompatActivity {
         if (text == null || text.trim().isEmpty()) {
             return "";
         }
-
-        // Check if text contains bullet points or list indicators
         if (text.contains("•") || text.contains("-") || text.contains("*") ||
                 text.contains("1.") || text.contains("2.") || text.contains("3.")) {
-            // Already formatted, return as is
             return text;
         }
-
-        // Check if text has multiple sentences (contains periods)
         if (text.contains(".") && text.split("\\.").length > 2) {
-            // Multiple sentences - format as bullet points
             String[] sentences = text.split("\\.");
             StringBuilder formatted = new StringBuilder();
-
             for (String sentence : sentences) {
                 sentence = sentence.trim();
                 if (!sentence.isEmpty()) {
@@ -248,8 +238,14 @@ public class PredictResult extends AppCompatActivity {
             }
             return formatted.toString();
         }
-
-        // Single sentence or short text - return as is
         return text;
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+        super.onDestroy();
     }
 }

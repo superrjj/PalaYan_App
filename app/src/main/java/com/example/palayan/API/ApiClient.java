@@ -14,11 +14,11 @@ public class ApiClient {
         if (retrofit == null) {
             // I-update mo yung timeout settings at connection pooling
             OkHttpClient client = new OkHttpClient.Builder()
-                    .connectTimeout(60, TimeUnit.SECONDS)  // I-increase mo to 60 seconds
-                    .readTimeout(60, TimeUnit.SECONDS)     // I-increase mo to 60 seconds
-                    .writeTimeout(60, TimeUnit.SECONDS)    // I-increase mo to 60 seconds
-                    .retryOnConnectionFailure(true)        // I-add mo to para sa retry
-                    .connectionPool(new okhttp3.ConnectionPool(5, 5, TimeUnit.MINUTES))  // I-add mo connection pooling
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .retryOnConnectionFailure(true)
+                    .connectionPool(new okhttp3.ConnectionPool(5, 5, TimeUnit.MINUTES))
                     .build();
 
             retrofit = new Retrofit.Builder()
