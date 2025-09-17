@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_weight="1"
-        android:text="Loading Result..."
+        android:layout_gravity="center"
+        android:text="Loading result..."
         android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>

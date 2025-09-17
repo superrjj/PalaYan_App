@@ -19,7 +19,7 @@ public class LoadingDialog {
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         tvMessage = dialog.findViewById(R.id.tvMessage);
-        // Optional: dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
     }
 
     public void show(String message) {
