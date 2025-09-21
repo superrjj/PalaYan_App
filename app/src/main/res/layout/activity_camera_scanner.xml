@@ -1,15 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cameraLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".UserActivities.CameraScanner">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/green"
+        android:elevation="4dp"
+        app:title=""
+        app:contentInsetStart="0dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_back_final"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins__medium"/>
+
+        </LinearLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:clipToOutline="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/camera_background"
         android:layout_weight="1">
 
         <!-- Camera Preview -->
@@ -22,7 +64,7 @@
         <com.example.palayan.Helper.AppHelper.CameraOverlayView
             android:id="@+id/customOverlay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
 
         <!-- Warning Text -->
@@ -45,19 +87,56 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:background="@color/white"
+        android:orientation="vertical"
         android:padding="15dp">
 
         <Button
             android:id="@+id/btnCapture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scan"
-            android:textSize="18sp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Mag-scan"
+            android:textSize="15sp"
             android:fontFamily="@font/poppins__medium"
-            android:backgroundTint="@color/green"
+            android:background="@drawable/button_solid"
             android:textColor="@android:color/white" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnGallery"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="5dp"
+                android:text="Gallery"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins__medium"
+                android:background="@drawable/button_outline"
+                app:backgroundTint="@null"
+                android:textColor="@color/green" />
+
+            <Button
+                android:id="@+id/btnTextBased"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_marginStart="5dp"
+                android:text="Describe"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins__medium"
+                android:background="@drawable/btn_outline_blue"
+                app:backgroundTint="@null"
+                android:textColor="@color/dark_blue" />
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>
