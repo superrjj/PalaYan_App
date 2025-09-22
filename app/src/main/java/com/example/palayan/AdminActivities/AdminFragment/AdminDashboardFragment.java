@@ -14,7 +14,6 @@ import com.example.palayan.AdminActivities.AdminDashboard;
 import com.example.palayan.AdminActivities.ViewAccounts;
 import com.example.palayan.AdminActivities.ViewDisease;
 import com.example.palayan.AdminActivities.ViewPest;
-import com.example.palayan.AdminActivities.ViewRiceVarieties;
 import com.example.palayan.databinding.FragmentAdminDashboardBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -75,11 +74,7 @@ public class AdminDashboardFragment extends Fragment {
                     root.tvAccountCounts.setText(String.valueOf(count));
                 });
 
-        //intent for the specific card view
-        root.cvRiceVarieties.setOnClickListener(v -> {
-            ((AdminDashboard) requireActivity()).setUserLeavingFalse();
-            startActivity(new Intent(getActivity(), ViewRiceVarieties.class));
-        });
+
 
         root.cvPest.setOnClickListener(v -> {
             ((AdminDashboard) requireActivity()).setUserLeavingFalse();

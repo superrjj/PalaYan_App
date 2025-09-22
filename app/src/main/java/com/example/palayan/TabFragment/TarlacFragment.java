@@ -1,6 +1,7 @@
 package com.example.palayan.TabFragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,10 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class TarlacFragment extends Fragment implements SearchableFragment {
@@ -70,22 +73,27 @@ public class TarlacFragment extends Fragment implements SearchableFragment {
 
     private void loadTarlacData() {
         listenerRegistration = firestore.collection("rice_seed_varieties")
-                .whereEqualTo("archived", false)
+                .whereEqualTo("isDeleted", false)
+                .whereEqualTo("recommendedInTarlac", true) // NEW: boolean filter
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) return;
 
                     riceVarietyList.clear();
                     fullList.clear();
+                    Map<String, String> documentIdMap = new HashMap<>();
 
                     for (QueryDocumentSnapshot doc : snapshots) {
                         RiceVariety variety = doc.toObject(RiceVariety.class);
-                        if (variety != null && variety.location != null &&
-                                variety.location.toLowerCase().contains("tarlac")) {
+                        if (variety != null) {
                             riceVarietyList.add(variety);
                             fullList.add(variety);
+
+                            String key = variety.varietyName != null ? variety.varietyName : "variety_" + doc.getId();
+                            documentIdMap.put(key, doc.getId());
                         }
                     }
 
+                    adapter.setDocumentIdMap(documentIdMap);
                     adapter.notifyDataSetChanged();
 
                     if (root != null) {

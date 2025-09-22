@@ -1,5 +1,7 @@
 package com.example.palayan.Helper;
 
+import java.util.List;
+
 public class RiceVariety {
     public String rice_seed_id;
     public String varietyName;
@@ -7,24 +9,25 @@ public class RiceVariety {
     public String breedingCode;
     public String yearRelease;
     public String breederOrigin;
-    public int maturityDays;
-    public int plantHeight;
-    public double averageYield;
-    public double maxYield;
-    public int tillers;
+    public String maturityDays;        // Changed from int to String
+    public String plantHeight;         // Changed from int to String
+    public String averageYield;        // Changed from double to String
+    public String maxYield;            // Changed from double to String
+    public String tillers;             // Changed from int to String
     public String location;
-    public String environment;
-    public String season;
+    public List<String> environment;   // Changed from String to List<String>
+    public List<String> season;        // Changed from String to List<String>
     public String plantingMethod;
-    public Boolean archived;
+    public Boolean isDeleted;          // Changed from archived to isDeleted
+    public Boolean recommendedInTarlac; // Added new field
 
     public RiceVariety() {
 
     }
 
     public RiceVariety(String rice_seed_id, String varietyName, String releaseName, String breedingCode, String yearRelease,
-                       String breederOrigin, int maturityDays, int plantHeight, double averageYield, double maxYield, int tillers,
-                       String location, String environment, String season, String plantingMethod, Boolean archived) {
+                       String breederOrigin, String maturityDays, String plantHeight, String averageYield, String maxYield, String tillers,
+                       String location, List<String> environment, List<String> season, String plantingMethod, Boolean isDeleted, Boolean recommendedInTarlac) {
         this.rice_seed_id = rice_seed_id;
         this.varietyName = varietyName;
         this.releaseName = releaseName;
@@ -40,9 +43,11 @@ public class RiceVariety {
         this.environment = environment;
         this.season = season;
         this.plantingMethod = plantingMethod;
-        this.archived = archived;
+        this.isDeleted = isDeleted;
+        this.recommendedInTarlac = recommendedInTarlac;
     }
 
+    // Getters
     public String getRice_seed_id() {
         return rice_seed_id;
     }
@@ -67,23 +72,23 @@ public class RiceVariety {
         return breederOrigin;
     }
 
-    public int getMaturityDays() {
+    public String getMaturityDays() {
         return maturityDays;
     }
 
-    public int getPlantHeight() {
+    public String getPlantHeight() {
         return plantHeight;
     }
 
-    public double getAverageYield() {
+    public String getAverageYield() {
         return averageYield;
     }
 
-    public double getMaxYield() {
+    public String getMaxYield() {
         return maxYield;
     }
 
-    public int getTillers() {
+    public String getTillers() {
         return tillers;
     }
 
@@ -91,11 +96,11 @@ public class RiceVariety {
         return location;
     }
 
-    public String getEnvironment() {
+    public List<String> getEnvironment() {
         return environment;
     }
 
-    public String getSeason() {
+    public List<String> getSeason() {
         return season;
     }
 
@@ -103,7 +108,11 @@ public class RiceVariety {
         return plantingMethod;
     }
 
-    public Boolean getArchived() {
-        return archived;
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public Boolean getRecommendedInTarlac() {
+        return recommendedInTarlac;
     }
 }

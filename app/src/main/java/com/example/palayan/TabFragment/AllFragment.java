@@ -19,8 +19,10 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class AllFragment extends Fragment implements SearchableFragment {
@@ -67,7 +69,7 @@ public class AllFragment extends Fragment implements SearchableFragment {
 
     private void attachListener() {
         listenerRegistration = firestore.collection("rice_seed_varieties")
-                .whereEqualTo("archived", false)
+                .whereEqualTo("isDeleted", false)
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {
                         Log.e("Firestore", "Error: " + e.getMessage());
@@ -76,16 +78,25 @@ public class AllFragment extends Fragment implements SearchableFragment {
 
                     riceVarietyList.clear();
                     fullList.clear();
+                    Map<String, String> documentIdMap = new HashMap<>();
 
                     for (QueryDocumentSnapshot document : snapshots) {
                         RiceVariety variety = document.toObject(RiceVariety.class);
                         if (variety != null) {
                             riceVarietyList.add(variety);
                             fullList.add(variety);
+
+                            // Map variety name to document ID
+                            String key = variety.varietyName != null ? variety.varietyName : "variety_" + document.getId();
+                            documentIdMap.put(key, document.getId());
+
+                            Log.d("AllFragment", "Mapped variety: " + key + " to document ID: " + document.getId());
                         }
                     }
+
                     if (root != null) {
                         adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), favoriteIds, false);
+                        adapter.setDocumentIdMap(documentIdMap);
                         root.rvAllRiceSeed.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                         root.tvNoData.setVisibility(riceVarietyList.isEmpty() ? View.VISIBLE : View.GONE);
@@ -105,7 +116,7 @@ public class AllFragment extends Fragment implements SearchableFragment {
     //Firestore filtering function
     public void filterRiceVarietiesFirestore(String location, String year, String season, String plantingMethod, String environment) {
         firestore.collection("rice_seed_varieties")
-                .whereEqualTo("archived", false)
+                .whereEqualTo("isDeleted", false)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     riceVarietyList.clear();
@@ -148,7 +159,6 @@ public class AllFragment extends Fragment implements SearchableFragment {
                     }
                 }).addOnFailureListener(e -> Log.e("Firestore", "Filter Error: " + e.getMessage()));
     }
-
 
     @Override
     public void filter(String query) {

@@ -2,11 +2,13 @@ package com.example.palayan.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -30,12 +32,19 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
     private Context context;
     private boolean isFavoritesPage;
     private Set<String> favoriteIds;
+    private Map<String, String> documentIdMap; // Map variety name to document ID
 
     public UserRiceVarietyAdapter(List<RiceVariety> list, Context context, Set<String> favoriteIds, boolean isFavoritesPage) {
         this.list = list;
         this.context = context;
         this.favoriteIds = favoriteIds;
         this.isFavoritesPage = isFavoritesPage;
+        this.documentIdMap = new HashMap<>();
+    }
+
+    // Add method to set document ID mapping
+    public void setDocumentIdMap(Map<String, String> documentIdMap) {
+        this.documentIdMap = documentIdMap;
     }
 
     @NonNull
@@ -48,19 +57,21 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         RiceVariety variety = list.get(position);
-        holder.varietyName.setText(variety.varietyName);
-        holder.location.setText(variety.location);
+        holder.varietyName.setText(variety.varietyName != null ? variety.varietyName : "Unknown");
+        holder.location.setText(variety.location != null ? variety.location : "Unknown");
 
         // Combine breeder origin and year release (or fallback text if null)
         String origin = variety.breederOrigin != null ? variety.breederOrigin : "Unknown";
         String year = variety.yearRelease != null ? variety.yearRelease : "N/A";
         holder.breederYear.setText(origin + ", " + year);
 
-        String deviceId = DeviceUtils.getDeviceId(context);
-        String deviceModel = android.os.Build.MODEL;
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        // Make all variables used in lambda final
+        final String deviceId = DeviceUtils.getDeviceId(context);
+        final String deviceModel = android.os.Build.MODEL;
+        final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        final String varietyName = variety.varietyName != null ? variety.varietyName : "unknown_" + position;
 
-        if (isFavoritesPage || (favoriteIds != null && favoriteIds.contains(variety.rice_seed_id))) {
+        if (isFavoritesPage || (favoriteIds != null && favoriteIds.contains(varietyName))) {
             holder.ivFavorites.setImageResource(R.drawable.ic_fav_filled);
         } else {
             holder.ivFavorites.setImageResource(R.drawable.ic_fav_outline);
@@ -69,7 +80,7 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
         holder.ivFavorites.setOnClickListener(v -> {
             firestore.collection("rice_seed_favorites")
                     .whereEqualTo("deviceId", deviceId)
-                    .whereEqualTo("rice_seed_id", variety.rice_seed_id)
+                    .whereEqualTo("rice_seed_id", varietyName)
                     .get()
                     .addOnSuccessListener(snapshot -> {
                         if (!snapshot.isEmpty()) {
@@ -79,18 +90,18 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
                             }
                             holder.ivFavorites.setImageResource(R.drawable.ic_fav_outline);
                             if (favoriteIds != null) {
-                                favoriteIds.remove(variety.rice_seed_id);
+                                favoriteIds.remove(varietyName);
                             }
                         } else {
                             // Add to favorites
                             Map<String, Object> favorite = new HashMap<>();
                             favorite.put("deviceId", deviceId);
                             favorite.put("deviceModel", deviceModel);
-                            favorite.put("rice_seed_id", variety.rice_seed_id);
+                            favorite.put("rice_seed_id", varietyName);
                             firestore.collection("rice_seed_favorites").add(favorite);
                             holder.ivFavorites.setImageResource(R.drawable.ic_fav_filled);
                             if (favoriteIds != null) {
-                                favoriteIds.add(variety.rice_seed_id);
+                                favoriteIds.add(varietyName);
                             }
                         }
                     });
@@ -99,8 +110,18 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
         // Go to RiceVarietyInformation Activity on item click
         holder.cvRiceDetails.setOnClickListener(v -> {
             Intent intent = new Intent(context, RiceVarietyInformation.class);
-            intent.putExtra("rice_seed_id", variety.rice_seed_id);
-            context.startActivity(intent);
+
+            // Use variety name as key to get document ID
+            String documentId = documentIdMap.get(varietyName);
+
+
+            if (documentId != null) {
+                intent.putExtra("document_id", documentId);
+                intent.putExtra("rice_seed_id", varietyName);
+                context.startActivity(intent);
+            } else {
+                Toast.makeText(context, "Error: No document ID found", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

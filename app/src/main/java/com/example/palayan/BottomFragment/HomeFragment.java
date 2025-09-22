@@ -29,7 +29,7 @@ import com.example.palayan.UserActivities.CameraScanner;
 
 public class HomeFragment extends Fragment {
 
-   private CardView btnCamera, btnGallery;
+   private CardView btnCamera;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,17 +39,7 @@ public class HomeFragment extends Fragment {
 
 
         btnCamera = view.findViewById(R.id.btnCamera);
-        btnGallery = view.findViewById(R.id.btnGallery);
 
-       btnGallery.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               Intent intent = new Intent();
-               intent.setAction(Intent.ACTION_GET_CONTENT);
-               intent.setType("image/*");
-               startActivityForResult(intent, 10); // Request code 10 for image selection
-           }
-       });
 
        btnCamera.setOnClickListener(v ->{
            Intent intent = new Intent(getContext(), CameraScanner.class);

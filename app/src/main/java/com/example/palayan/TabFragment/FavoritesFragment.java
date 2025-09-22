@@ -1,6 +1,7 @@
 package com.example.palayan.TabFragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,10 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class FavoritesFragment extends Fragment implements SearchableFragment {
@@ -41,7 +44,7 @@ public class FavoritesFragment extends Fragment implements SearchableFragment {
         firestore = FirebaseFirestore.getInstance();
 
         // Initialize adapter with empty list
-        adapter = new UserRiceVarietyAdapter(favoriteList, getContext(), favoriteIds,true);
+        adapter = new UserRiceVarietyAdapter(favoriteList, getContext(), favoriteIds, true);
         root.rvFavoriteRiceSeed.setLayoutManager(new LinearLayoutManager(getContext()));
         root.rvFavoriteRiceSeed.setAdapter(adapter);
 
@@ -73,28 +76,37 @@ public class FavoritesFragment extends Fragment implements SearchableFragment {
                         return;
                     }
 
-                    List<String> favoriteIds = new ArrayList<>();
+                    List<String> favoriteNames = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : favoritesSnapshot) {
                         String riceId = doc.getString("rice_seed_id");
                         if (riceId != null) {
-                            favoriteIds.add(riceId);
+                            favoriteNames.add(riceId);
                         }
                     }
 
-                    if (!favoriteIds.isEmpty()) {
+                    if (!favoriteNames.isEmpty()) {
+                        // Query rice varieties by variety name (since rice_seed_id is actually variety name)
                         firestore.collection("rice_seed_varieties")
-                                .whereIn("rice_seed_id", favoriteIds)
-                                .whereEqualTo("archived", false)
+                                .whereEqualTo("isDeleted", false)
                                 .get()
                                 .addOnSuccessListener(varietiesSnapshot -> {
                                     favoriteList.clear();
                                     fullList.clear();
+                                    Map<String, String> documentIdMap = new HashMap<>();
+
                                     for (QueryDocumentSnapshot doc : varietiesSnapshot) {
                                         RiceVariety variety = doc.toObject(RiceVariety.class);
-                                        favoriteList.add(variety);
-                                        fullList.add(variety);
+                                        if (variety != null && favoriteNames.contains(variety.varietyName)) {
+                                            favoriteList.add(variety);
+                                            fullList.add(variety);
+
+                                            // Map variety name to document ID
+                                            String key = variety.varietyName != null ? variety.varietyName : "variety_" + doc.getId();
+                                            documentIdMap.put(key, doc.getId());
+                                        }
                                     }
 
+                                    adapter.setDocumentIdMap(documentIdMap);
                                     adapter.notifyDataSetChanged();
                                     root.tvNoData.setVisibility(favoriteList.isEmpty() ? View.VISIBLE : View.GONE);
                                 });
@@ -137,5 +149,4 @@ public class FavoritesFragment extends Fragment implements SearchableFragment {
             root.tvNoData.setVisibility(favoriteList.isEmpty() ? View.VISIBLE : View.GONE);
         }
     }
-
 }
