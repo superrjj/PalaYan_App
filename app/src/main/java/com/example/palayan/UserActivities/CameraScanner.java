@@ -8,12 +8,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +41,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -44,12 +50,16 @@ import java.util.concurrent.Executors;
 
 public class CameraScanner extends AppCompatActivity {
 
+    private static final int REQ_GALLERY_PERM = 102;
+
     private PreviewView previewView;
     private ImageCapture imageCapture;
     private ExecutorService cameraExecutor;
     private boolean isCapturing = false;
     private TextView tvWarning;
     private ActivityCameraScannerBinding root;
+
+    private ActivityResultLauncher<String> pickImageLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +70,37 @@ public class CameraScanner extends AppCompatActivity {
         previewView = root.previewView;
         tvWarning = root.tvWarning;
         Button btnCapture = root.btnCapture;
+        Button btnGallery = root.btnGallery;
 
+        // Register single-select image picker
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                Uri -> {
+                    if (Uri == null) return;
+                    try {
+                        File cachePath = new File(getCacheDir(), "images");
+                        cachePath.mkdirs();
+                        File file = new File(cachePath, "selected.jpg");
+
+                        try (InputStream in = getContentResolver().openInputStream(Uri);
+                             OutputStream out = new FileOutputStream(file)) {
+                            byte[] buf = new byte[8192];
+                            int len;
+                            while ((len = in.read(buf)) != -1) {
+                                out.write(buf, 0, len);
+                            }
+                        }
+
+                        Intent intent = new Intent(CameraScanner.this, PredictResult.class);
+                        intent.putExtra("imagePath", file.getAbsolutePath());
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(CameraScanner.this, "Failed to use selected image", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -73,6 +113,19 @@ public class CameraScanner extends AppCompatActivity {
 
         btnCapture.setOnClickListener(v -> {
             if (!isCapturing) takePhoto();
+        });
+
+        // Gallery button (single select, with runtime permission)
+        btnGallery.setOnClickListener(v -> {
+            String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    ? Manifest.permission.READ_MEDIA_IMAGES
+                    : Manifest.permission.READ_EXTERNAL_STORAGE;
+
+            if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
+                pickImageLauncher.launch("image/*");
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
+            }
         });
     }
 
@@ -238,5 +291,23 @@ public class CameraScanner extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         cameraExecutor.shutdown();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_GALLERY_PERM) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                pickImageLauncher.launch("image/*");
+            } else {
+                Toast.makeText(this, "Gallery permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
+            } else {
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
