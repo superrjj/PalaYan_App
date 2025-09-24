@@ -74,9 +74,6 @@ public class PredictResult extends AppCompatActivity {
             capturedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
             byte[] imageBytes = baos.toByteArray();
 
-            Log.d("PredictResult", "Image size: " + imageBytes.length + " bytes");
-            Log.d("PredictResult", "API URL: " + ApiClient.getBaseUrl() + "predict_disease");
-            Log.d("PredictResult", "Retry attempt: " + (retryCount + 1));
 
             if (loadingDialog != null) {
                 String msg = retryCount == 0
