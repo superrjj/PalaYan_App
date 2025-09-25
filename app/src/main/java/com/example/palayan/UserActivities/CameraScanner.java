@@ -155,7 +155,7 @@ public class CameraScanner extends AppCompatActivity {
                         this, cameraSelector, preview, imageCapture, imageAnalysis);
 
             } catch (ExecutionException | InterruptedException e) {
-                Log.e("CameraScanner", "Use case binding failed", e);
+
             }
         }, ContextCompat.getMainExecutor(this));
     }

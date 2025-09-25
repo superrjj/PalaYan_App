@@ -50,6 +50,9 @@ public class PredictResult extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No image path passed", Toast.LENGTH_SHORT).show();
         }
+
+        root.btnBack.setOnClickListener(view -> onBackPressed());
+
     }
 
     private void callPredictionAPI() {
@@ -93,18 +96,15 @@ public class PredictResult extends AppCompatActivity {
             call.enqueue(new Callback<PredictResponse>() {
                 @Override
                 public void onResponse(Call<PredictResponse> call, Response<PredictResponse> response) {
-                    Log.d("PredictResult", "Response code: " + response.code());
 
                     if (response.isSuccessful() && response.body() != null) {
                         if (loadingDialog != null) loadingDialog.dismiss();
                         PredictResponse result = response.body();
-                        Log.d("PredictResult", "Success! Predicted: " + result.predicted_disease);
                         displayPredictionResult(result);
                     } else {
                         String errorBody = "";
                         try {
                             errorBody = response.errorBody() != null ? response.errorBody().string() : "";
-                            Log.e("PredictResult", "Error body: " + errorBody);
                         } catch (Exception e) {
                             errorBody = "Could not read error body";
                         }
@@ -118,7 +118,6 @@ public class PredictResult extends AppCompatActivity {
                             Toast.makeText(PredictResult.this,
                                     "API Error: " + response.code() + " - " + errorBody,
                                     Toast.LENGTH_LONG).show();
-                            Log.e("PredictResult", "API Error: " + response.code() + " - " + errorBody);
                         }
                     }
                 }
@@ -126,7 +125,6 @@ public class PredictResult extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<PredictResponse> call, Throwable t) {
                     String errorMessage = "Network Error: " + t.getMessage();
-                    Log.e("PredictResult", "Network Error", t);
 
                     if (retryCount < MAX_RETRIES) {
                         if (loadingDialog != null) {
@@ -141,16 +139,12 @@ public class PredictResult extends AppCompatActivity {
                         Toast.makeText(PredictResult.this, errorMessage, Toast.LENGTH_LONG).show();
 
                         if (t instanceof java.net.UnknownHostException) {
-                            Log.e("PredictResult", "Unknown host - check your URL");
                             Toast.makeText(PredictResult.this, "Cannot connect to server. Check your internet connection.", Toast.LENGTH_LONG).show();
                         } else if (t instanceof java.net.ConnectException) {
-                            Log.e("PredictResult", "Connection refused - server might be down");
                             Toast.makeText(PredictResult.this, "Server is not responding. Please try again later.", Toast.LENGTH_LONG).show();
                         } else if (t instanceof javax.net.ssl.SSLException) {
-                            Log.e("PredictResult", "SSL error - certificate problem");
                             Toast.makeText(PredictResult.this, "SSL connection error. Please check your network settings.", Toast.LENGTH_LONG).show();
                         } else if (t instanceof java.net.SocketTimeoutException) {
-                            Log.e("PredictResult", "Request timeout");
                             Toast.makeText(PredictResult.this, "Request timeout. Please try again.", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -160,7 +154,6 @@ public class PredictResult extends AppCompatActivity {
         } catch (Exception e) {
             if (loadingDialog != null) loadingDialog.dismiss();
             Toast.makeText(this, "Error preparing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("PredictResult", "Error preparing image", e);
         }
     }
 
@@ -212,7 +205,6 @@ public class PredictResult extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(this, "Error displaying results: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("PredictResult", "Error displaying results", e);
         }
     }
 

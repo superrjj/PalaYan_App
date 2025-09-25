@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".UserActivities.TreatmentNotes">
+
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:padding="15dp"
+           android:orientation="vertical">
+
+           <com.google.android.material.card.MaterialCardView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:cardCornerRadius="8dp"
+               app:cardElevation="2dp"
+               app:cardBackgroundColor="@color/white">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:padding="12dp"
+                   android:orientation="vertical">
+
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:orientation="horizontal">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Petsa:"
+                           android:fontFamily="@font/poppins__medium"
+                           android:textColor="@color/black"/>
+
+                       <TextView
+                           android:id="@+id/tvDate"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="0000"
+                           android:paddingStart="5dp"
+                           android:fontFamily="@font/poppins__regular"
+                           android:textColor="@color/black"/>
+
+                   </LinearLayout>
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:orientation="horizontal">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Oras:"
+                           android:fontFamily="@font/poppins__medium"
+                           android:textColor="@color/black"/>
+
+                       <TextView
+                           android:id="@+id/tvTime"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="0000"
+                           android:paddingStart="5dp"
+                           android:fontFamily="@font/poppins__regular"
+                           android:textColor="@color/black"/>
+
+                   </LinearLayout>
+
+               </LinearLayout>
+
+           </com.google.android.material.card.MaterialCardView>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingTop="20dp"
+               android:orientation="vertical">
+
+
+               <com.google.android.material.card.MaterialCardView
+                   android:layout_width="match_parent"
+                   android:layout_height="150dp"
+                   app:cardBackgroundColor="@color/white"
+                   app:cardElevation="2dp"
+                   app:cardCornerRadius="10dp">
+
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:padding="12dp"
+                       android:orientation="vertical">
+
+
+                       <TextView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:text="Uri ng Treatment"
+                           android:textSize="15sp"
+                           android:fontFamily="@font/poppins_bold"
+                           android:textColor="@color/green"/>
+
+                       <TextView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:text="Uri ng Treatment"
+                           android:textSize="13sp"
+                           android:paddingTop="10dp"
+                           android:fontFamily="@font/poppins_bold"
+                           android:textColor="@color/black" />
+
+
+                       <com.google.android.material.textfield.TextInputLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:hint="-Piliin ang Uri-"
+                           app:boxStrokeColor="@color/green"
+                           app:endIconMode="dropdown_menu">
+
+                           <AutoCompleteTextView
+                               android:id="@+id/act_treatments"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:clickable="true"
+                               android:focusable="false"
+                               android:fontFamily="@font/poppins__medium"
+                               android:inputType="none"
+                               android:padding="12dp"
+                               android:textColor="@color/black"
+                               android:textSize="15sp" />
+
+                       </com.google.android.material.textfield.TextInputLayout>
+
+
+                   </LinearLayout>
+
+               </com.google.android.material.card.MaterialCardView>
+
+           </LinearLayout>
+
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingTop="20dp"
+               android:orientation="vertical">
+
+
+               <com.google.android.material.card.MaterialCardView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   app:cardBackgroundColor="@color/white"
+                   app:cardElevation="2dp"
+                   app:cardCornerRadius="10dp">
+
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:padding="12dp"
+                       android:layout_marginBottom="10dp"
+                       android:orientation="vertical">
+
+
+                       <TextView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:text="Detalye ng Treatment"
+                           android:textSize="15sp"
+                           android:fontFamily="@font/poppins_bold"
+                           android:textColor="@color/green"/>
+
+                       <TextView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:text="Ginamit na gamot/method"
+                           android:textSize="13sp"
+                           android:paddingTop="10dp"
+                           android:fontFamily="@font/poppins_bold"
+                           android:textColor="@color/black" />
+
+
+                       <com.google.android.material.textfield.TextInputLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="50dp"
+                           app:boxStrokeColor="@color/green">
+
+                           <com.google.android.material.textfield.TextInputEditText
+                               android:layout_width="match_parent"
+                               android:layout_height="match_parent"
+                               android:hint="Method"
+                               android:textSize="13sp"
+                               android:fontFamily="@font/poppins__regular"
+                               android:inputType="text"/>
+
+                       </com.google.android.material.textfield.TextInputLayout>
+
+                       <TextView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:text="Dosage o Additional Notes"
+                           android:textSize="13sp"
+                           android:paddingTop="10dp"
+                           android:fontFamily="@font/poppins_bold"
+                           android:textColor="@color/black" />
+
+
+                       <com.google.android.material.textfield.TextInputLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="50dp"
+                           app:boxStrokeColor="@color/green">
+
+                           <com.google.android.material.textfield.TextInputEditText
+                               android:layout_width="match_parent"
+                               android:layout_height="match_parent"
+                               android:hint="Ex. One tablespoon    "
+                               android:textSize="13sp"
+                               android:fontFamily="@font/poppins__regular"
+                               android:inputType="text"/>
+
+                       </com.google.android.material.textfield.TextInputLayout>
+
+
+                   </LinearLayout>
+
+               </com.google.android.material.card.MaterialCardView>
+
+           </LinearLayout>
+
+       </LinearLayout>
+
+   </ScrollView>
+
+</LinearLayout>
