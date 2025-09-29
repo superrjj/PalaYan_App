@@ -63,11 +63,11 @@
                android:paddingTop="10dp"
                android:orientation="vertical">
 
-               <androidx.cardview.widget.CardView
+               <com.google.android.material.card.MaterialCardView
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    app:cardCornerRadius="15dp"
-                   app:cardElevation="4dp">
+                   app:cardElevation="2dp">
 
                    <LinearLayout
                        android:layout_width="match_parent"
@@ -129,7 +129,7 @@
                            android:layout_height="wrap_content"
                            android:orientation="horizontal">
 
-                           <androidx.cardview.widget.CardView
+                           <com.google.android.material.card.MaterialCardView
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
                                app:cardCornerRadius="50dp">
@@ -147,10 +147,10 @@
                                    android:text="#####"
                                    android:fontFamily="@font/poppins__medium"/>
 
-                           </androidx.cardview.widget.CardView>
+                           </com.google.android.material.card.MaterialCardView>
 
-                           <androidx.cardview.widget.CardView
-                               android:layout_width="50dp"
+                           <com.google.android.material.card.MaterialCardView
+                               android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
                                android:layout_marginStart="8dp"
                                app:cardCornerRadius="50dp">
@@ -168,12 +168,12 @@
                                    android:text="#####"
                                    android:fontFamily="@font/poppins__medium"/>
 
-                           </androidx.cardview.widget.CardView>
+                           </com.google.android.material.card.MaterialCardView>
 
                        </LinearLayout>
                    </LinearLayout>
 
-               </androidx.cardview.widget.CardView>
+               </com.google.android.material.card.MaterialCardView>
 
                <TextView
                    android:layout_width="wrap_content"
@@ -189,7 +189,7 @@
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content">
                    
-                   <androidx.cardview.widget.CardView
+                   <com.google.android.material.card.MaterialCardView
                        android:layout_width="160dp"
                        android:layout_height="wrap_content"
                        app:cardCornerRadius="15dp"
@@ -260,9 +260,9 @@
 
                        </LinearLayout>
 
-                   </androidx.cardview.widget.CardView>
+                   </com.google.android.material.card.MaterialCardView>
 
-                   <androidx.cardview.widget.CardView
+                   <com.google.android.material.card.MaterialCardView
                        android:layout_width="160dp"
                        android:layout_height="wrap_content"
                        app:cardCornerRadius="15dp"
@@ -333,7 +333,7 @@
 
                        </LinearLayout>
 
-                   </androidx.cardview.widget.CardView>
+                   </com.google.android.material.card.MaterialCardView>
 
                </RelativeLayout>
 
@@ -351,7 +351,7 @@
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content">
 
-                   <androidx.cardview.widget.CardView
+                   <com.google.android.material.card.MaterialCardView
                        android:layout_width="100dp"
                        android:layout_height="wrap_content"
                        app:cardCornerRadius="15dp"
@@ -421,9 +421,9 @@
 
                        </LinearLayout>
 
-                   </androidx.cardview.widget.CardView>
+                   </com.google.android.material.card.MaterialCardView>
 
-                   <androidx.cardview.widget.CardView
+                   <com.google.android.material.card.MaterialCardView
                        android:layout_width="100dp"
                        android:layout_height="wrap_content"
                        app:cardCornerRadius="15dp"
@@ -493,9 +493,9 @@
 
                        </LinearLayout>
 
-                   </androidx.cardview.widget.CardView>
+                   </com.google.android.material.card.MaterialCardView>
 
-                   <androidx.cardview.widget.CardView
+                   <com.google.android.material.card.MaterialCardView
                        android:layout_width="100dp"
                        android:layout_height="wrap_content"
                        app:cardCornerRadius="15dp"
@@ -565,11 +565,11 @@
 
                        </LinearLayout>
 
-                   </androidx.cardview.widget.CardView>
+                   </com.google.android.material.card.MaterialCardView>
 
                </RelativeLayout>
 
-               <androidx.cardview.widget.CardView
+               <com.google.android.material.card.MaterialCardView
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:layout_marginTop="20dp"
@@ -780,7 +780,7 @@
 
                    </LinearLayout>
 
-               </androidx.cardview.widget.CardView>
+               </com.google.android.material.card.MaterialCardView>
 
            </LinearLayout>
 
