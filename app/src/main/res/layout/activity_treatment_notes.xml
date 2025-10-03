@@ -3,340 +3,237 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".UserActivities.TreatmentNotes">
 
-   <ScrollView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/white"
+            android:elevation="4dp"
+            app:title=""
+            app:contentInsetStart="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_back_final"
+                    app:tint="@color/green" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save Treatment Notes"
+                    android:textSize="15sp"
+                    android:textColor="@color/green"
+                    android:fontFamily="@font/poppins__medium"/>
 
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:padding="15dp"
-           android:orientation="vertical">
+            </LinearLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
 
-           <com.google.android.material.card.MaterialCardView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               app:cardCornerRadius="8dp"
-               app:cardElevation="2dp"
-               app:cardBackgroundColor="@color/white">
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar"
+            android:layout_above="@id/bottomLayout"
+            android:fillViewport="true"
+            android:background="@color/white"
+            android:padding="15dp">
 
-              <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:padding="10dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                  <TextView
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:textSize="14sp"
-                      android:text="Sakit na Nahanap*"
-                      android:fontFamily="@font/poppins__semibold"
-                      android:textColor="@color/green"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins__regular"
+                    android:textColor="@color/black"
+                    android:text="Disease Name" />
 
 
-                  <com.google.android.material.card.MaterialCardView
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      app:cardBackgroundColor="@color/white">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    app:strokeColor="@color/light_gray"
+                    app:cardBackgroundColor="@color/light_gray">
+
+                    <TextView
+                        android:id="@+id/tvDiseaseDetected"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Bacterial Leaf Blight"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/poppins__medium"
+                        android:textSize="17sp"
+                        android:gravity="center"/>
+
+                </com.google.android.material.card.MaterialCardView>
 
 
-                      <LinearLayout
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:padding="12dp"
-                          android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins__regular"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/black"
+                    android:text="Date Applied" />
 
 
-                          <LinearLayout
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:orientation="horizontal">
-
-                              <TextView
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="Pangalan ng sakit:"
-                                  android:fontFamily="@font/poppins__medium"
-                                  android:textColor="@color/black"/>
-
-                              <TextView
-                                  android:id="@+id/tvDiseaseName"
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="#########"
-                                  android:paddingStart="5dp"
-                                  android:fontFamily="@font/poppins__regular"
-                                  android:textColor="@color/black"/>
-
-                          </LinearLayout>
-
-                          <LinearLayout
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:orientation="horizontal">
-
-                              <TextView
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="Petsa:"
-                                  android:fontFamily="@font/poppins__medium"
-                                  android:textColor="@color/black"/>
-
-                              <TextView
-                                  android:id="@+id/tvDate"
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="######"
-                                  android:paddingStart="5dp"
-                                  android:fontFamily="@font/poppins__regular"
-                                  android:textColor="@color/black"/>
-
-                          </LinearLayout>
-
-                      </LinearLayout>
-
-                  </com.google.android.material.card.MaterialCardView>
-
-
-              </LinearLayout>
-
-           </com.google.android.material.card.MaterialCardView>
-
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:paddingTop="20dp"
-               android:orientation="vertical">
-
-
-               <com.google.android.material.card.MaterialCardView
-                   android:layout_width="match_parent"
-                   android:layout_height="150dp"
-                   app:cardBackgroundColor="@color/white"
-                   app:cardElevation="2dp"
-                   app:cardCornerRadius="10dp">
-
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    app:strokeColor="@color/light_gray"
+                    app:cardBackgroundColor="@color/light_gray">
 
                    <LinearLayout
                        android:layout_width="match_parent"
                        android:layout_height="match_parent"
-                       android:padding="12dp"
-                       android:orientation="vertical">
+                       android:orientation="horizontal">
 
-
-                       <TextView
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:text="Uri ng Treatment"
-                           android:textSize="15sp"
-                           android:fontFamily="@font/poppins__semibold"
-                           android:textColor="@color/green"/>
+                       <ImageView
+                           android:layout_width="60dp"
+                           android:layout_height="60dp"
+                           android:src="@drawable/ic_final_calendar"
+                           android:padding="16dp"/>
 
                        <TextView
+                           android:id="@+id/tvDateApplied"
                            android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:text="Uri ng Treatment"
-                           android:textSize="13sp"
-                           android:paddingTop="10dp"
-                           android:fontFamily="@font/poppins__semibold"
-                           android:textColor="@color/black" />
-
-
-                       <com.google.android.material.textfield.TextInputLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:hint="-Piliin ang Uri-"
-                           app:boxStrokeColor="@color/green"
-                           app:endIconMode="dropdown_menu">
-
-                           <AutoCompleteTextView
-                               android:id="@+id/act_treatments"
-                               android:layout_width="match_parent"
-                               android:layout_height="wrap_content"
-                               android:clickable="true"
-                               android:focusable="false"
-                               android:fontFamily="@font/poppins__medium"
-                               android:inputType="none"
-                               android:padding="12dp"
-                               android:textColor="@color/black"
-                               android:textSize="15sp" />
-
-                       </com.google.android.material.textfield.TextInputLayout>
-
+                           android:layout_height="match_parent"
+                           android:fontFamily="@font/poppins__regular"
+                           android:gravity="center_vertical"
+                           android:padding="10dp"
+                           android:text="October 4, 2025"
+                           android:textColor="@color/black"
+                           android:textSize="16sp" />
 
                    </LinearLayout>
 
-               </com.google.android.material.card.MaterialCardView>
-
-           </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:paddingTop="20dp"
-               android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins__regular"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/black"
+                    android:text="Photo after treatment*" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins__regular"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:text="Upload a photo of the rice plant after applying treatment" />
 
 
-               <com.google.android.material.card.MaterialCardView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   app:cardBackgroundColor="@color/white"
-                   app:cardElevation="2dp"
-                   app:cardCornerRadius="10dp">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="@color/light_gray">
+
+                </com.google.android.material.card.MaterialCardView>
 
 
-                   <LinearLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="match_parent"
-                       android:padding="12dp"
-                       android:layout_marginBottom="10dp"
-                       android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins__regular"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/black"
+                    android:text="Treatment Applied*" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins__regular"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:text="Describe what treatment methods you applied to the rice plant" />
 
 
-                       <TextView
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:text="Detalye ng Treatment"
-                           android:textSize="15sp"
-                           android:fontFamily="@font/poppins__semibold"
-                           android:textColor="@color/green"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/green"
+                    android:layout_marginTop="5dp"
+                    app:hintTextColor="@color/green"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/green"
+                    android:hint="Halimbawa: May mga brown spot sa dahon">
 
-                       <TextView
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:text="Ginamit na gamot/method"
-                           android:textSize="13sp"
-                           android:paddingTop="10dp"
-                           android:fontFamily="@font/poppins__semibold"
-                           android:textColor="@color/black" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"
+                        android:gravity="top|start"
+                        android:maxLines="6"
+                        android:lines="6"
+                        android:textSize="13sp"
+                        android:inputType="textMultiLine"
+                        android:justificationMode="inter_word" />
 
-
-                       <com.google.android.material.textfield.TextInputLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="50dp"
-                           app:boxStrokeColor="@color/green">
-
-                           <com.google.android.material.textfield.TextInputEditText
-                               android:layout_width="match_parent"
-                               android:layout_height="match_parent"
-                               android:hint="Method"
-                               android:textSize="13sp"
-                               android:fontFamily="@font/poppins__regular"
-                               android:inputType="text"/>
-
-                       </com.google.android.material.textfield.TextInputLayout>
-
-                       <TextView
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:text="Dosage o Additional Notes"
-                           android:textSize="13sp"
-                           android:paddingTop="10dp"
-                           android:fontFamily="@font/poppins__semibold"
-                           android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
 
 
-                       <com.google.android.material.textfield.TextInputLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="50dp"
-                           app:boxStrokeColor="@color/green">
-
-                           <com.google.android.material.textfield.TextInputEditText
-                               android:layout_width="match_parent"
-                               android:layout_height="match_parent"
-                               android:hint="Ex. One tablespoon    "
-                               android:textSize="13sp"
-                               android:fontFamily="@font/poppins__regular"
-                               android:inputType="text"/>
-
-                       </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </ScrollView>
 
 
-                   </LinearLayout>
+        <LinearLayout
+            android:id="@+id/bottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:padding="10dp"
+            android:layout_alignParentBottom="true">
 
-               </com.google.android.material.card.MaterialCardView>
+            <Button
+                android:id="@+id/btnSaveNote"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Save Note"
+                android:textAllCaps="true"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins__regular"
+                android:background="@drawable/button_solid"/>
+        </LinearLayout>
 
-           </LinearLayout>
-
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:paddingTop="20dp"
-               android:orientation="vertical">
-
-
-               <com.google.android.material.card.MaterialCardView
-                   android:layout_width="match_parent"
-                   android:layout_height="150dp"
-                   app:cardBackgroundColor="@color/white"
-                   app:cardElevation="2dp"
-                   app:cardCornerRadius="10dp">
-
-
-                   <LinearLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="match_parent"
-                       android:padding="12dp"
-                       android:orientation="vertical">
-
-
-                       <TextView
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:text="Kondisyon ng Halaman"
-                           android:textSize="15sp"
-                           android:fontFamily="@font/poppins__semibold"
-                           android:textColor="@color/green"/>
-
-                       <TextView
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:text="Kamusta ang palay ngayon?"
-                           android:textSize="13sp"
-                           android:paddingTop="10dp"
-                           android:fontFamily="@font/poppins__semibold"
-                           android:textColor="@color/black" />
-
-
-                       <com.google.android.material.textfield.TextInputLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:hint="-Anong staus ng palay-"
-                           app:boxStrokeColor="@color/green"
-                           app:endIconMode="dropdown_menu">
-
-                           <AutoCompleteTextView
-                               android:id="@+id/act_status"
-                               android:layout_width="match_parent"
-                               android:layout_height="wrap_content"
-                               android:clickable="true"
-                               android:focusable="false"
-                               android:fontFamily="@font/poppins__medium"
-                               android:inputType="none"
-                               android:padding="12dp"
-                               android:textColor="@color/black"
-                               android:textSize="15sp" />
-
-                       </com.google.android.material.textfield.TextInputLayout>
-
-
-                   </LinearLayout>
-
-               </com.google.android.material.card.MaterialCardView>
-
-           </LinearLayout>
-
-       </LinearLayout>
-
-   </ScrollView>
-
+    </RelativeLayout>
 </LinearLayout>
