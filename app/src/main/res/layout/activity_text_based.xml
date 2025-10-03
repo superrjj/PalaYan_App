@@ -8,5 +8,208 @@
     android:layout_height="match_parent"
     tools:context=".TextBased">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/green"
+        android:elevation="4dp"
+        app:title=""
+        app:contentInsetStart="0dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_back_final"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I-describe ang sintomas"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins__regular"/>
+        </LinearLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anong sintomas ang nakita mo?"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins__regular"
+            android:textSize="14sp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/green"
+            android:layout_marginTop="5dp"
+            app:hintTextColor="@color/green"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/green"
+            android:hint="Halimbawa: May mga brown spot sa dahon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins__regular"
+                android:textColor="@color/black"
+                android:gravity="top|start"
+                android:maxLines="6"
+                android:lines="6"
+                android:textSize="13sp"
+                android:inputType="textMultiLine"
+                android:justificationMode="inter_word" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Saan makikita ang sintomas?"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/poppins__regular"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="@color/white"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tvDahon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="14sp"
+                    android:text="Dahon"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:fontFamily="@font/poppins__regular"
+                    android:textColor="@color/green"
+                    android:textStyle="bold"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="@color/white"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tvTangkay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="14sp"
+                    android:text="Tangkay"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:fontFamily="@font/poppins__regular"
+                    android:textColor="@color/green"
+                    android:textStyle="bold"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="@color/white"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tvButil"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="14sp"
+                    android:text="Butil"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:fontFamily="@font/poppins__regular"
+                    android:textColor="@color/green"
+                    android:textStyle="bold"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="@color/white"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tvUgat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="14sp"
+                    android:text="Ugat"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:fontFamily="@font/poppins__regular"
+                    android:textColor="@color/green"
+                    android:textStyle="bold"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSearchDisease"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/button_solid"
+            android:text="Hanapin ang sakit"
+            android:fontFamily="@font/poppins__regular"
+            android:textSize="13sp"
+            android:layout_marginTop="40dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>
