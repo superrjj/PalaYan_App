@@ -9,8 +9,10 @@
     tools:context=".PredictResult">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,130 +20,230 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/ivDiseaseImage"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:scaleType="centerCrop"
-                android:contentDescription="Disease Image"
-                android:background="@color/deam_green" />
+           <com.google.android.material.card.MaterialCardView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+
+               <ImageView
+                   android:id="@+id/ivDiseaseImage"
+                   android:layout_width="match_parent"
+                   android:layout_height="250dp"
+                   android:scaleType="centerCrop"
+                   android:contentDescription="Disease Image"
+                   android:background="@color/deam_green" />
+
+           </com.google.android.material.card.MaterialCardView>
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/poppins__medium"
-                    android:textColor="@color/green"
-                    android:textSize="16sp"
-                    android:text="Disease Name"/>
+             <com.google.android.material.card.MaterialCardView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="30dp"
+                 app:cardElevation="1dp"
+                 app:cardBackgroundColor="@color/white">
 
 
-                <TextView
-                    android:id="@+id/tvDiseaseName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/poppins__medium"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"/>
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="10dp"
+              android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:fontFamily="@font/poppins__medium"
-                android:textColor="@color/green"
-                android:textSize="16sp"
-                android:text="Scientific Name"/>
+              <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvSciName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__italic"
-                android:textStyle="italic"
-                android:layout_marginTop="12dp"
-                android:textColor="#555555"
-                android:layout_marginBottom="16dp" />
+                  <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:fontFamily="@font/poppins__medium"
+                      android:textColor="@color/green"
+                      android:textSize="15sp"
+                      android:text="Disease Name:"/>
 
-            <TextView
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Description"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__medium"
-                android:textColor="@color/green"
-                android:layout_marginTop="8dp"/>
+                  <TextView
+                      android:id="@+id/tvDiseaseName"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:fontFamily="@font/poppins__medium"
+                      android:textColor="@color/black"
+                      android:paddingStart="15dp"
+                      android:textSize="15sp"/>
 
-            <TextView
-                android:id="@+id/tvDiseaseDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins__regular"
-                android:textSize="14sp"
-                android:justificationMode="inter_word"
-                android:textColor="@color/black"
-                android:layout_marginBottom="12dp" />
+              </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Symptoms"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__medium"
-                android:textColor="@color/green"
-                android:layout_marginTop="8dp" />
 
-            <TextView
-                android:id="@+id/tvSymptoms"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins__regular"
-                android:textSize="14sp"
-                android:justificationMode="inter_word"
-                android:textColor="@color/black"
-                android:layout_marginBottom="12dp" />
+              <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Causes"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__medium"
-                android:textColor="@color/green"
-                android:layout_marginTop="8dp" />
+                  <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:fontFamily="@font/poppins__medium"
+                      android:textColor="@color/green"
+                      android:textSize="15sp"
+                      android:text="Scientific Name:"/>
 
-            <TextView
-                android:id="@+id/tvCause"
+                  <TextView
+                      android:id="@+id/tvSciName"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="15sp"
+                      android:paddingStart="15dp"
+                      android:fontFamily="@font/poppins__italic"
+                      android:textStyle="italic"
+                      android:textColor="#555555" />
+
+              </LinearLayout>
+
+          </LinearLayout>
+             </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:justificationMode="inter_word"
-                android:fontFamily="@font/poppins__regular"
-                android:textColor="@color/black"
-                android:layout_marginBottom="12dp" />
+                app:cardElevation="1dp"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/white">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Treatments"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__medium"
-                android:textColor="@color/green"
-                android:layout_marginTop="8dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
-            <TextView
-                android:id="@+id/tvTreatments"
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Description"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/poppins__medium"
+                        android:textColor="@color/green" />
+
+                    <TextView
+                        android:id="@+id/tvDiseaseDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textSize="14sp"
+                        android:justificationMode="inter_word"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:justificationMode="inter_word"
-                android:fontFamily="@font/poppins__regular"
-                android:textColor="@color/black"
-                android:layout_marginBottom="80dp" />
+                app:cardElevation="1dp"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Symptoms"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/poppins__medium"
+                        android:textColor="@color/green" />
+
+                    <TextView
+                        android:id="@+id/tvSymptoms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textSize="14sp"
+                        android:justificationMode="inter_word"
+                        android:textColor="@color/black"
+                        />
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="1dp"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Causes"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins__medium"
+                        android:textColor="@color/green"
+                        />
+
+                    <TextView
+                        android:id="@+id/tvCause"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:justificationMode="inter_word"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="1dp"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Treatments"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins__medium"
+                        android:textColor="@color/green" />
+
+                    <TextView
+                        android:id="@+id/tvTreatments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:justificationMode="inter_word"
+                        android:fontFamily="@font/poppins__regular"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
 
         </LinearLayout>
 
@@ -150,6 +252,7 @@
 
 
     <LinearLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"

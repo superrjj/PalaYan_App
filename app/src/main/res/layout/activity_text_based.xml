@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:padding="20dp">
 
         <TextView
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:boxStrokeColor="@color/green"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             app:hintTextColor="@color/green"
             app:endIconMode="clear_text"
             app:endIconTint="@color/green"
@@ -91,14 +91,14 @@
             android:layout_height="wrap_content"
             android:text="Saan makikita ang sintomas?"
             android:textColor="@color/black"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/poppins__regular"
             android:textSize="14sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
 
@@ -208,7 +208,7 @@
             android:text="Hanapin ang sakit"
             android:fontFamily="@font/poppins__regular"
             android:textSize="13sp"
-            android:layout_marginTop="40dp"/>
+            android:layout_marginTop="100dp"/>
 
     </LinearLayout>
 </LinearLayout>

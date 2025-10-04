@@ -35,6 +35,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.palayan.PredictResult;
 import com.example.palayan.R;
+import com.example.palayan.TextBased;
 import com.example.palayan.databinding.ActivityCameraScannerBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -127,6 +128,12 @@ public class CameraScanner extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
             }
         });
+
+        root.btnTextBased.setOnClickListener(v ->
+                startActivity(new Intent(CameraScanner.this, TextBased.class))
+        );
+
+
     }
 
     private void startCamera() {
