@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/green"
+        android:background="@color/white"
         android:elevation="4dp"
         app:title=""
         app:contentInsetStart="0dp"
@@ -33,14 +33,14 @@
                 android:layout_height="50dp"
                 android:padding="10dp"
                 android:src="@drawable/ic_back_final"
-                app:tint="@color/white" />
+                app:tint="@color/green"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Back"
                 android:textSize="18sp"
-                android:textColor="@color/white"
+                android:textColor="@color/green"
                 android:fontFamily="@font/poppins__medium"/>
 
         </LinearLayout>

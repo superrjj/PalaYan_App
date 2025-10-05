@@ -11,18 +11,17 @@ import android.provider.Settings;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.palayan.API.ApiClient;
 import com.example.palayan.API.ApiService;
 import com.example.palayan.API.PredictResponse;
-import com.example.palayan.UserActivities.TreatmentNotes;
 import com.example.palayan.UserActivities.LoadingDialog;
+import com.example.palayan.UserActivities.TreatmentNotes;
 import com.example.palayan.databinding.ActivityPredictResultBinding;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,11 +48,14 @@ public class PredictResult extends AppCompatActivity {
     private LoadingDialog loadingDialog;
     private FirebaseFirestore firestore;
     private FirebaseStorage storage;
-    private String deviceId; // Store device ID as primary key
+    private String deviceId;
 
-    // Fields to store prediction info for saving
+    // Store prediction info
     private String diseaseName, description, symptoms, causes, treatments;
-    private String imageUrl; // Store Firebase Storage URL
+    private String imageUrl;
+
+    // Keep raw image path to pass to Add Notes (no upload yet)
+    private String imagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +67,9 @@ public class PredictResult extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        // Get device ID as primary key for user isolation
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        String imagePath = getIntent().getStringExtra("imagePath");
+        imagePath = getIntent().getStringExtra("imagePath");
         if (imagePath != null) {
             File imgFile = new File(imagePath);
             if (imgFile.exists()) {
@@ -83,12 +84,10 @@ public class PredictResult extends AppCompatActivity {
         }
 
         root.btnBack.setOnClickListener(view -> onBackPressed());
-
-        // Save button triggers custom dialog
         root.btnSave.setOnClickListener(v -> showSaveDialog());
     }
 
-    // Custom dialog integration using res/layout/dialog_save_result.xml
+    // Custom dialog using res/layout/dialog_save_result.xml
     private void showSaveDialog() {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -101,34 +100,43 @@ public class PredictResult extends AppCompatActivity {
         View cvSaveOnly = dialog.findViewById(R.id.cvSaveOnly);
         View cvAddNotes = dialog.findViewById(R.id.cvAddNotes);
 
+
         ivClose.setOnClickListener(v -> dialog.dismiss());
 
+        //upload image first, then save to Firestore
         cvSaveOnly.setOnClickListener(v -> {
-            uploadImageToFirebase(() -> {
-                savePredictionToFirestore(); // serverTimestamp + UUID
+            uploadImage(() -> {
+                savePrediction();
                 dialog.dismiss();
             });
         });
 
+        // Add Notes: DO NOT upload/save now. Just pass diseaseName + imagePath
         cvAddNotes.setOnClickListener(v -> {
-            uploadImageToFirebase(() -> {
-                Intent intent = new Intent(PredictResult.this, TreatmentNotes.class);
-                intent.putExtra("diseaseName", diseaseName);
-                intent.putExtra("description", description);
-                intent.putExtra("symptoms", symptoms);
-                intent.putExtra("causes", causes);
-                intent.putExtra("treatments", treatments);
-                intent.putExtra("imageUrl", imageUrl);
-                intent.putExtra("deviceId", deviceId);
-                startActivity(intent);
-                dialog.dismiss();
-            });
+            Intent intent = new Intent(PredictResult.this, TreatmentNotes.class);
+            intent.putExtra("diseaseName", diseaseName);
+            intent.putExtra("description", description);
+            intent.putExtra("symptoms", symptoms);
+            intent.putExtra("causes", causes);
+            intent.putExtra("treatments", treatments);
+            intent.putExtra("imagePath", imagePath); // let TreatmentNotes handle upload later if needed
+            intent.putExtra("deviceId", deviceId);
+            startActivity(intent);
+            dialog.dismiss();
         });
 
         dialog.show();
+
+        // Make dialog full width
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+        }
     }
 
-    private void uploadImageToFirebase(Runnable onSuccess) {
+    private void uploadImage(Runnable onSuccess) {
         if (capturedBitmap == null) {
             Toast.makeText(this, "No image to upload", Toast.LENGTH_SHORT).show();
             return;
@@ -141,7 +149,7 @@ public class PredictResult extends AppCompatActivity {
             capturedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
             byte[] imageData = baos.toByteArray();
 
-            String filename = "prediction_" + deviceId + "_" + UUID.randomUUID().toString() + ".jpg";
+            String filename = "prediction_" + deviceId + "_" + UUID.randomUUID() + ".jpg";
             String path = "predictions/" + deviceId + "/" + filename;
 
             StorageReference imageRef = storage.getReference().child(path);
@@ -348,13 +356,13 @@ public class PredictResult extends AppCompatActivity {
     }
 
     // Save using Firestore server time and UUID (no device millis)
-    private void savePredictionToFirestore() {
+    private void savePrediction() {
         if (diseaseName == null || diseaseName.isEmpty()) {
             Toast.makeText(this, "No prediction to save yet.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String documentId = deviceId + "_" + UUID.randomUUID().toString();
+        String documentId = deviceId + "_" + UUID.randomUUID();
 
         Map<String, Object> predictionData = new HashMap<>();
         predictionData.put("diseaseName", diseaseName);
@@ -364,15 +372,15 @@ public class PredictResult extends AppCompatActivity {
         predictionData.put("treatments", treatments);
         predictionData.put("deviceId", deviceId);
         predictionData.put("imageUrl", imageUrl);
-        predictionData.put("documentId", documentId);
+        predictionData.put("documentId", documentId.toString());
         predictionData.put("timestamp", FieldValue.serverTimestamp());
 
         loadingDialog.show("Saving result...");
 
         firestore.collection("users")
                 .document(deviceId)
-                .collection("predictions")
-                .document(documentId)
+                .collection("predictions_result")
+                .document(documentId.toString())
                 .set(predictionData)
                 .addOnSuccessListener(aVoid -> {
                     loadingDialog.dismiss();
