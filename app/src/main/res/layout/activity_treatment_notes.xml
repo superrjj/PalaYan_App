@@ -26,11 +26,11 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="2dp"
-                android:gravity="center_vertical">
+                android:padding="2dp">
 
                 <ImageView
                     android:id="@+id/iv_back"
@@ -43,10 +43,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins__medium"
                     android:text="Save Treatment Notes"
-                    android:textSize="15sp"
                     android:textColor="@color/green"
-                    android:fontFamily="@font/poppins__medium"/>
+                    android:textSize="15sp" />
 
 
             </LinearLayout>

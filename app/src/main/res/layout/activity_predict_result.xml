@@ -279,7 +279,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:layout_marginStart="5dp"
-            android:text="Save"
+            android:text="Save Result"
             android:textSize="15sp"
             android:fontFamily="@font/poppins__medium"
             android:background="@drawable/button_solid"

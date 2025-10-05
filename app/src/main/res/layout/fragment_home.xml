@@ -21,7 +21,7 @@
           android:layout_height="wrap_content"
           android:textSize="25sp"
           android:layout_marginTop="10dp"
-          android:text="Magandang Gabi"
+          android:text="Magandang Umaga!"
           android:textColor="@color/green"
           android:fontFamily="@font/poppins_bold"
           android:padding="10dp"/>

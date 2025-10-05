@@ -1,22 +1,41 @@
 package com.example.palayan;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.Settings;
 import android.widget.Toast;
-
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.palayan.API.ApiClient;
 import com.example.palayan.API.ApiService;
 import com.example.palayan.API.PredictResponse;
-import com.example.palayan.databinding.ActivityPredictResultBinding;
+import com.example.palayan.UserActivities.TreatmentNotes;
 import com.example.palayan.UserActivities.LoadingDialog;
+import com.example.palayan.databinding.ActivityPredictResultBinding;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -28,6 +47,13 @@ public class PredictResult extends AppCompatActivity {
     private ActivityPredictResultBinding root;
     private Bitmap capturedBitmap;
     private LoadingDialog loadingDialog;
+    private FirebaseFirestore firestore;
+    private FirebaseStorage storage;
+    private String deviceId; // Store device ID as primary key
+
+    // Fields to store prediction info for saving
+    private String diseaseName, description, symptoms, causes, treatments;
+    private String imageUrl; // Store Firebase Storage URL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +62,11 @@ public class PredictResult extends AppCompatActivity {
         setContentView(root.getRoot());
 
         loadingDialog = new LoadingDialog(this);
+        firestore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+
+        // Get device ID as primary key for user isolation
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         String imagePath = getIntent().getStringExtra("imagePath");
         if (imagePath != null) {
@@ -53,6 +84,88 @@ public class PredictResult extends AppCompatActivity {
 
         root.btnBack.setOnClickListener(view -> onBackPressed());
 
+        // Save button triggers custom dialog
+        root.btnSave.setOnClickListener(v -> showSaveDialog());
+    }
+
+    // Custom dialog integration using res/layout/dialog_save_result.xml
+    private void showSaveDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_save_result);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        ImageView ivClose = dialog.findViewById(R.id.ivClose);
+        View cvSaveOnly = dialog.findViewById(R.id.cvSaveOnly);
+        View cvAddNotes = dialog.findViewById(R.id.cvAddNotes);
+
+        ivClose.setOnClickListener(v -> dialog.dismiss());
+
+        cvSaveOnly.setOnClickListener(v -> {
+            uploadImageToFirebase(() -> {
+                savePredictionToFirestore(); // serverTimestamp + UUID
+                dialog.dismiss();
+            });
+        });
+
+        cvAddNotes.setOnClickListener(v -> {
+            uploadImageToFirebase(() -> {
+                Intent intent = new Intent(PredictResult.this, TreatmentNotes.class);
+                intent.putExtra("diseaseName", diseaseName);
+                intent.putExtra("description", description);
+                intent.putExtra("symptoms", symptoms);
+                intent.putExtra("causes", causes);
+                intent.putExtra("treatments", treatments);
+                intent.putExtra("imageUrl", imageUrl);
+                intent.putExtra("deviceId", deviceId);
+                startActivity(intent);
+                dialog.dismiss();
+            });
+        });
+
+        dialog.show();
+    }
+
+    private void uploadImageToFirebase(Runnable onSuccess) {
+        if (capturedBitmap == null) {
+            Toast.makeText(this, "No image to upload", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        loadingDialog.show("Uploading image...");
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            capturedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            byte[] imageData = baos.toByteArray();
+
+            String filename = "prediction_" + deviceId + "_" + UUID.randomUUID().toString() + ".jpg";
+            String path = "predictions/" + deviceId + "/" + filename;
+
+            StorageReference imageRef = storage.getReference().child(path);
+            UploadTask uploadTask = imageRef.putBytes(imageData);
+
+            uploadTask.addOnSuccessListener(taskSnapshot -> {
+                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    imageUrl = uri.toString();
+                    loadingDialog.dismiss();
+                    Toast.makeText(this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
+                    onSuccess.run();
+                }).addOnFailureListener(e -> {
+                    loadingDialog.dismiss();
+                    Toast.makeText(this, "Failed to get image URL: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }).addOnFailureListener(e -> {
+                loadingDialog.dismiss();
+                Toast.makeText(this, "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+
+        } catch (Exception e) {
+            loadingDialog.dismiss();
+            Toast.makeText(this, "Error preparing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void callPredictionAPI() {
@@ -77,7 +190,6 @@ public class PredictResult extends AppCompatActivity {
             capturedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
             byte[] imageBytes = baos.toByteArray();
 
-
             if (loadingDialog != null) {
                 String msg = retryCount == 0
                         ? "Loading result..."
@@ -96,7 +208,6 @@ public class PredictResult extends AppCompatActivity {
             call.enqueue(new Callback<PredictResponse>() {
                 @Override
                 public void onResponse(Call<PredictResponse> call, Response<PredictResponse> response) {
-
                     if (response.isSuccessful() && response.body() != null) {
                         if (loadingDialog != null) loadingDialog.dismiss();
                         PredictResponse result = response.body();
@@ -159,7 +270,11 @@ public class PredictResult extends AppCompatActivity {
 
     private void displayPredictionResult(PredictResponse result) {
         try {
-            root.tvDiseaseName.setText(result.predicted_disease);
+            diseaseName = result.predicted_disease;
+            description = result.disease_info.description;
+            causes = result.disease_info.cause;
+
+            root.tvDiseaseName.setText(diseaseName);
             root.tvSciName.setText(result.disease_info.scientific_name);
 
             if (result.disease_info.description != null) {
@@ -179,7 +294,8 @@ public class PredictResult extends AppCompatActivity {
                     }
                 }
             }
-            root.tvSymptoms.setText(symptomsText.toString());
+            symptoms = symptomsText.toString();
+            root.tvSymptoms.setText(symptoms);
 
             StringBuilder treatmentsText = new StringBuilder();
             if (result.disease_info.treatments != null) {
@@ -193,7 +309,8 @@ public class PredictResult extends AppCompatActivity {
                     }
                 }
             }
-            root.tvTreatments.setText(treatmentsText.toString());
+            treatments = treatmentsText.toString();
+            root.tvTreatments.setText(treatments);
 
             if (result.disease_info.cause != null) {
                 String formattedCause = formatText(result.disease_info.cause);
@@ -228,6 +345,58 @@ public class PredictResult extends AppCompatActivity {
             return formatted.toString();
         }
         return text;
+    }
+
+    // Save using Firestore server time and UUID (no device millis)
+    private void savePredictionToFirestore() {
+        if (diseaseName == null || diseaseName.isEmpty()) {
+            Toast.makeText(this, "No prediction to save yet.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String documentId = deviceId + "_" + UUID.randomUUID().toString();
+
+        Map<String, Object> predictionData = new HashMap<>();
+        predictionData.put("diseaseName", diseaseName);
+        predictionData.put("description", description);
+        predictionData.put("symptoms", symptoms);
+        predictionData.put("causes", causes);
+        predictionData.put("treatments", treatments);
+        predictionData.put("deviceId", deviceId);
+        predictionData.put("imageUrl", imageUrl);
+        predictionData.put("documentId", documentId);
+        predictionData.put("timestamp", FieldValue.serverTimestamp());
+
+        loadingDialog.show("Saving result...");
+
+        firestore.collection("users")
+                .document(deviceId)
+                .collection("predictions")
+                .document(documentId)
+                .set(predictionData)
+                .addOnSuccessListener(aVoid -> {
+                    loadingDialog.dismiss();
+                    showSuccessDialog();
+                })
+                .addOnFailureListener(e -> {
+                    loadingDialog.dismiss();
+                    Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void showSuccessDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Success!");
+        builder.setMessage("Your prediction result has been saved successfully with the image!");
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        if (positiveButton != null) {
+            positiveButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+        }
     }
 
     @Override
