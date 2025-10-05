@@ -160,18 +160,45 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cvUploadPhoto"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="10dp"
-                    app:cardBackgroundColor="@color/light_gray">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/light_gray"
+                    app:cardBackgroundColor="@android:color/transparent">
 
-                    <ImageView
-                        android:id="@+id/ivImageContainer"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:src="@drawable/ic_add_photo"
-                        app:tint="@color/green"
-                        android:padding="80dp"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="200dp"
+                        android:layout_margin="8dp">
 
+                        <ImageView
+                            android:id="@+id/ivImageContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@color/light_gray"/>
+
+                        <ImageView
+                            android:id="@+id/ivTapToUpload"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_add_photo"
+                            app:tint="@color/green"/>
+
+                        <ImageView
+                            android:id="@+id/ivRemove"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="top|end"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close"
+                            android:background="@color/black"
+                            app:tint="@color/white"
+                            android:visibility="gone"/>
+                    </FrameLayout>
                 </com.google.android.material.card.MaterialCardView>
 
 

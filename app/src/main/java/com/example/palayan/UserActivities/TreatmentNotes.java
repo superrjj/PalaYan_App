@@ -4,12 +4,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.palayan.R;
 import com.example.palayan.UserActivities.LoadingDialog;
 import com.example.palayan.databinding.ActivityTreatmentNotesBinding;
 import com.google.firebase.firestore.FieldValue;
@@ -31,8 +33,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.Map;
+import java.util.UUID;
 
 public class TreatmentNotes extends AppCompatActivity {
 
@@ -40,7 +42,6 @@ public class TreatmentNotes extends AppCompatActivity {
 
     private String diseaseName;
     private String deviceId;
-    private String imagePathFromPredict; // optional preview only
 
     private Bitmap selectedBitmap;       // from Camera thumbnail
     private Uri selectedImageUri;        // from Gallery
@@ -69,7 +70,10 @@ public class TreatmentNotes extends AppCompatActivity {
                         selectedBitmap = bmp;
                         selectedImageUri = null;
                         root.ivImageContainer.setPadding(0, 0, 0, 0);
+                        root.ivImageContainer.setBackgroundColor(Color.TRANSPARENT);
                         root.ivImageContainer.setImageBitmap(bmp);
+                        root.ivTapToUpload.setVisibility(View.GONE);
+                        root.ivRemove.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -82,7 +86,10 @@ public class TreatmentNotes extends AppCompatActivity {
                         selectedImageUri = uri;
                         selectedBitmap = null;
                         root.ivImageContainer.setPadding(0, 0, 0, 0);
+                        root.ivImageContainer.setBackgroundColor(Color.TRANSPARENT);
                         root.ivImageContainer.setImageURI(uri);
+                        root.ivTapToUpload.setVisibility(View.GONE);
+                        root.ivRemove.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -100,7 +107,6 @@ public class TreatmentNotes extends AppCompatActivity {
         Intent i = getIntent();
         diseaseName = i.getStringExtra("diseaseName");
         deviceId = i.getStringExtra("deviceId");
-        imagePathFromPredict = i.getStringExtra("imagePath"); // optional
 
         root.ivBack.setOnClickListener(v -> onBackPressed());
 
@@ -109,11 +115,15 @@ public class TreatmentNotes extends AppCompatActivity {
         String today = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(new Date());
         root.tvDateApplied.setText(today);
 
-        // Optional preview from previous image path (no upload yet)
-        previewFromPredictPath();
+        // Placeholder until user selects a photo
+        showPlaceholder();
 
-        // Pick image (Camera or Gallery)
+        // Clicks to open picker
+        root.ivTapToUpload.setOnClickListener(v -> showImagePickerDialog());
         root.cvUploadPhoto.setOnClickListener(v -> showImagePickerDialog());
+
+        // Clear image button
+        root.ivRemove.setOnClickListener(v -> clearSelectedImage());
 
         // Save note
         root.btnSaveNote.setOnClickListener(v -> onSaveNote());
@@ -257,15 +267,19 @@ public class TreatmentNotes extends AppCompatActivity {
                 });
     }
 
-    private void previewFromPredictPath() {
-        try {
-            if (!TextUtils.isEmpty(imagePathFromPredict)) {
-                Bitmap bmp = BitmapFactory.decodeFile(imagePathFromPredict);
-                if (bmp != null) {
-                    root.ivImageContainer.setPadding(0, 0, 0, 0);
-                    root.ivImageContainer.setImageBitmap(bmp);
-                }
-            }
-        } catch (Exception ignored) {}
+    private void clearSelectedImage() {
+        selectedBitmap = null;
+        selectedImageUri = null;
+        root.ivImageContainer.setImageDrawable(null);
+        root.ivImageContainer.setBackgroundColor(getResources().getColor(R.color.light_gray));
+        root.ivTapToUpload.setVisibility(View.VISIBLE);
+        root.ivRemove.setVisibility(View.GONE);
+    }
+
+    private void showPlaceholder() {
+        root.ivImageContainer.setImageDrawable(null);
+        root.ivImageContainer.setBackgroundColor(getResources().getColor(R.color.light_gray));
+        root.ivTapToUpload.setVisibility(View.VISIBLE);
+        root.ivRemove.setVisibility(View.GONE);
     }
 }
