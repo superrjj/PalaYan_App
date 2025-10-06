@@ -95,108 +95,127 @@
             android:fontFamily="@font/poppins__regular"
             android:textSize="14sp"/>
 
+
         <LinearLayout
+            android:id="@+id/layoutChipChoices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"
-                app:cardElevation="1dp"
-                app:cardBackgroundColor="@color/white"
-                android:layout_weight="1">
 
-                <TextView
-                    android:id="@+id/tvDahon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="14sp"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupAffected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                app:singleSelection="false"
+                app:selectionRequired="false"
+                android:paddingTop="5dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipDahon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Chip.Filter.Elevated"
+                    android:textColor="@color/chip_text_selector"
                     android:text="Dahon"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:fontFamily="@font/poppins__regular"
-                    android:textColor="@color/green"
-                    android:textStyle="bold"/>
+                    app:checkedIconTint="@color/white"
+                    app:chipBackgroundColor="@color/chip_background_selector"
+                    android:textAppearance="@style/CustomChipTextAppearance"
+                    />
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"
-                app:cardElevation="1dp"
-                app:cardBackgroundColor="@color/white"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/tvTangkay"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="14sp"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTangkay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Chip.Filter.Elevated"
+                    android:textColor="@color/chip_text_selector"
                     android:text="Tangkay"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:fontFamily="@font/poppins__regular"
-                    android:textColor="@color/green"
-                    android:textStyle="bold"/>
+                    app:checkedIconTint="@color/white"
+                    app:chipBackgroundColor="@color/chip_background_selector"
+                    android:textAppearance="@style/CustomChipTextAppearance" />
 
-            </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"
-                app:cardElevation="1dp"
-                app:cardBackgroundColor="@color/white"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/tvButil"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="14sp"
-                    android:text="Butil"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:fontFamily="@font/poppins__regular"
-                    android:textColor="@color/green"
-                    android:textStyle="bold"/>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"
-                app:cardElevation="1dp"
-                app:cardBackgroundColor="@color/white"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/tvUgat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="14sp"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipUgat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Chip.Filter.Elevated"
+                    android:textColor="@color/chip_text_selector"
                     android:text="Ugat"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:fontFamily="@font/poppins__regular"
-                    android:textColor="@color/green"
-                    android:textStyle="bold"/>
+                    app:checkedIconTint="@color/white"
+                    app:chipBackgroundColor="@color/chip_background_selector"
+                    android:textAppearance="@style/CustomChipTextAppearance" />
 
-            </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipBunga"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Chip.Filter.Elevated"
+                    android:textColor="@color/chip_text_selector"
+                    android:text="Bunga"
+                    app:checkedIconTint="@color/white"
+                    app:chipBackgroundColor="@color/chip_background_selector"
+                    android:textAppearance="@style/CustomChipTextAppearance" />
+
+                <TextView
+                    android:id="@+id/tvChipSeasonError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mabilis na pagpili"
+                android:textColor="@color/black"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppins__regular"
+                android:textSize="14sp"/>
+
+            <LinearLayout
+                android:id="@+id/layoutChipSeason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupChoices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    app:singleSelection="false"
+                    app:selectionRequired="false"
+                    android:paddingTop="5dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipChoices"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:textColor="@color/chip_text_selector"
+                        android:text="Sample"
+                        app:checkedIconTint="@color/white"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        android:textAppearance="@style/CustomChipTextAppearance"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/tvChipChoicesError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
+                </com.google.android.material.chip.ChipGroup>
 
         </LinearLayout>
 
@@ -211,4 +230,5 @@
             android:layout_marginTop="100dp"/>
 
     </LinearLayout>
+ </LinearLayout>
 </LinearLayout>

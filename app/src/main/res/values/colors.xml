@@ -17,6 +17,9 @@
     <color name="gray">#AEAEAE</color>
     <color name="dark_gray">#515151</color>
 
+    <color name="green_600">#15803D</color>
+    <color name="green_700">#166534</color>
+
     <color name="deam_green">#C6F9D8</color>
     <color name="semi_dark_green">#176434</color>
     <color name="semi_green">#17A34B</color>
