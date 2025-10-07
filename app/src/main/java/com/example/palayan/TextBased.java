@@ -1,5 +1,6 @@
 package com.example.palayan;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -53,6 +54,8 @@ public class TextBased extends AppCompatActivity {
             root.tvChipSeasonError.setVisibility(View.GONE);
             runSearch(text, affectedParts);
         });
+
+
     }
 
     private void runSearch(String text, List<String> affectedParts) {
@@ -91,7 +94,9 @@ public class TextBased extends AppCompatActivity {
             RecyclerView rv = view.findViewById(R.id.rvResults);
             rv.setLayoutManager(new LinearLayoutManager(TextBased.this));
             ResultsAdapter adapter = new ResultsAdapter(results, item -> {
-                showToast("Napili: " + item.get("name"));
+                Intent i = new Intent(TextBased.this, com.example.palayan.UserActivities.ViewResultDisease.class);
+                i.putExtra("diseaseName", String.valueOf(item.get("name")));
+                startActivity(i);
                 dialog.dismiss();
             });
             rv.setAdapter(adapter);

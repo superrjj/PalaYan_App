@@ -36,17 +36,24 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.VH> {
         Map<String, Object> m = items.get(position);
         String name = String.valueOf(m.get("name"));
         String sci = String.valueOf(m.get("scientificName"));
-        double score = 0.0;
-        try { score = Double.parseDouble(String.valueOf(m.get("score"))); } catch (Exception ignored) {}
-        @SuppressWarnings("unchecked")
-        List<String> tokens = (List<String>) m.get("matchedTokens");
+
+        double rawScore = 0.0;
+        try {
+            rawScore = Double.parseDouble(String.valueOf(m.get("score")));
+        } catch (Exception ignored) { }
+
+        int percentage = rawScore <= 1.0 ? (int) Math.round(rawScore * 100) : (int) Math.round(rawScore);
+        if (percentage < 0) percentage = 0;
+        if (percentage > 100) percentage = 100;
 
         h.tvName.setText(name);
-        h.tvScientific.setText(sci.equals("null") ? "" : sci);
-        h.tvScore.setText(String.format(Locale.US, "score: %.3f", score));
-        h.tvTokens.setText(tokens == null ? "" : "tokens: " + tokens);
+        h.tvScientific.setText("null".equals(sci) ? "" : sci);
+        h.tvScore.setText(String.format(Locale.US, "%d%% possible disease", percentage));
 
         h.itemView.setOnClickListener(v -> {
+            if (onItemClick != null) onItemClick.onClick(m);
+        });
+        h.tvDetails.setOnClickListener(v -> {
             if (onItemClick != null) onItemClick.onClick(m);
         });
     }
@@ -55,13 +62,13 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.VH> {
     public int getItemCount() { return items.size(); }
 
     static class VH extends RecyclerView.ViewHolder {
-        TextView tvName, tvScientific, tvScore, tvTokens;
+        TextView tvName, tvScientific, tvScore, tvDetails;
         VH(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvName);
             tvScientific = itemView.findViewById(R.id.tvScientific);
             tvScore = itemView.findViewById(R.id.tvScore);
-            tvTokens = itemView.findViewById(R.id.tvTokens);
+            tvDetails = itemView.findViewById(R.id.tvDetails);
         }
     }
 }

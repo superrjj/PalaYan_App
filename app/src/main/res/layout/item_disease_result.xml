@@ -37,11 +37,14 @@
             android:layout_marginTop="6dp"/>
 
         <TextView
-            android:id="@+id/tvTokens"
+            android:id="@+id/tvDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:fontFamily="@font/poppins__regular"
+            android:textAlignment="textEnd"
+            android:text="Tignan ang buong detalye"
+            android:fontFamily="@font/poppins__italic"
+            android:textColor="@color/black"
             android:layout_marginTop="2dp"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
