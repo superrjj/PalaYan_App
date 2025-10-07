@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TextBased">
@@ -15,6 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         android:background="@color/green"
         android:elevation="4dp"
+        android:layout_alignParentTop="true"
         app:title=""
         app:contentInsetStart="0dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -46,9 +46,12 @@
     </com.google.android.material.appbar.MaterialToolbar>
 
     <LinearLayout
+        android:id="@+id/layoutCenter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_below="@id/toolbar"
+        android:layout_centerInParent="true"
         android:layout_marginTop="30dp"
         android:padding="20dp">
 
@@ -101,8 +104,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupAffected"
@@ -164,60 +165,20 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/holo_red_dark"
                     android:textSize="12sp"
+                    android:fontFamily="@font/poppins__regular"
                     android:visibility="gone" />
 
             </com.google.android.material.chip.ChipGroup>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mabilis na pagpili"
-                android:textColor="@color/black"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/poppins__regular"
-                android:textSize="14sp"/>
-
-            <LinearLayout
-                android:id="@+id/layoutChipSeason"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupChoices"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
-                    app:singleSelection="false"
-                    app:selectionRequired="false"
-                    android:paddingTop="5dp">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipChoices"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Widget.Material3.Chip.Filter.Elevated"
-                        android:textColor="@color/chip_text_selector"
-                        android:text="Sample"
-                        app:checkedIconTint="@color/white"
-                        app:chipBackgroundColor="@color/chip_background_selector"
-                        android:textAppearance="@style/CustomChipTextAppearance"
-                        />
-
-
-                    <TextView
-                        android:id="@+id/tvChipChoicesError"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/holo_red_dark"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
-                </com.google.android.material.chip.ChipGroup>
-
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
 
         <Button
             android:id="@+id/btnSearchDisease"
@@ -226,9 +187,9 @@
             android:background="@drawable/button_solid"
             android:text="Hanapin ang sakit"
             android:fontFamily="@font/poppins__regular"
-            android:textSize="13sp"
-            android:layout_marginTop="100dp"/>
+            android:textSize="13sp" />
 
     </LinearLayout>
- </LinearLayout>
-</LinearLayout>
+
+
+</RelativeLayout>

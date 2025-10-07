@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:layout_margin="8dp">
 
     <LinearLayout
@@ -15,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:fontFamily="@font/poppins__regular"
             android:textSize="16sp"/>
 
         <TextView
@@ -22,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#666666"
+            android:fontFamily="@font/poppins__regular"
             android:textSize="13sp"
             android:layout_marginTop="2dp"/>
 
@@ -30,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
+            android:fontFamily="@font/poppins__regular"
             android:layout_marginTop="6dp"/>
 
         <TextView
@@ -37,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
+            android:fontFamily="@font/poppins__regular"
             android:layout_marginTop="2dp"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Mga posibleng sakit"
+        android:fontFamily="@font/poppins__regular"
         android:textStyle="bold"
         android:textSize="16sp"
         android:padding="4dp"/>

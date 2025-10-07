@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.palayan.databinding.ActivityTextBasedBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class TextBased extends AppCompatActivity {
 
@@ -33,11 +36,26 @@ public class TextBased extends AppCompatActivity {
 
         root.btnSearchDisease.setOnClickListener(v -> {
             String text = root.txtDescription.getText().toString().trim();
-            runSearch(text);
+
+            List<Integer> checkedIds = root.chipGroupAffected.getCheckedChipIds();
+            if (checkedIds == null || checkedIds.isEmpty()) {
+                root.tvChipSeasonError.setText("Pumili muna ng kahit isang parte ng halaman.");
+                root.tvChipSeasonError.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            List<String> affectedParts = new ArrayList<>();
+            for (int id : checkedIds) {
+                Chip chip = findViewById(id);
+                if (chip != null) affectedParts.add(chip.getText().toString().trim());
+            }
+
+            root.tvChipSeasonError.setVisibility(View.GONE);
+            runSearch(text, affectedParts);
         });
     }
 
-    private void runSearch(String text) {
+    private void runSearch(String text, List<String> affectedParts) {
         if (text == null || text.isEmpty()) {
             showToast("Please enter symptoms or description");
             return;
@@ -46,6 +64,7 @@ public class TextBased extends AppCompatActivity {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("text", text);
+        payload.put("affectedParts", affectedParts); // send array for multi-select
 
         functions.getHttpsCallable("searchDiseaseByText")
                 .call(payload)
