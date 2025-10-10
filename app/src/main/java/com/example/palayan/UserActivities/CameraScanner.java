@@ -8,10 +8,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +31,6 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.palayan.PredictResult;
-import com.example.palayan.R;
-import com.example.palayan.TextBased;
 import com.example.palayan.databinding.ActivityCameraScannerBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 

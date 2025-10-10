@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.palayan.Helper.Pest;
-import com.example.palayan.PestDetails;
+import com.example.palayan.UserActivities.PestDetails;
 import com.example.palayan.R;
 
 import java.util.List;
@@ -48,11 +48,10 @@ public class UserPestAdapter extends RecyclerView.Adapter<UserPestAdapter.PestHo
                 .placeholder(R.drawable.loading_image)
                 .into(pestHolder.ivPest);
 
-
         pestHolder.cvPest.setOnClickListener(v ->{
-                Intent intent = new Intent(context, PestDetails.class);
-                intent.putExtra("pest_id", pest.getPest_id());
-                context.startActivity(intent);
+            Intent intent = new Intent(context, PestDetails.class);
+            intent.putExtra("pest_id", pest.getDocumentId());
+            context.startActivity(intent);
         });
 
     }

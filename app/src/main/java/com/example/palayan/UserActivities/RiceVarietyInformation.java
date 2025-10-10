@@ -1,4 +1,4 @@
-package com.example.palayan;
+package com.example.palayan.UserActivities;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +9,6 @@ import androidx.core.view.WindowCompat;
 
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.databinding.ActivityRiceVarietyInformationBinding;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;

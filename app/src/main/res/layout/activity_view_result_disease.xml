@@ -78,7 +78,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -86,16 +86,15 @@
                             android:fontFamily="@font/poppins__medium"
                             android:text="Pangalan ng sakit:"
                             android:textColor="@color/green"
-                            android:textSize="15sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tvDiseaseName"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:fontFamily="@font/poppins__medium"
-                            android:paddingStart="10dp"
                             android:text="#####"
-                            android:textColor="@color/green"
+                            android:textColor="@color/black"
                             android:textSize="15sp" />
 
                     </LinearLayout>
@@ -103,7 +102,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -111,17 +110,16 @@
                             android:fontFamily="@font/poppins__medium"
                             android:text="Lokal na pangalan:"
                             android:textColor="@color/green"
-                            android:textSize="14sp" />
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tvLocalName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins__medium"
-                            android:paddingStart="10dp"
                             android:text="#####"
-                            android:textColor="@color/green"
-                            android:textSize="14sp" />
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -154,7 +152,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins__semibold"
-                            android:text="Ano ang Tungro?"
+                            android:text="Ano ang ?"
                             android:textColor="@color/dark_blue"
                             android:textSize="15sp" />
 

@@ -22,16 +22,19 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".UserActivities.DiseaseDetails"
+            android:exported="false" />
+        <activity
             android:name=".UserActivities.ViewResultDisease"
             android:exported="false" />
         <activity
             android:name=".UserActivities.TreatmentNotes"
             android:exported="false" />
         <activity
-            android:name=".TextBased"
+            android:name=".UserActivities.TextBased"
             android:exported="false" />
         <activity
-            android:name=".PredictResult"
+            android:name=".UserActivities.PredictResult"
             android:exported="false" />
         <activity
             android:name=".AdminActivities.ViewDisease"
@@ -44,7 +47,7 @@
             android:name=".UserActivities.CameraScanner"
             android:exported="false" />
         <activity
-            android:name=".PestDetails"
+            android:name=".UserActivities.PestDetails"
             android:exported="false"
             android:theme="@style/Theme.PalaYan" />
         <activity
@@ -79,7 +82,7 @@
             android:exported="false"
             android:theme="@style/Theme.PalaYan" />
         <activity
-            android:name=".RiceVarietyInformation"
+            android:name=".UserActivities.RiceVarietyInformation"
             android:exported="false"
             android:theme="@style/Theme.PalaYan" />
         <activity
@@ -100,7 +103,7 @@
             android:theme="@style/Theme.PalaYan"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".UserActivities.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

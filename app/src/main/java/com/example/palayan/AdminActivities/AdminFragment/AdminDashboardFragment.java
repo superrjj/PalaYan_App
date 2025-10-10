@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.example.palayan.AdminActivities.AdminDashboard;
 import com.example.palayan.AdminActivities.ViewAccounts;
 import com.example.palayan.AdminActivities.ViewDisease;
-import com.example.palayan.AdminActivities.ViewPest;
 import com.example.palayan.databinding.FragmentAdminDashboardBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -73,13 +72,6 @@ public class AdminDashboardFragment extends Fragment {
                     long count = (snapshots != null) ? snapshots.size() : 0;
                     root.tvAccountCounts.setText(String.valueOf(count));
                 });
-
-
-
-        root.cvPest.setOnClickListener(v -> {
-            ((AdminDashboard) requireActivity()).setUserLeavingFalse();
-            startActivity(new Intent(getActivity(), ViewPest.class));
-        });
 
         root.cvDisease.setOnClickListener(v -> {
             ((AdminDashboard) requireActivity()).setUserLeavingFalse();

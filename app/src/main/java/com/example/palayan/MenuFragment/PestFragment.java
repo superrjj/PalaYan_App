@@ -50,8 +50,8 @@ public class PestFragment extends Fragment {
     }
 
     private void attachListener() {
-        listenerRegistration = firestore.collection("pests")
-                .whereEqualTo("archived", false)
+        listenerRegistration = firestore.collection("rice_local_pests")
+                .whereEqualTo("isDeleted", false)
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {
                         Log.e("Firestore", "Error loading pests: " + e.getMessage());
@@ -62,6 +62,8 @@ public class PestFragment extends Fragment {
                     for (QueryDocumentSnapshot doc : snapshots) {
                         Pest pest = doc.toObject(Pest.class);
                         if (pest != null) {
+                            // CORRECTED: Set the document ID
+                            pest.setDocumentId(doc.getId());
                             pestList.add(pest);
                         }
                     }

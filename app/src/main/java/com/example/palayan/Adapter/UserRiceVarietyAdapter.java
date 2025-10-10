@@ -2,7 +2,6 @@ package com.example.palayan.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.palayan.Helper.AppHelper.DeviceUtils;
 import com.example.palayan.Helper.RiceVariety;
 import com.example.palayan.R;
-import com.example.palayan.RiceVarietyInformation;
+import com.example.palayan.UserActivities.RiceVarietyInformation;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 

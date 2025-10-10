@@ -1,15 +1,14 @@
-package com.example.palayan.UserActivities;
+package com.example.palayan;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 
-import com.example.palayan.R;
+import com.example.palayan.UserActivities.UserDashboard;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 

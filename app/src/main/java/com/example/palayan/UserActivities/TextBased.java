@@ -1,4 +1,4 @@
-package com.example.palayan;
+package com.example.palayan.UserActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,10 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.palayan.R;
+import com.example.palayan.ResultsAdapter;
 import com.example.palayan.databinding.ActivityTextBasedBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 

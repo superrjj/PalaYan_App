@@ -1,4 +1,4 @@
-package com.example.palayan;
+package com.example.palayan.UserActivities;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -20,8 +20,7 @@ import android.widget.ImageView;
 import com.example.palayan.API.ApiClient;
 import com.example.palayan.API.ApiService;
 import com.example.palayan.API.PredictResponse;
-import com.example.palayan.UserActivities.LoadingDialog;
-import com.example.palayan.UserActivities.TreatmentNotes;
+import com.example.palayan.R;
 import com.example.palayan.databinding.ActivityPredictResultBinding;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
