@@ -1,19 +1,21 @@
 package com.example.palayan.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.palayan.Helper.HistoryResult;
 import com.example.palayan.R;
+import com.example.palayan.UserActivities.SaveOnlyDetails;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -65,6 +67,28 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         } else {
             historyHolder.textViewDetails.setText("View details");
         }
+
+        // Add click listener to navigate to details
+        historyHolder.cardView.setOnClickListener(v -> {
+            String historyType = history.getType();
+
+            if ("prediction".equals(historyType)) {
+                // Navigate to SaveOnlyDetails for predictions_result
+                Intent intent = new Intent(context, SaveOnlyDetails.class);
+                intent.putExtra("history_id", history.getDocumentId());
+                intent.putExtra("device_id", history.getUserId());
+                intent.putExtra("history_type", "prediction");
+                context.startActivity(intent);
+            } else {
+                // For treatment_notes, you can navigate to a different activity or show a message
+                // For now, let's also navigate to SaveOnlyDetails but with different data
+                Intent intent = new Intent(context, SaveOnlyDetails.class);
+                intent.putExtra("history_id", history.getDocumentId());
+                intent.putExtra("device_id", history.getUserId());
+                intent.putExtra("history_type", "treatment");
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -74,8 +98,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
         TextView textTitle, textDate, textViewDetails;
-        ImageView imgDisease;
-        CardView cardView;
+        ShapeableImageView imgDisease;
+        MaterialCardView cardView;
 
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,7 +109,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             textDate = itemView.findViewById(R.id.text_date);
             textViewDetails = itemView.findViewById(R.id.text_view_details);
             imgDisease = itemView.findViewById(R.id.img_disease);
-            cardView = (CardView) itemView; // The root view is the CardView
+            cardView = (MaterialCardView) itemView; // The root view is the MaterialCardView
         }
     }
 }

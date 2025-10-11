@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cvHistoryItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="5dp"
     android:layout_margin="5dp"
     app:cardCornerRadius="10dp"
-    app:cardBackgroundColor="@color/semi_white"
-    app:cardElevation="4dp">
-    
+    app:cardBackgroundColor="@color/white"
+    app:cardElevation="1dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:orientation="horizontal"
         android:padding="12dp">
-        
-        <ImageView
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_disease"
             android:layout_width="90dp"
             android:layout_height="90dp"
@@ -24,7 +28,7 @@
             android:src="@drawable/rice_leaf_blast"
             android:layout_marginEnd="12dp"
             android:clipToOutline="true"
-            android:background="@drawable/rounded_image" />
+            app:shapeAppearanceOverlay="@style/CircleImageView"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -61,10 +65,10 @@
                 android:fontFamily="@font/poppins__mediumitalic"
                 android:textStyle="italic"
                 android:textSize="14sp"
-                android:layout_gravity="end"
+                android:layout_gravity="start"
                 android:layout_marginTop="8dp"/>
         </LinearLayout>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

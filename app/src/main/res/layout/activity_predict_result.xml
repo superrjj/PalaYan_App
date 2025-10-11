@@ -30,7 +30,7 @@
                    android:layout_height="250dp"
                    android:scaleType="centerCrop"
                    android:contentDescription="Disease Image"
-                   android:background="@color/deam_green" />
+                   android:background="@drawable/loading_image" />
 
            </com.google.android.material.card.MaterialCardView>
 

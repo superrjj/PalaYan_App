@@ -43,8 +43,6 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private static final String TAG = "HomeFragment";
-
     private CardView btnCamera;
     private RecyclerView recycleViewerHistoryResult;
     private TextView tvNoData;
@@ -103,46 +101,32 @@ public class HomeFragment extends Fragment {
 
     private String getDeviceId() {
         String androidId = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.d(TAG, "Android ID: " + androidId);
         return androidId;
     }
 
     private void loadHistoryData() {
         String deviceId = getDeviceId();
-        Log.d(TAG, "Loading history for device: " + deviceId);
-        Toast.makeText(getContext(), "Loading history for device: " + deviceId, Toast.LENGTH_LONG).show();
-
         // Clear existing data
         historyList.clear();
         adapter.notifyDataSetChanged();
 
         // Load predictions_result subcollection
-        Log.d(TAG, "Loading predictions_result for device: " + deviceId);
         predictionsListener = firestore.collection("users")
                 .document(deviceId)
                 .collection("predictions_result")
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {
-                        Log.e(TAG, "Error loading predictions: " + e.getMessage());
-                        Toast.makeText(getContext(), "Error loading predictions: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    Log.d(TAG, "Received " + snapshots.size() + " prediction documents");
-                    Toast.makeText(getContext(), "Found " + snapshots.size() + " prediction documents", Toast.LENGTH_SHORT).show();
-
                     for (QueryDocumentSnapshot doc : snapshots) {
-                        Log.d(TAG, "Processing prediction document: " + doc.getId());
-                        Log.d(TAG, "Document data: " + doc.getData());
 
                         HistoryResult history = doc.toObject(HistoryResult.class);
                         if (history != null) {
                             history.setDocumentId(doc.getId());
                             history.setUserId(deviceId);
                             historyList.add(history);
-                            Log.d(TAG, "Added prediction: " + history.getDiseaseName());
                         } else {
-                            Log.e(TAG, "Failed to convert prediction document to HistoryResult");
                         }
                     }
 
@@ -152,32 +136,22 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadTreatmentNotes(String deviceId) {
-        Log.d(TAG, "Loading treatment_notes for device: " + deviceId);
         treatmentListener = firestore.collection("users")
                 .document(deviceId)
                 .collection("treatment_notes")
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {
-                        Log.e(TAG, "Error loading treatment notes: " + e.getMessage());
-                        Toast.makeText(getContext(), "Error loading treatment notes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    Log.d(TAG, "Received " + snapshots.size() + " treatment note documents");
-                    Toast.makeText(getContext(), "Found " + snapshots.size() + " treatment documents", Toast.LENGTH_SHORT).show();
-
                     for (QueryDocumentSnapshot doc : snapshots) {
-                        Log.d(TAG, "Processing treatment document: " + doc.getId());
-                        Log.d(TAG, "Document data: " + doc.getData());
 
                         HistoryResult history = doc.toObject(HistoryResult.class);
                         if (history != null) {
                             history.setDocumentId(doc.getId());
                             history.setUserId(deviceId);
                             historyList.add(history);
-                            Log.d(TAG, "Added treatment note: " + history.getDiseaseName());
                         } else {
-                            Log.e(TAG, "Failed to convert treatment document to HistoryResult");
                         }
                     }
 
@@ -193,15 +167,11 @@ public class HomeFragment extends Fragment {
 
                     // Show/hide no data message
                     if (historyList.isEmpty()) {
-                        Log.d(TAG, "No history items found for device: " + deviceId);
                         tvNoData.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), "No history found for this device", Toast.LENGTH_LONG).show();
                     } else {
                         tvNoData.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Loaded " + historyList.size() + " history items", Toast.LENGTH_SHORT).show();
                     }
 
-                    Log.d(TAG, "Total history items loaded: " + historyList.size());
                 });
     }
 

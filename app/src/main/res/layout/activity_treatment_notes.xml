@@ -59,7 +59,7 @@
             android:layout_below="@id/toolbar"
             android:layout_above="@id/bottomLayout"
             android:fillViewport="true"
-            android:background="@color/white"
+            android:background="@color/semi_white"
             android:padding="15dp">
 
             <LinearLayout
@@ -79,15 +79,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginTop="10dp"
-                    app:strokeColor="@color/light_gray"
-                    app:cardBackgroundColor="@color/light_gray">
+                    app:strokeColor="@color/semi_white"
+                    app:cardBackgroundColor="@color/white">
 
                     <TextView
                         android:id="@+id/tvDiseaseDetected"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="Bacterial Leaf Blight"
-                        android:textColor="@color/black"
+                        android:textColor="@color/green"
                         android:fontFamily="@font/poppins__medium"
                         android:textSize="17sp"
                         android:gravity="center"/>
@@ -108,8 +108,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginTop="10dp"
-                    app:strokeColor="@color/light_gray"
-                    app:cardBackgroundColor="@color/light_gray">
+                    app:strokeColor="@color/semi_white"
+                    app:cardBackgroundColor="@color/white">
 
                    <LinearLayout
                        android:layout_width="match_parent"
@@ -119,6 +119,7 @@
                        <ImageView
                            android:layout_width="60dp"
                            android:layout_height="60dp"
+                           app:tint="@color/green"
                            android:src="@drawable/ic_final_calendar"
                            android:padding="16dp"/>
 
@@ -126,11 +127,11 @@
                            android:id="@+id/tvDateApplied"
                            android:layout_width="match_parent"
                            android:layout_height="match_parent"
-                           android:fontFamily="@font/poppins__regular"
+                           android:fontFamily="@font/poppins__medium"
                            android:gravity="center_vertical"
                            android:padding="10dp"
                            android:text="October 4, 2025"
-                           android:textColor="@color/black"
+                           android:textColor="@color/green"
                            android:textSize="16sp" />
 
                    </LinearLayout>
