@@ -2,6 +2,7 @@ package com.example.palayan.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,15 @@ import com.bumptech.glide.Glide;
 import com.example.palayan.Helper.HistoryResult;
 import com.example.palayan.R;
 import com.example.palayan.UserActivities.SaveOnlyDetails;
+import com.example.palayan.UserActivities.TreatmentAppliedDetails;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryHolder> {
 
@@ -45,10 +49,36 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         // Set disease name as title
         historyHolder.textTitle.setText(history.getDiseaseName());
 
-        // Set timestamp as date
+        // Set timestamp as date with proper timezone handling
         if (history.getTimestamp() != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-            historyHolder.textDate.setText(sdf.format(history.getTimestamp()));
+            try {
+                Date date = history.getTimestamp();
+
+                // Debug logging to see what's happening
+                Log.d("HistoryAdapter", "Raw timestamp: " + date.toString());
+                Log.d("HistoryAdapter", "Raw timestamp millis: " + date.getTime());
+
+                // Use UTC+8 timezone to match Firestore
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC+8")); // Match Firestore timezone
+
+                String formattedDate = sdf.format(date);
+
+                Log.d("HistoryAdapter", "Formatted date (UTC+8): " + formattedDate);
+
+                // Try different timezone formats for comparison
+                SimpleDateFormat sdfDefault = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                String formattedDateDefault = sdfDefault.format(date);
+                Log.d("HistoryAdapter", "Formatted date (default): " + formattedDateDefault);
+
+                // Use the UTC+8 version
+                historyHolder.textDate.setText(formattedDate);
+            } catch (Exception e) {
+                Log.e("HistoryAdapter", "Date formatting error: " + e.getMessage());
+                historyHolder.textDate.setText("Invalid Date");
+            }
+        } else {
+            historyHolder.textDate.setText("No Date");
         }
 
         // Load image (works for both imageUrl and photoUrl)
@@ -60,7 +90,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                     .into(historyHolder.imgDisease);
         }
 
-        // Set "View details" text (you can customize this based on type)
+        // Set "View details" text based on type
         String type = history.getType();
         if ("treatment".equals(type)) {
             historyHolder.textViewDetails.setText("Treatment applied");
@@ -68,7 +98,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             historyHolder.textViewDetails.setText("View details");
         }
 
-        // Add click listener to navigate to details
+        // Add click listener to navigate to appropriate details activity
         historyHolder.cardView.setOnClickListener(v -> {
             String historyType = history.getType();
 
@@ -79,10 +109,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 intent.putExtra("device_id", history.getUserId());
                 intent.putExtra("history_type", "prediction");
                 context.startActivity(intent);
-            } else {
-                // For treatment_notes, you can navigate to a different activity or show a message
-                // For now, let's also navigate to SaveOnlyDetails but with different data
-                Intent intent = new Intent(context, SaveOnlyDetails.class);
+            } else if ("treatment".equals(historyType)) {
+                // Navigate to TreatmentAppliedDetails for treatment_notes
+                Intent intent = new Intent(context, TreatmentAppliedDetails.class);
                 intent.putExtra("history_id", history.getDocumentId());
                 intent.putExtra("device_id", history.getUserId());
                 intent.putExtra("history_type", "treatment");

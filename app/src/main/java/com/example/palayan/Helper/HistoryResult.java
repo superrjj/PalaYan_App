@@ -16,6 +16,9 @@ public class HistoryResult {
     @PropertyName("diseaseName")
     public String diseaseName; // The predicted disease/pest name
 
+    @PropertyName("scientificName")
+    public String scientificName; // Scientific name of the disease/pest
+
     @PropertyName("description")
     public String description;
 
@@ -70,12 +73,6 @@ public class HistoryResult {
         this.userId = userId;
     }
 
-    // REMOVED: getImageUrlField() method to avoid conflict
-    // @PropertyName("imageUrl")
-    // public String getImageUrlField() {
-    //     return imageUrl;
-    // }
-
     @PropertyName("imageUrl")
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
@@ -99,6 +96,16 @@ public class HistoryResult {
     @PropertyName("diseaseName")
     public void setDiseaseName(String diseaseName) {
         this.diseaseName = diseaseName;
+    }
+
+    @PropertyName("scientificName")
+    public String getScientificName() {
+        return scientificName;
+    }
+
+    @PropertyName("scientificName")
+    public void setScientificName(String scientificName) {
+        this.scientificName = scientificName;
     }
 
     @PropertyName("description")

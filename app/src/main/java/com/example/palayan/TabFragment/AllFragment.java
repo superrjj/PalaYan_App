@@ -19,6 +19,8 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -94,6 +96,26 @@ public class AllFragment extends Fragment implements SearchableFragment {
                         }
                     }
 
+                    // Sort rice varieties by name in ascending order
+                    Collections.sort(riceVarietyList, new Comparator<RiceVariety>() {
+                        @Override
+                        public int compare(RiceVariety v1, RiceVariety v2) {
+                            String name1 = v1.varietyName != null ? v1.varietyName : "";
+                            String name2 = v2.varietyName != null ? v2.varietyName : "";
+                            return name1.compareToIgnoreCase(name2);
+                        }
+                    });
+
+                    // Sort fullList as well for consistency
+                    Collections.sort(fullList, new Comparator<RiceVariety>() {
+                        @Override
+                        public int compare(RiceVariety v1, RiceVariety v2) {
+                            String name1 = v1.varietyName != null ? v1.varietyName : "";
+                            String name2 = v2.varietyName != null ? v2.varietyName : "";
+                            return name1.compareToIgnoreCase(name2);
+                        }
+                    });
+
                     if (root != null) {
                         adapter = new UserRiceVarietyAdapter(riceVarietyList, getContext(), favoriteIds, false);
                         adapter.setDocumentIdMap(documentIdMap);
@@ -150,6 +172,16 @@ public class AllFragment extends Fragment implements SearchableFragment {
                         }
                     }
 
+                    // Sort filtered results by name in ascending order
+                    Collections.sort(riceVarietyList, new Comparator<RiceVariety>() {
+                        @Override
+                        public int compare(RiceVariety v1, RiceVariety v2) {
+                            String name1 = v1.varietyName != null ? v1.varietyName : "";
+                            String name2 = v2.varietyName != null ? v2.varietyName : "";
+                            return name1.compareToIgnoreCase(name2);
+                        }
+                    });
+
                     if (adapter != null) {
                         adapter.notifyDataSetChanged();
                     }
@@ -188,6 +220,16 @@ public class AllFragment extends Fragment implements SearchableFragment {
                 filteredList.add(item);
             }
         }
+
+        // Sort filtered results by name in ascending order
+        Collections.sort(filteredList, new Comparator<RiceVariety>() {
+            @Override
+            public int compare(RiceVariety v1, RiceVariety v2) {
+                String name1 = v1.varietyName != null ? v1.varietyName : "";
+                String name2 = v2.varietyName != null ? v2.varietyName : "";
+                return name1.compareToIgnoreCase(name2);
+            }
+        });
 
         riceVarietyList.clear();
         riceVarietyList.addAll(filteredList);

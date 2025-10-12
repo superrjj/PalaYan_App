@@ -50,7 +50,7 @@ public class PredictResult extends AppCompatActivity {
     private String deviceId;
 
     // Store prediction info
-    private String diseaseName, description, symptoms, causes, treatments;
+    private String diseaseName, scientificName, description, symptoms, causes, treatments;
     private String imageUrl;
 
     // Keep raw image path to pass to Add Notes (no upload yet)
@@ -99,7 +99,6 @@ public class PredictResult extends AppCompatActivity {
         View cvSaveOnly = dialog.findViewById(R.id.cvSaveOnly);
         View cvAddNotes = dialog.findViewById(R.id.cvAddNotes);
 
-
         ivClose.setOnClickListener(v -> dialog.dismiss());
 
         //upload image first, then save to Firestore
@@ -114,6 +113,7 @@ public class PredictResult extends AppCompatActivity {
         cvAddNotes.setOnClickListener(v -> {
             Intent intent = new Intent(PredictResult.this, TreatmentNotes.class);
             intent.putExtra("diseaseName", diseaseName);
+            intent.putExtra("scientificName", scientificName);
             intent.putExtra("description", description);
             intent.putExtra("symptoms", symptoms);
             intent.putExtra("causes", causes);
@@ -278,11 +278,12 @@ public class PredictResult extends AppCompatActivity {
     private void displayPredictionResult(PredictResponse result) {
         try {
             diseaseName = result.predicted_disease;
+            scientificName = result.disease_info.scientific_name;
             description = result.disease_info.description;
             causes = result.disease_info.cause;
 
             root.tvDiseaseName.setText(diseaseName);
-            root.tvSciName.setText(result.disease_info.scientific_name);
+            root.tvSciName.setText(scientificName);
 
             if (result.disease_info.description != null) {
                 String formattedDesc = formatText(result.disease_info.description);
@@ -365,6 +366,7 @@ public class PredictResult extends AppCompatActivity {
 
         Map<String, Object> predictionData = new HashMap<>();
         predictionData.put("diseaseName", diseaseName);
+        predictionData.put("scientificName", scientificName);
         predictionData.put("description", description);
         predictionData.put("symptoms", symptoms);
         predictionData.put("causes", causes);

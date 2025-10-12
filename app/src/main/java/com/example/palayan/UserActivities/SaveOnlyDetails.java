@@ -43,6 +43,13 @@ public class SaveOnlyDetails extends AppCompatActivity {
         Log.d(TAG, "Device ID: " + deviceId);
         Log.d(TAG, "History Type: " + historyType);
 
+        // Only handle predictions_result (prediction type)
+        if (!"prediction".equals(historyType)) {
+            Toast.makeText(this, "Invalid history type for this activity", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         if (historyId != null && deviceId != null) {
             loadHistoryDetails();
         } else {
@@ -54,11 +61,10 @@ public class SaveOnlyDetails extends AppCompatActivity {
     }
 
     private void loadHistoryDetails() {
-        String collectionName = "prediction".equals(historyType) ? "predictions_result" : "treatment_notes";
-
+        // Only load from predictions_result collection
         DocumentReference docRef = firestore.collection("users")
                 .document(deviceId)
-                .collection(collectionName)
+                .collection("predictions_result")
                 .document(historyId);
 
         docRef.get().addOnSuccessListener(documentSnapshot -> {
@@ -69,11 +75,11 @@ public class SaveOnlyDetails extends AppCompatActivity {
                     // Set disease name
                     root.tvDiseaseName.setText(history.getDiseaseName());
 
-                    // Set scientific name (if available, otherwise show device ID)
-                    if (history.getDeviceId() != null) {
-                        root.tvScientificName.setText("Device: " + history.getDeviceId());
+                    // Set scientific name from saved data
+                    if (history.getScientificName() != null && !history.getScientificName().trim().isEmpty()) {
+                        root.tvScientificName.setText(history.getScientificName());
                     } else {
-                        root.tvScientificName.setText("Scan Result");
+                        root.tvScientificName.setText("Scientific name not available");
                     }
 
                     // Set description
@@ -115,17 +121,15 @@ public class SaveOnlyDetails extends AppCompatActivity {
                         root.ivDiseaseImage.setImageResource(R.drawable.loading_image);
                     }
 
-                    Log.d(TAG, "Successfully loaded history details");
                 } else {
-                    Log.e(TAG, "Failed to convert document to HistoryResult");
+
                     Toast.makeText(this, "Failed to load data", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Log.e(TAG, "Document does not exist");
                 Toast.makeText(this, "Data not found", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(e -> {
-            Log.e(TAG, "Error loading history details: " + e.getMessage());
+
             Toast.makeText(this, "Error loading data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }

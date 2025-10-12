@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="90dp"
-    android:layout_height="90dp"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="4dp">
 
 
         <ImageView
-            android:id="@+id/ivUploadImage"
+            android:id="@+id/ivDiseaseImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
@@ -15,24 +15,17 @@
             android:contentDescription="Upload Image" />
 
 
-        <ImageView
-            android:id="@+id/ivTapToUpload"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_add_photo"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            app:tint="@color/green" />
 
-        <ImageView
-            android:id="@+id/ivRemove"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="top|end"
-            android:src="@drawable/ic_close"
-            android:background="@color/black"
-            android:padding="4dp"
-            app:tint="@color/white"
-            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Oct 12, 2025"
+            android:fontFamily="@font/poppins__regular"
+            android:background="@color/dark_gray"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+
 
 </FrameLayout>
