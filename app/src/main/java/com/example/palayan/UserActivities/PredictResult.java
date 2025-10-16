@@ -35,11 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import okhttp3.MultipartBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class PredictResult extends AppCompatActivity {
 
     private ActivityPredictResultBinding root;
@@ -49,12 +44,12 @@ public class PredictResult extends AppCompatActivity {
     private FirebaseStorage storage;
     private String deviceId;
 
-    // Store prediction info
     private String diseaseName, scientificName, description, symptoms, causes, treatments;
     private String imageUrl;
-
-    // Keep raw image path to pass to Add Notes (no upload yet)
     private String imagePath;
+
+    private LocalPredictor localPredictor;
+    private PredictorRepository predictorRepo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +63,22 @@ public class PredictResult extends AppCompatActivity {
 
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        // Initialize LocalPredictor (cached Firebase model or assets fallback)
+        ModelManager.loadPredictor(this, new ModelManager.LoadCallback() {
+            @Override public void onReady(LocalPredictor lp) { localPredictor = lp; }
+            @Override public void onError(Exception e) { try { localPredictor = new LocalPredictor(PredictResult.this); } catch (Exception ignored) {} }
+        });
+
+        ApiService apiService = ApiClient.getApiService();
+        predictorRepo = new PredictorRepository(apiService, localPredictor);
+
         imagePath = getIntent().getStringExtra("imagePath");
         if (imagePath != null) {
             File imgFile = new File(imagePath);
             if (imgFile.exists()) {
                 capturedBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 root.ivDiseaseImage.setImageBitmap(capturedBitmap);
-                callPredictionAPI();
+                runPrediction(false);
             } else {
                 Toast.makeText(this, "Image file not found", Toast.LENGTH_SHORT).show();
             }
@@ -86,7 +90,45 @@ public class PredictResult extends AppCompatActivity {
         root.btnSave.setOnClickListener(v -> showSaveDialog());
     }
 
-    // Custom dialog using res/layout/dialog_save_result.xml
+    private void runPrediction(boolean forceLocal) {
+        if (capturedBitmap == null) {
+            Toast.makeText(this, "No image to predict", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!isFinishing()) loadingDialog.show("Loading result...");
+
+        predictorRepo.predict(this, capturedBitmap, forceLocal, new PredictorRepository.ResultCallback() {
+            @Override
+            public void onSuccess(String name, float conf, Map<String, Float> all, PredictResponse raw) {
+                if (!isFinishing()) loadingDialog.dismiss();
+                if (raw != null) {
+                    displayPredictionResult(raw);
+                } else {
+                    diseaseName = name; scientificName = ""; description = ""; symptoms = ""; causes = ""; treatments = "";
+                    root.tvDiseaseName.setText(diseaseName);
+                    root.tvSciName.setText(scientificName);
+                    root.tvDiseaseDesc.setText(description);
+                    root.tvSymptoms.setText(symptoms);
+                    root.tvTreatments.setText(treatments);
+                    root.tvCause.setText(causes);
+                    String confidenceText = "Confidence: " + String.format("%.1f%%", conf * 100f);
+                    Toast.makeText(PredictResult.this, confidenceText, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                if (!isFinishing()) loadingDialog.dismiss();
+                if (!forceLocal && localPredictor != null && localPredictor.isReady()) {
+                    runPrediction(true);
+                } else {
+                    String msg = (t != null && t.getMessage() != null) ? t.getMessage() : "Unknown error";
+                    Toast.makeText(PredictResult.this, "Predict failed: " + msg, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
     private void showSaveDialog() {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -101,7 +143,6 @@ public class PredictResult extends AppCompatActivity {
 
         ivClose.setOnClickListener(v -> dialog.dismiss());
 
-        //upload image first, then save to Firestore
         cvSaveOnly.setOnClickListener(v -> {
             uploadImage(() -> {
                 savePrediction();
@@ -109,7 +150,6 @@ public class PredictResult extends AppCompatActivity {
             });
         });
 
-        // Add Notes: DO NOT upload/save now. Just pass diseaseName + imagePath
         cvAddNotes.setOnClickListener(v -> {
             Intent intent = new Intent(PredictResult.this, TreatmentNotes.class);
             intent.putExtra("diseaseName", diseaseName);
@@ -118,7 +158,7 @@ public class PredictResult extends AppCompatActivity {
             intent.putExtra("symptoms", symptoms);
             intent.putExtra("causes", causes);
             intent.putExtra("treatments", treatments);
-            intent.putExtra("imagePath", imagePath); // let TreatmentNotes handle upload later if needed
+            intent.putExtra("imagePath", imagePath);
             intent.putExtra("deviceId", deviceId);
             startActivity(intent);
             dialog.dismiss();
@@ -126,7 +166,6 @@ public class PredictResult extends AppCompatActivity {
 
         dialog.show();
 
-        // Make dialog full width
         if (dialog.getWindow() != null) {
             dialog.getWindow().setLayout(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -171,106 +210,6 @@ public class PredictResult extends AppCompatActivity {
 
         } catch (Exception e) {
             loadingDialog.dismiss();
-            Toast.makeText(this, "Error preparing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void callPredictionAPI() {
-        if (capturedBitmap == null) {
-            Toast.makeText(this, "No image to predict", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!isFinishing()) loadingDialog.show("Loading result...");
-        callPredictionAPIWithRetry(0);
-    }
-
-    private void callPredictionAPIWithRetry(int retryCount) {
-        if (capturedBitmap == null) {
-            Toast.makeText(this, "No image to predict", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        final int MAX_RETRIES = 100;
-
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            capturedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-            byte[] imageBytes = baos.toByteArray();
-
-            if (loadingDialog != null) {
-                String msg = retryCount == 0
-                        ? "Loading result..."
-                        : "Loading result... Attempt " + (retryCount + 1) + "/100";
-                loadingDialog.setMessage(msg);
-            }
-
-            okhttp3.RequestBody requestFile = okhttp3.RequestBody.create(
-                    okhttp3.MediaType.parse("image/jpeg"), imageBytes);
-            MultipartBody.Part imagePart = MultipartBody.Part.createFormData(
-                    "image", "image.jpg", requestFile);
-
-            ApiService apiService = ApiClient.getApiService();
-            Call<PredictResponse> call = apiService.predictDisease(imagePart);
-
-            call.enqueue(new Callback<PredictResponse>() {
-                @Override
-                public void onResponse(Call<PredictResponse> call, Response<PredictResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        if (loadingDialog != null) loadingDialog.dismiss();
-                        PredictResponse result = response.body();
-                        displayPredictionResult(result);
-                    } else {
-                        String errorBody = "";
-                        try {
-                            errorBody = response.errorBody() != null ? response.errorBody().string() : "";
-                        } catch (Exception e) {
-                            errorBody = "Could not read error body";
-                        }
-
-                        if (retryCount < MAX_RETRIES) {
-                            new android.os.Handler().postDelayed(() -> {
-                                callPredictionAPIWithRetry(retryCount + 1);
-                            }, 2000);
-                        } else {
-                            if (loadingDialog != null) loadingDialog.dismiss();
-                            Toast.makeText(PredictResult.this,
-                                    "API Error: " + response.code() + " - " + errorBody,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<PredictResponse> call, Throwable t) {
-                    String errorMessage = "Network Error: " + t.getMessage();
-
-                    if (retryCount < MAX_RETRIES) {
-                        if (loadingDialog != null) {
-                            String msg = "Network error, retrying... Attempt " + (retryCount + 2) + "/3";
-                            loadingDialog.setMessage(msg);
-                        }
-                        new android.os.Handler().postDelayed(() -> {
-                            callPredictionAPIWithRetry(retryCount + 1);
-                        }, 2000);
-                    } else {
-                        if (loadingDialog != null) loadingDialog.dismiss();
-                        Toast.makeText(PredictResult.this, errorMessage, Toast.LENGTH_LONG).show();
-
-                        if (t instanceof java.net.UnknownHostException) {
-                            Toast.makeText(PredictResult.this, "Cannot connect to server. Check your internet connection.", Toast.LENGTH_LONG).show();
-                        } else if (t instanceof java.net.ConnectException) {
-                            Toast.makeText(PredictResult.this, "Server is not responding. Please try again later.", Toast.LENGTH_LONG).show();
-                        } else if (t instanceof javax.net.ssl.SSLException) {
-                            Toast.makeText(PredictResult.this, "SSL connection error. Please check your network settings.", Toast.LENGTH_LONG).show();
-                        } else if (t instanceof java.net.SocketTimeoutException) {
-                            Toast.makeText(PredictResult.this, "Request timeout. Please try again.", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
-            });
-
-        } catch (Exception e) {
-            if (loadingDialog != null) loadingDialog.dismiss();
             Toast.makeText(this, "Error preparing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -325,7 +264,7 @@ public class PredictResult extends AppCompatActivity {
                 root.tvCause.setText(formattedCause);
             }
 
-            String confidenceText = "Confidence: " + String.format("%.1f%%", result.confidence * 100);
+            String confidenceText = "Confidence: " + String.format("%.1f%%", result.confidence * 100f);
             Toast.makeText(this, confidenceText, Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
@@ -355,7 +294,6 @@ public class PredictResult extends AppCompatActivity {
         return text;
     }
 
-    // Save using Firestore server time and UUID (no device millis)
     private void savePrediction() {
         if (diseaseName == null || diseaseName.isEmpty()) {
             Toast.makeText(this, "No prediction to save yet.", Toast.LENGTH_SHORT).show();
@@ -373,7 +311,7 @@ public class PredictResult extends AppCompatActivity {
         predictionData.put("treatments", treatments);
         predictionData.put("deviceId", deviceId);
         predictionData.put("imageUrl", imageUrl);
-        predictionData.put("documentId", documentId.toString());
+        predictionData.put("documentId", documentId);
         predictionData.put("timestamp", FieldValue.serverTimestamp());
 
         loadingDialog.show("Saving result...");
@@ -381,7 +319,7 @@ public class PredictResult extends AppCompatActivity {
         firestore.collection("users")
                 .document(deviceId)
                 .collection("predictions_result")
-                .document(documentId.toString())
+                .document(documentId)
                 .set(predictionData)
                 .addOnSuccessListener(aVoid -> {
                     loadingDialog.dismiss();
