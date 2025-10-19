@@ -10,6 +10,7 @@ public class PredictResponse {
     public Map<String, Float> all_predictions;
     public String model_version;  // I-change mo to String instead of ModelVersion object
     public DiseaseInfo disease_info;
+    public String message;
 
     public static class DiseaseInfo {
         public String scientific_name;
