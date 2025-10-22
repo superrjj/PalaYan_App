@@ -1,0 +1,348 @@
+package com.example.palayan.UserActivities;
+
+import android.Manifest;
+import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.palayan.Helper.Stage2ModelManager;
+import com.example.palayan.databinding.ActivityDiseaseScannerBinding;
+import com.google.common.util.concurrent.ListenableFuture;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class DiseaseScanner extends AppCompatActivity {
+    private static final int REQ_GALLERY_PERM = 102;
+
+    private PreviewView previewView;
+    private ImageCapture imageCapture;
+    private ExecutorService cameraExecutor;
+    private boolean isCapturing = false;
+    private ActivityDiseaseScannerBinding root;
+    private Stage2ModelManager stage2Manager;
+    private Dialog loadingDialog;
+
+    private ActivityResultLauncher<String> pickImageLauncher;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        root = ActivityDiseaseScannerBinding.inflate(getLayoutInflater());
+        setContentView(root.getRoot());
+
+        previewView = root.previewView;
+        Button btnCapture = root.btnCapture;
+        Button btnGallery = root.btnGallery;
+
+        stage2Manager = new Stage2ModelManager(this);
+
+        // Create hardcoded loading dialog
+        createLoadingDialog();
+
+        // Register single-select image picker
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri == null) return;
+                    try {
+                        File cachePath = new File(getCacheDir(), "images");
+                        cachePath.mkdirs();
+                        File file = new File(cachePath, "selected_disease.jpg");
+
+                        try (InputStream in = getContentResolver().openInputStream(uri);
+                             OutputStream out = new java.io.FileOutputStream(file)) {
+                            byte[] buf = new byte[8192];
+                            int len;
+                            while ((len = in.read(buf)) != -1) {
+                                out.write(buf, 0, len);
+                            }
+                        }
+
+                        analyzeDiseaseFromImage(file.getAbsolutePath());
+                    } catch (Exception e) {
+                        Toast.makeText(DiseaseScanner.this, "Failed to use selected image", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Camera permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, 101);
+        } else {
+            startCamera();
+        }
+
+        cameraExecutor = Executors.newSingleThreadExecutor();
+
+        btnCapture.setOnClickListener(v -> {
+            if (!isCapturing) takePhoto();
+        });
+
+        // Gallery button (single select, with runtime permission)
+        btnGallery.setOnClickListener(v -> {
+            String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    ? Manifest.permission.READ_MEDIA_IMAGES
+                    : Manifest.permission.READ_EXTERNAL_STORAGE;
+
+            if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
+                // Permission already granted, launch gallery
+                pickImageLauncher.launch("image/*");
+            } else {
+                // Request permission first
+                ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
+            }
+        });
+
+        root.ivBack.setOnClickListener(v -> onBackPressed());
+    }
+
+    private void createLoadingDialog() {
+        loadingDialog = new Dialog(this);
+        loadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        loadingDialog.setCancelable(false);
+
+        // Create layout programmatically
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 50, 50, 50);
+        layout.setGravity(android.view.Gravity.CENTER);
+
+        // Progress bar
+        ProgressBar progressBar = new ProgressBar(this);
+        progressBar.setIndeterminate(true);
+        LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        progressParams.setMargins(0, 0, 0, 30);
+        progressBar.setLayoutParams(progressParams);
+
+        // Message text
+        TextView tvMessage = new TextView(this);
+        tvMessage.setText("Analyzing disease...");
+        tvMessage.setTextSize(16);
+        tvMessage.setTextColor(Color.BLACK);
+        tvMessage.setGravity(android.view.Gravity.CENTER);
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        tvMessage.setLayoutParams(textParams);
+
+        layout.addView(progressBar);
+        layout.addView(tvMessage);
+
+        loadingDialog.setContentView(layout);
+    }
+
+    private void startCamera() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
+                ProcessCameraProvider.getInstance(this);
+
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+
+                Preview preview = new Preview.Builder().build();
+                preview.setSurfaceProvider(previewView.getSurfaceProvider());
+
+                imageCapture = new ImageCapture.Builder().build();
+
+                CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+
+                cameraProvider.unbindAll();
+                cameraProvider.bindToLifecycle(
+                        this, cameraSelector, preview, imageCapture);
+
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e("DiseaseScanner", "Camera initialization failed", e);
+            }
+        }, ContextCompat.getMainExecutor(this));
+    }
+
+    private void takePhoto() {
+        isCapturing = true;
+
+        File cachePath = new File(getCacheDir(), "images");
+        cachePath.mkdirs();
+        File file = new File(cachePath, "captured_disease.jpg");
+
+        ImageCapture.OutputFileOptions outputOptions =
+                new ImageCapture.OutputFileOptions.Builder(file).build();
+
+        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
+                    @Override
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        isCapturing = false;
+                        analyzeDiseaseFromImage(file.getAbsolutePath());
+                    }
+
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        isCapturing = false;
+                        Toast.makeText(DiseaseScanner.this,
+                                "Capture failed: " + exception.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void analyzeDiseaseFromImage(String imagePath) {
+        // Show analyzing dialog
+        loadingDialog.show();
+
+        // Wait for Stage 2 model to be ready
+        new Thread(() -> {
+            int attempts = 0;
+            while (!stage2Manager.isModelReady() && attempts < 30) {
+                try {
+                    Thread.sleep(1000);
+                    attempts++;
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+
+            if (stage2Manager.isModelReady()) {
+                performDiseaseAnalysis(imagePath);
+            } else {
+                runOnUiThread(() -> {
+                    loadingDialog.dismiss();
+                    Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
+                });
+            }
+        }).start();
+    }
+
+    private void performDiseaseAnalysis(String imagePath) {
+        new Thread(() -> {
+            try {
+                // Load bitmap
+                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                if (bitmap == null) {
+                    runOnUiThread(() -> {
+                        loadingDialog.dismiss();
+                        Toast.makeText(this, "Could not load image", Toast.LENGTH_SHORT).show();
+                    });
+                    return;
+                }
+
+                // Run Stage 2 prediction
+                Stage2ModelManager.DiseaseResult result = stage2Manager.predictDisease(bitmap);
+
+                runOnUiThread(() -> {
+                    loadingDialog.dismiss();
+
+                    if (result != null && result.isSuccess) {
+                        // Pass results to PredictResult
+                        goToPredictResult(result, imagePath);
+                    } else {
+                        Toast.makeText(this, "Disease analysis failed: " +
+                                (result != null ? result.errorMessage : "Unknown error"), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } catch (Exception e) {
+                Log.e("DiseaseScanner", "Error analyzing disease", e);
+                runOnUiThread(() -> {
+                    loadingDialog.dismiss();
+                    Toast.makeText(this, "Error analyzing disease: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        }).start();
+    }
+
+    private void goToPredictResult(Stage2ModelManager.DiseaseResult result, String imagePath) {
+        Intent intent = new Intent(this, PredictResult.class);
+        intent.putExtra("imagePath", imagePath);
+        intent.putExtra("diseaseName", result.diseaseName);
+        intent.putExtra("confidence", result.confidence);
+
+        // Add null check for diseaseInfo
+        if (result.diseaseInfo != null) {
+            intent.putExtra("scientificName", result.diseaseInfo.scientificName);
+            intent.putExtra("description", result.diseaseInfo.description);
+            intent.putExtra("symptoms", result.diseaseInfo.symptoms);
+            intent.putExtra("cause", result.diseaseInfo.cause);
+            intent.putExtra("treatments", result.diseaseInfo.treatments);
+        } else {
+            // Provide default values if diseaseInfo is null
+            intent.putExtra("scientificName", "Unknown");
+            intent.putExtra("description", "No description available");
+            intent.putExtra("symptoms", "No symptoms information available");
+            intent.putExtra("cause", "No cause information available");
+            intent.putExtra("treatments", "No treatment information available");
+        }
+
+        intent.putExtra("isFromStage2", true);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cameraExecutor.shutdown();
+        if (stage2Manager != null) {
+            stage2Manager.close();
+        }
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQ_GALLERY_PERM) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, now launch gallery
+                pickImageLauncher.launch("image/*");
+            } else {
+                Toast.makeText(this, "Gallery permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
+            } else {
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+}

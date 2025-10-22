@@ -10,6 +10,8 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,18 +21,24 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ExperimentalGetImage;
+import androidx.camera.core.FocusMeteringAction;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
+import androidx.camera.core.MeteringPoint;
+import androidx.camera.core.MeteringPointFactory;
 import androidx.camera.core.Preview;
+import androidx.camera.core.SurfaceOrientedMeteringPointFactory;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.palayan.Helper.Stage1ModelManager;
 import com.example.palayan.databinding.ActivityCameraScannerBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -55,6 +63,13 @@ public class CameraScanner extends AppCompatActivity {
     private TextView tvWarning;
     private ActivityCameraScannerBinding root;
 
+    // Camera control for autofocus
+    private Camera camera;
+
+    // Stage 1 detection variables
+    private Stage1ModelManager stage1Manager;
+    private LoadingDialog loadingDialog;
+
     private ActivityResultLauncher<String> pickImageLauncher;
 
     @Override
@@ -68,17 +83,29 @@ public class CameraScanner extends AppCompatActivity {
         Button btnCapture = root.btnCapture;
         Button btnGallery = root.btnGallery;
 
+        // Initialize Stage 1 model manager and loading dialog
+        stage1Manager = new Stage1ModelManager(this);
+        loadingDialog = new LoadingDialog(this);
+
+        // Set up tap to focus
+        previewView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                focusOnTap(event.getX(), event.getY());
+            }
+            return true;
+        });
+
         // Register single-select image picker
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
-                Uri -> {
-                    if (Uri == null) return;
+                uri -> {
+                    if (uri == null) return;
                     try {
                         File cachePath = new File(getCacheDir(), "images");
                         cachePath.mkdirs();
                         File file = new File(cachePath, "selected.jpg");
 
-                        try (InputStream in = getContentResolver().openInputStream(Uri);
+                        try (InputStream in = getContentResolver().openInputStream(uri);
                              OutputStream out = new FileOutputStream(file)) {
                             byte[] buf = new byte[8192];
                             int len;
@@ -87,9 +114,8 @@ public class CameraScanner extends AppCompatActivity {
                             }
                         }
 
-                        Intent intent = new Intent(CameraScanner.this, PredictResult.class);
-                        intent.putExtra("imagePath", file.getAbsolutePath());
-                        startActivity(intent);
+                        // Check if it's a rice plant first
+                        checkRicePlantAndProceed(file.getAbsolutePath());
                     } catch (Exception e) {
                         Toast.makeText(CameraScanner.this, "Failed to use selected image", Toast.LENGTH_SHORT).show();
                     }
@@ -111,24 +137,131 @@ public class CameraScanner extends AppCompatActivity {
             if (!isCapturing) takePhoto();
         });
 
-        // Gallery button (single select, with runtime permission)
+        // Gallery button - Fixed permission handling
         btnGallery.setOnClickListener(v -> {
             String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                     ? Manifest.permission.READ_MEDIA_IMAGES
                     : Manifest.permission.READ_EXTERNAL_STORAGE;
 
             if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
+                // Permission already granted, launch gallery
                 pickImageLauncher.launch("image/*");
             } else {
+                // Request permission first
                 ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
             }
         });
+    }
 
-        root.btnTextBased.setOnClickListener(v ->
-                startActivity(new Intent(CameraScanner.this, TextBased.class))
-        );
+    // Tap to focus functionality
+    private void focusOnTap(float x, float y) {
+        if (camera == null) return;
 
+        try {
+            // Create metering point factory
+            MeteringPointFactory factory = new SurfaceOrientedMeteringPointFactory(
+                    previewView.getWidth(), previewView.getHeight());
 
+            // Create metering point
+            MeteringPoint point = factory.createPoint(x, y);
+
+            // Create focus action
+            FocusMeteringAction action = new FocusMeteringAction.Builder(point)
+                    .addPoint(point, FocusMeteringAction.FLAG_AF)
+                    .addPoint(point, FocusMeteringAction.FLAG_AE)
+                    .addPoint(point, FocusMeteringAction.FLAG_AWB)
+                    .build();
+
+            // Start focus
+            camera.getCameraControl().startFocusAndMetering(action);
+
+            // Show focus indicator
+            Toast.makeText(this, "Focusing...", Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            Log.e("CameraScanner", "Error focusing: " + e.getMessage());
+        }
+    }
+
+    private void takePhoto() {
+        Log.d("CameraScanner", "=== TAKING PHOTO ===");
+        isCapturing = true;
+
+        File cachePath = new File(getCacheDir(), "images");
+        cachePath.mkdirs();
+        File file = new File(cachePath, "captured.jpg");
+
+        Log.d("CameraScanner", "Photo will be saved to: " + file.getAbsolutePath());
+
+        ImageCapture.OutputFileOptions outputOptions =
+                new ImageCapture.OutputFileOptions.Builder(file).build();
+
+        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
+                    @Override
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        isCapturing = false;
+                        Log.d("CameraScanner", "Photo saved successfully");
+                        Log.d("CameraScanner", "File size: " + file.length() + " bytes");
+
+                        // Check if it's a rice plant first
+                        checkRicePlantAndProceed(file.getAbsolutePath());
+                    }
+
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        isCapturing = false;
+                        Log.e("CameraScanner", "Photo capture failed: " + exception.getMessage());
+                        Toast.makeText(CameraScanner.this,
+                                "Capture failed: " + exception.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    // Check rice plant and proceed - ULTRA FAST VERSION
+    private void checkRicePlantAndProceed(String imagePath) {
+        loadingDialog.show("Analyzing...");
+
+        new Thread(() -> {
+            try {
+                Log.d("CameraScanner", "=== STARTING FAST ANALYSIS ===");
+                Log.d("CameraScanner", "Image path: " + imagePath);
+
+                // Run detection
+                boolean isNonRice = stage1Manager.detectRicePlant(imagePath);
+
+                // Get detailed prediction for debugging
+                String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
+                Log.d("CameraScanner", "Detailed prediction: " + detailedPrediction);
+
+                runOnUiThread(() -> {
+                    loadingDialog.dismiss();
+
+                    Log.d("CameraScanner", "=== ANALYSIS RESULTS ===");
+                    Log.d("CameraScanner", "Is NonRice detected: " + isNonRice);
+
+                    if (isNonRice) {
+                        // NonRice detected - go to DiseaseScanner
+                        Log.d("CameraScanner", "Proceeding to DiseaseScanner...");
+                        Intent intent = new Intent(CameraScanner.this, DiseaseScanner.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        // Rice detected - show retry message
+                        Log.d("CameraScanner", "Rice plant detected - showing retry message");
+                        Toast.makeText(this, "Please capture a non-rice plant for disease analysis.", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+            } catch (Exception e) {
+                Log.e("CameraScanner", "Analysis failed: " + e.getMessage());
+                runOnUiThread(() -> {
+                    loadingDialog.dismiss();
+                    Toast.makeText(this, "Analysis failed. Please try again.", Toast.LENGTH_SHORT).show();
+                });
+            }
+        }).start();
     }
 
     private void startCamera() {
@@ -153,43 +286,13 @@ public class CameraScanner extends AppCompatActivity {
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
                 cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(
+                camera = cameraProvider.bindToLifecycle(
                         this, cameraSelector, preview, imageCapture, imageAnalysis);
 
             } catch (ExecutionException | InterruptedException e) {
-
+                Log.e("CameraScanner", "Camera initialization failed", e);
             }
         }, ContextCompat.getMainExecutor(this));
-    }
-
-    private void takePhoto() {
-        isCapturing = true;
-
-        File cachePath = new File(getCacheDir(), "images");
-        cachePath.mkdirs();
-        File file = new File(cachePath, "captured.jpg");
-
-        ImageCapture.OutputFileOptions outputOptions =
-                new ImageCapture.OutputFileOptions.Builder(file).build();
-
-        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
-                new ImageCapture.OnImageSavedCallback() {
-                    @Override
-                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        isCapturing = false;
-                        Intent intent = new Intent(CameraScanner.this, PredictResult.class);
-                        intent.putExtra("imagePath", file.getAbsolutePath());
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onError(@NonNull ImageCaptureException exception) {
-                        isCapturing = false;
-                        Toast.makeText(CameraScanner.this,
-                                "Capture failed: " + exception.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     private void analyzeFrame(ImageProxy imageProxy) {
@@ -214,7 +317,6 @@ public class CameraScanner extends AppCompatActivity {
         }
     }
 
-    // Fixed ImageProxy -> Bitmap conversion
     @OptIn(markerClass = ExperimentalGetImage.class)
     private Bitmap imageProxyToBitmap(ImageProxy imageProxy) {
         try {
@@ -293,13 +395,21 @@ public class CameraScanner extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         cameraExecutor.shutdown();
+        if (stage1Manager != null) {
+            stage1Manager.close();
+        }
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (requestCode == REQ_GALLERY_PERM) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, now launch gallery
                 pickImageLauncher.launch("image/*");
             } else {
                 Toast.makeText(this, "Gallery permission denied", Toast.LENGTH_SHORT).show();

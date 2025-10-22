@@ -5,7 +5,7 @@
     android:id="@+id/cameraLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserActivities.CameraScanner">
+    tools:context=".UserActivities.DiseaseScanner">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -97,7 +97,7 @@
             android:id="@+id/btnCapture"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Scan"
+            android:text="Tukuyin ang sakit"
             android:textSize="15sp"
             android:layout_marginBottom="15dp"
             android:fontFamily="@font/poppins__medium"
@@ -106,27 +106,26 @@
 
 
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-               <Button
-                   android:id="@+id/btnGallery"
-                   android:layout_width="match_parent"
-                   android:layout_height="50dp"
-                   android:layout_weight="1"
-                   android:layout_marginEnd="5dp"
-                   android:text="Gallery"
-                   android:textSize="15sp"
-                   android:fontFamily="@font/poppins__medium"
-                   android:background="@drawable/btn_outline_blue"
-                   app:backgroundTint="@null"
-                   android:textColor="@color/white" />
+            <Button
+                android:id="@+id/btnGallery"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="5dp"
+                android:text="Gallery"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins__medium"
+                android:background="@drawable/btn_outline_blue"
+                app:backgroundTint="@null"
+                android:textColor="@color/white" />
 
 
-
-           </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
