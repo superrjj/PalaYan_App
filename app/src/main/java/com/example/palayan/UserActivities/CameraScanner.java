@@ -53,7 +53,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CameraScanner extends AppCompatActivity {
-
     private static final int REQ_GALLERY_PERM = 102;
 
     private PreviewView previewView;
@@ -68,7 +67,6 @@ public class CameraScanner extends AppCompatActivity {
 
     // Stage 1 detection variables
     private Stage1ModelManager stage1Manager;
-    private LoadingDialog loadingDialog;
 
     private ActivityResultLauncher<String> pickImageLauncher;
 
@@ -83,9 +81,8 @@ public class CameraScanner extends AppCompatActivity {
         Button btnCapture = root.btnCapture;
         Button btnGallery = root.btnGallery;
 
-        // Initialize Stage 1 model manager and loading dialog
+        // Initialize Stage 1 model manager
         stage1Manager = new Stage1ModelManager(this);
-        loadingDialog = new LoadingDialog(this);
 
         // Set up tap to focus
         previewView.setOnTouchListener((v, event) -> {
@@ -219,16 +216,31 @@ public class CameraScanner extends AppCompatActivity {
                 });
     }
 
-    // Check rice plant and proceed - CORRECTED LOGIC
+    // Check rice plant and proceed - IMPROVED
     private void checkRicePlantAndProceed(String imagePath) {
-        loadingDialog.show("Analyzing...");
+        // Show simple toast instead of loading dialog
+        Toast.makeText(this, "Analyzing rice plant...", Toast.LENGTH_SHORT).show();
 
         new Thread(() -> {
             try {
-                Log.d("CameraScanner", "=== STARTING RICE PLANT ANALYSIS ===");
+                Log.d("CameraScanner", "=== STARTING IMPROVED RICE PLANT ANALYSIS ===");
                 Log.d("CameraScanner", "Image path: " + imagePath);
 
-                // Run detection
+                // Wait for model to be ready
+                int attempts = 0;
+                while (!stage1Manager.isModelReady() && attempts < 30) {
+                    Thread.sleep(1000);
+                    attempts++;
+                }
+
+                if (!stage1Manager.isModelReady()) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
+                    });
+                    return;
+                }
+
+                // Run improved detection
                 boolean isRicePlant = stage1Manager.detectRicePlant(imagePath);
 
                 // Get detailed prediction for debugging
@@ -236,8 +248,6 @@ public class CameraScanner extends AppCompatActivity {
                 Log.d("CameraScanner", "Detailed prediction: " + detailedPrediction);
 
                 runOnUiThread(() -> {
-                    loadingDialog.dismiss();
-
                     Log.d("CameraScanner", "=== ANALYSIS RESULTS ===");
                     Log.d("CameraScanner", "Is Rice Plant detected: " + isRicePlant);
 
@@ -248,16 +258,17 @@ public class CameraScanner extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        // NonRice detected - show retry message
+                        // NonRice detected - show retry message with more details
                         Log.d("CameraScanner", "NonRice detected - showing retry message");
-                        Toast.makeText(this, "Not a rice plant. Please capture a rice plant for disease analysis.", Toast.LENGTH_LONG).show();
+                        String message = "Not a rice plant detected.";
+                        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                     }
                 });
 
             } catch (Exception e) {
                 Log.e("CameraScanner", "Analysis failed: " + e.getMessage());
+                e.printStackTrace();
                 runOnUiThread(() -> {
-                    loadingDialog.dismiss();
                     Toast.makeText(this, "Analysis failed. Please try again.", Toast.LENGTH_SHORT).show();
                 });
             }
@@ -397,9 +408,6 @@ public class CameraScanner extends AppCompatActivity {
         cameraExecutor.shutdown();
         if (stage1Manager != null) {
             stage1Manager.close();
-        }
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
         }
     }
 

@@ -1,21 +1,14 @@
 package com.example.palayan.UserActivities;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -51,7 +44,6 @@ public class DiseaseScanner extends AppCompatActivity {
     private boolean isCapturing = false;
     private ActivityDiseaseScannerBinding root;
     private Stage2ModelManager stage2Manager;
-    private Dialog loadingDialog;
 
     private ActivityResultLauncher<String> pickImageLauncher;
 
@@ -66,9 +58,6 @@ public class DiseaseScanner extends AppCompatActivity {
         Button btnGallery = root.btnGallery;
 
         stage2Manager = new Stage2ModelManager(this);
-
-        // Create hardcoded loading dialog
-        createLoadingDialog();
 
         // Register single-select image picker
         pickImageLauncher = registerForActivityResult(
@@ -129,46 +118,6 @@ public class DiseaseScanner extends AppCompatActivity {
         root.ivBack.setOnClickListener(v -> onBackPressed());
     }
 
-    private void createLoadingDialog() {
-        loadingDialog = new Dialog(this);
-        loadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        loadingDialog.setCancelable(false);
-
-        // Create layout programmatically
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 50, 50, 50);
-        layout.setGravity(android.view.Gravity.CENTER);
-
-        // Progress bar
-        ProgressBar progressBar = new ProgressBar(this);
-        progressBar.setIndeterminate(true);
-        LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        progressParams.setMargins(0, 0, 0, 30);
-        progressBar.setLayoutParams(progressParams);
-
-        // Message text
-        TextView tvMessage = new TextView(this);
-        tvMessage.setText("Analyzing disease...");
-        tvMessage.setTextSize(16);
-        tvMessage.setTextColor(Color.BLACK);
-        tvMessage.setGravity(android.view.Gravity.CENTER);
-        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        tvMessage.setLayoutParams(textParams);
-
-        layout.addView(progressBar);
-        layout.addView(tvMessage);
-
-        loadingDialog.setContentView(layout);
-    }
-
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
                 ProcessCameraProvider.getInstance(this);
@@ -223,8 +172,8 @@ public class DiseaseScanner extends AppCompatActivity {
     }
 
     private void analyzeDiseaseFromImage(String imagePath) {
-        // Show analyzing dialog
-        loadingDialog.show();
+        // Show simple toast instead of loading dialog
+        Toast.makeText(this, "Analyzing disease...", Toast.LENGTH_SHORT).show();
 
         // Wait for Stage 2 model to be ready
         new Thread(() -> {
@@ -243,7 +192,6 @@ public class DiseaseScanner extends AppCompatActivity {
                 performDiseaseAnalysis(imagePath);
             } else {
                 runOnUiThread(() -> {
-                    loadingDialog.dismiss();
                     Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
                 });
             }
@@ -257,7 +205,6 @@ public class DiseaseScanner extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 if (bitmap == null) {
                     runOnUiThread(() -> {
-                        loadingDialog.dismiss();
                         Toast.makeText(this, "Could not load image", Toast.LENGTH_SHORT).show();
                     });
                     return;
@@ -267,8 +214,6 @@ public class DiseaseScanner extends AppCompatActivity {
                 Stage2ModelManager.DiseaseResult result = stage2Manager.predictDisease(bitmap);
 
                 runOnUiThread(() -> {
-                    loadingDialog.dismiss();
-
                     if (result != null && result.isSuccess) {
                         // Pass results to PredictResult
                         goToPredictResult(result, imagePath);
@@ -281,7 +226,6 @@ public class DiseaseScanner extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e("DiseaseScanner", "Error analyzing disease", e);
                 runOnUiThread(() -> {
-                    loadingDialog.dismiss();
                     Toast.makeText(this, "Error analyzing disease: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
@@ -320,9 +264,6 @@ public class DiseaseScanner extends AppCompatActivity {
         cameraExecutor.shutdown();
         if (stage2Manager != null) {
             stage2Manager.close();
-        }
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
         }
     }
 
