@@ -219,17 +219,17 @@ public class CameraScanner extends AppCompatActivity {
                 });
     }
 
-    // Check rice plant and proceed - ULTRA FAST VERSION
+    // Check rice plant and proceed - CORRECTED LOGIC
     private void checkRicePlantAndProceed(String imagePath) {
         loadingDialog.show("Analyzing...");
 
         new Thread(() -> {
             try {
-                Log.d("CameraScanner", "=== STARTING FAST ANALYSIS ===");
+                Log.d("CameraScanner", "=== STARTING RICE PLANT ANALYSIS ===");
                 Log.d("CameraScanner", "Image path: " + imagePath);
 
                 // Run detection
-                boolean isNonRice = stage1Manager.detectRicePlant(imagePath);
+                boolean isRicePlant = stage1Manager.detectRicePlant(imagePath);
 
                 // Get detailed prediction for debugging
                 String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
@@ -239,18 +239,18 @@ public class CameraScanner extends AppCompatActivity {
                     loadingDialog.dismiss();
 
                     Log.d("CameraScanner", "=== ANALYSIS RESULTS ===");
-                    Log.d("CameraScanner", "Is NonRice detected: " + isNonRice);
+                    Log.d("CameraScanner", "Is Rice Plant detected: " + isRicePlant);
 
-                    if (isNonRice) {
-                        // NonRice detected - go to DiseaseScanner
-                        Log.d("CameraScanner", "Proceeding to DiseaseScanner...");
+                    if (isRicePlant) {
+                        // Rice plant detected - go to DiseaseScanner for disease analysis
+                        Log.d("CameraScanner", "Rice plant detected - proceeding to DiseaseScanner...");
                         Intent intent = new Intent(CameraScanner.this, DiseaseScanner.class);
                         startActivity(intent);
                         finish();
                     } else {
-                        // Rice detected - show retry message
-                        Log.d("CameraScanner", "Rice plant detected - showing retry message");
-                        Toast.makeText(this, "Please capture a non-rice plant for disease analysis.", Toast.LENGTH_LONG).show();
+                        // NonRice detected - show retry message
+                        Log.d("CameraScanner", "NonRice detected - showing retry message");
+                        Toast.makeText(this, "Not a rice plant. Please capture a rice plant for disease analysis.", Toast.LENGTH_LONG).show();
                     }
                 });
 

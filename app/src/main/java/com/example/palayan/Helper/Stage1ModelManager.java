@@ -3,11 +3,14 @@ package com.example.palayan.Helper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.util.Log;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.tensorflow.lite.Interpreter;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -26,26 +29,57 @@ public class Stage1ModelManager {
 
     private void loadStage1Model() {
         try {
-            android.content.res.AssetFileDescriptor fileDescriptor =
-                    context.getAssets().openFd("stage1_rice_classifier.tflite");
-            FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
-            FileChannel fileChannel = inputStream.getChannel();
-            long startOffset = fileDescriptor.getStartOffset();
-            long declaredLength = fileDescriptor.getDeclaredLength();
-            MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+            // Try to load from local storage first
+            File localModelFile = new File(context.getFilesDir(), "stage1_rice_plant_classifier.tflite");
+            Log.d("Stage1Model", "Checking for local model file: " + localModelFile.getAbsolutePath());
+            Log.d("Stage1Model", "File exists: " + localModelFile.exists());
 
-            tfliteInterpreter = new Interpreter(buffer);
-            isModelLoaded = true;
+            if (localModelFile.exists()) {
+                // Load from local storage
+                FileInputStream inputStream = new FileInputStream(localModelFile);
+                FileChannel fileChannel = inputStream.getChannel();
+                MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, localModelFile.length());
 
-            Log.d("Stage1Model", "Rice plant detection model loaded");
+                tfliteInterpreter = new Interpreter(buffer);
+                isModelLoaded = true;
+
+                Log.d("Stage1Model", "Rice plant detection model loaded from local storage");
+            } else {
+                Log.d("Stage1Model", "Local model file not found, downloading from Firebase...");
+                // Download from Firebase Storage
+                downloadStage1ModelFromFirebase();
+            }
+
         } catch (Exception e) {
             Log.e("Stage1Model", "Failed to load Stage 1 model: " + e.getMessage());
             isModelLoaded = false;
         }
     }
 
+    private void downloadStage1ModelFromFirebase() {
+        Log.d("Stage1Model", "Starting to download Stage 1 model from Firebase Storage...");
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference modelRef = storage.getReference().child("models/stage1_rice_plant_classifier.tflite");
+
+        File localFile = new File(context.getFilesDir(), "stage1_rice_plant_classifier.tflite");
+        Log.d("Stage1Model", "Local file path: " + localFile.getAbsolutePath());
+
+        modelRef.getFile(localFile)
+                .addOnSuccessListener(taskSnapshot -> {
+                    Log.d("Stage1Model", "Stage 1 model downloaded successfully");
+                    Log.d("Stage1Model", "Downloaded file size: " + localFile.length() + " bytes");
+                    // Retry loading after download
+                    loadStage1Model();
+                })
+                .addOnFailureListener(exception -> {
+                    Log.e("Stage1Model", "Failed to download Stage 1 model: " + exception.getMessage());
+                    isModelLoaded = false;
+                });
+    }
+
     public boolean detectRicePlant(String imagePath) {
-        Log.d("Stage1Model", "=== STARTING FAST RICE PLANT ANALYSIS ===");
+        Log.d("Stage1Model", "=== STARTING RICE PLANT ANALYSIS ===");
         Log.d("Stage1Model", "Image path: " + imagePath);
 
         if (!isModelLoaded) {
@@ -79,14 +113,14 @@ public class Stage1ModelManager {
 
             Log.d("Stage1Model", "Raw ML output - Rice: " + riceConfidence + ", NonRice: " + nonRiceConfidence);
 
-            // Simple decision - just use ML result
-            boolean isNonRice = nonRiceConfidence > riceConfidence;
+            // Decision logic: If rice confidence > non-rice confidence, it's a rice plant
+            boolean isRicePlant = riceConfidence > nonRiceConfidence;
 
             Log.d("Stage1Model", "=== FINAL DECISION ===");
-            Log.d("Stage1Model", "Final result (NonRice): " + isNonRice);
-            Log.d("Stage1Model", "=== END FAST ANALYSIS ===");
+            Log.d("Stage1Model", "Final result (Rice Plant): " + isRicePlant);
+            Log.d("Stage1Model", "=== END ANALYSIS ===");
 
-            return isNonRice;
+            return isRicePlant;
 
         } catch (Exception e) {
             Log.e("Stage1Model", "Analysis failed: " + e.getMessage());
@@ -107,6 +141,7 @@ public class Stage1ModelManager {
             float g = ((pixel >> 8) & 0xFF) / 255.0f;
             float b = (pixel & 0xFF) / 255.0f;
 
+            // Normalize to [-1, 1] range
             r = (r - 0.5f) / 0.5f;
             g = (g - 0.5f) / 0.5f;
             b = (b - 0.5f) / 0.5f;
