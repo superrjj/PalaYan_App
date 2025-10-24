@@ -41,7 +41,7 @@ public class Stage2ModelManager {
     // Disease data from Firebase Firestore
     private List<String> diseaseNames = new ArrayList<>();
     private Map<String, DiseaseInfo> diseaseMetadata = new HashMap<>();
-    private int modelOutputSize = 2; // Healthy, Bacterial Leaf Blast
+    private int modelOutputSize = 2; //Change the comment
     private List<String> stage2Labels = new ArrayList<>();
 
     public Stage2ModelManager(Context context) {
