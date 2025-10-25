@@ -72,16 +72,16 @@ public class Stage1ModelManager {
                         Log.d("Stage1Model", "Loaded labels: " + stage1Labels);
                     } catch (Exception e) {
                         Log.e("Stage1Model", "Failed to read labels: " + e.getMessage());
-                        // Fallback
-                        stage1Labels.add("Rice Plant");
-                        stage1Labels.add("NonRice");
+                        // FIXED: Consistent fallback order
+                        stage1Labels.add("non_rice_plant");  // Index 0
+                        stage1Labels.add("rice_plant");      // Index 1
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Stage1Model", "Failed to download labels: " + e.getMessage());
-                    // Fallback
-                    stage1Labels.add("Rice Plant");
-                    stage1Labels.add("NonRice");
+                    // FIXED: Consistent fallback order
+                    stage1Labels.add("non_rice_plant");  // Index 0
+                    stage1Labels.add("rice_plant");      // Index 1
                 });
     }
 
@@ -219,8 +219,9 @@ public class Stage1ModelManager {
 
             Log.d("Stage1Model", "ML inference completed in: " + inferenceTime + "ms");
 
-            float riceConfidence = output[0][0];
-            float nonRiceConfidence = output[0][1];
+            // CORRECT: Mapping based on training order
+            float nonRiceConfidence = output[0][0];  // Index 0 = non_rice_plant
+            float riceConfidence = output[0][1];     // Index 1 = rice_plant
 
             Log.d("Stage1Model", "Raw ML output - Rice: " + riceConfidence + ", NonRice: " + nonRiceConfidence);
 
@@ -349,8 +350,9 @@ public class Stage1ModelManager {
             float[][] output = new float[1][2];
             tfliteInterpreter.run(inputBuffer, output);
 
-            float riceConfidence = output[0][0];
-            float nonRiceConfidence = output[0][1];
+            // FIXED: Correct mapping based on training order
+            float nonRiceConfidence = output[0][0];  // Index 0 = non_rice_plant
+            float riceConfidence = output[0][1];     // Index 1 = rice_plant
 
             return String.format("Rice=%.3f, NonRice=%.3f, Threshold=%.3f, Pass=%s",
                     riceConfidence, nonRiceConfidence, CONFIDENCE_THRESHOLD,
