@@ -1,2 +1,0 @@
-0 NonRice
-1 Rice Plant

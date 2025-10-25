@@ -56,6 +56,13 @@ public class Stage2ModelManager {
         StorageReference labelsRef = storage.getReference().child("models/stage2_labels.txt");
 
         File localFile = new File(context.getFilesDir(), "stage2_labels.txt");
+
+        // Delete old labels first
+        if (localFile.exists()) {
+            localFile.delete();
+            Log.d("Stage2Model", "Deleted old stage2_labels.txt");
+        }
+
         labelsRef.getFile(localFile)
                 .addOnSuccessListener(taskSnapshot -> {
                     try {
@@ -75,14 +82,14 @@ public class Stage2ModelManager {
                         Log.e("Stage2Model", "Failed to read labels: " + e.getMessage());
                         // Fallback
                         stage2Labels.add("Healthy");
-                        stage2Labels.add("Bacterial Leaf Blast");
+                        stage2Labels.add("Bacterial Leaf Blight");
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Stage2Model", "Failed to download labels: " + e.getMessage());
                     // Fallback
                     stage2Labels.add("Healthy");
-                    stage2Labels.add("Bacterial Leaf Blast");
+                    stage2Labels.add("Bacterial Leaf Blight");
                 });
     }
 
@@ -144,6 +151,13 @@ public class Stage2ModelManager {
         StorageReference modelRef = storage.getReference().child("models/stage2_rice_disease_classifier.tflite");
 
         File localFile = new File(context.getFilesDir(), "stage2_rice_disease_classifier.tflite");
+
+        // Delete old model first before downloading new one
+        if (localFile.exists()) {
+            boolean deleted = localFile.delete();
+            Log.d("Stage2Model", "Deleted old model: " + deleted);
+        }
+
         Log.d("Stage2Model", "Local file path: " + localFile.getAbsolutePath());
 
         modelRef.getFile(localFile)
@@ -232,7 +246,7 @@ public class Stage2ModelManager {
     private void loadFallbackData() {
         diseaseNames.clear();
         diseaseNames.add("Healthy");
-        diseaseNames.add("Bacterial Leaf Blast");
+        diseaseNames.add("Bacterial Leaf Blight");
 
         // Healthy
         DiseaseInfo healthyInfo = new DiseaseInfo();
@@ -251,7 +265,7 @@ public class Stage2ModelManager {
         blbInfo.treatments = "Apply copper-based fungicides, improve drainage, use resistant varieties";
 
         diseaseMetadata.put("Healthy", healthyInfo);
-        diseaseMetadata.put("Bacterial Leaf Blast", blbInfo);
+        diseaseMetadata.put("Bacterial Leaf Blight", blbInfo);
 
         isDataLoaded = true;
         Log.d("Stage2Model", "Loaded fallback data with " + diseaseNames.size() + " diseases");
@@ -358,7 +372,7 @@ public class Stage2ModelManager {
         if (index == 0) {
             return "Healthy";
         } else if (index == 1) {
-            return "Bacterial Leaf Blast";
+            return "Bacterial Leaf Blight";
         } else {
             return "Unknown Disease (Index: " + index + ")";
         }

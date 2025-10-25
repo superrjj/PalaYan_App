@@ -48,6 +48,13 @@ public class Stage1ModelManager {
         StorageReference labelsRef = storage.getReference().child("models/stage1_labels.txt");
 
         File localFile = new File(context.getFilesDir(), "stage1_labels.txt");
+
+        // Delete old labels first
+        if (localFile.exists()) {
+            localFile.delete();
+            Log.d("Stage1Model", "Deleted old stage1_labels.txt");
+        }
+
         labelsRef.getFile(localFile)
                 .addOnSuccessListener(taskSnapshot -> {
                     try {
@@ -127,6 +134,13 @@ public class Stage1ModelManager {
         StorageReference modelRef = storage.getReference().child("models/stage1_rice_plant_classifier.tflite");
 
         File localFile = new File(context.getFilesDir(), "stage1_rice_plant_classifier.tflite");
+
+        // Delete old model first before downloading new one
+        if (localFile.exists()) {
+            boolean deleted = localFile.delete();
+            Log.d("Stage1Model", "Deleted old model: " + deleted);
+        }
+
         Log.d("Stage1Model", "Local file path: " + localFile.getAbsolutePath());
 
         modelRef.getFile(localFile)
