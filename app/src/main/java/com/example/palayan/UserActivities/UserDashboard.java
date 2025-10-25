@@ -131,8 +131,11 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PestFragment()).commit();
         } else if (id == R.id.nav_disease) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DiseaseFragment()).commit();
-        } else if (id == R.id.nav_disease){
+        } else if (id == R.id.nav_guide){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GuideFragment()).commit();
+        } else if (id == R.id.nav_terms) {
+            Intent intent = new Intent(this, TermsAndConditionsActivity.class);
+            startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

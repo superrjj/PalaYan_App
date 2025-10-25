@@ -30,7 +30,7 @@ public class Stage2ModelManager {
     private boolean isDataLoaded = false;
 
     // Configuration constants
-    private static final float CONFIDENCE_THRESHOLD = 0.6f;
+    private static final float CONFIDENCE_THRESHOLD = 0.3f;
     private static final int INPUT_SIZE = 224;
     private static final int CHANNELS = 3;
 
@@ -333,6 +333,12 @@ public class Stage2ModelManager {
     private DiseaseResult processDiseaseResults(float[] predictions) {
         Log.d("Stage2Model", "Raw predictions: " + java.util.Arrays.toString(predictions));
         Log.d("Stage2Model", "Model output size: " + modelOutputSize);
+
+        // Log both confidence scores
+        float healthyConfidence = predictions[0];
+        float diseaseConfidence = predictions[1];
+        Log.d("Stage2Model", "Healthy confidence: " + healthyConfidence + " (" + (healthyConfidence * 100) + "%)");
+        Log.d("Stage2Model", "Disease confidence: " + diseaseConfidence + " (" + (diseaseConfidence * 100) + "%)");
 
         // Find top prediction
         int maxIndex = 0;

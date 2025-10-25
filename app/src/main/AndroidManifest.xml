@@ -112,6 +112,10 @@
             android:theme="@style/Theme.PalaYan"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".UserActivities.TermsAndConditionsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PalaYan" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

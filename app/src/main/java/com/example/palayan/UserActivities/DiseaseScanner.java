@@ -1,6 +1,7 @@
 package com.example.palayan.UserActivities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -95,6 +96,9 @@ public class DiseaseScanner extends AppCompatActivity {
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor();
+
+        // Show disclaimer dialog
+        showDisclaimerDialog();
 
         btnCapture.setOnClickListener(v -> {
             if (!isCapturing) takePhoto();
@@ -285,5 +289,14 @@ public class DiseaseScanner extends AppCompatActivity {
                 Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void showDisclaimerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Important Disclaimer");
+        builder.setMessage("This app is for educational and informational purposes only. Disease identification results are based on machine learning algorithms and may not be 100% accurate. Always consult with certified agricultural experts or plant pathologists for critical farming decisions. The app is not responsible for any crop losses or agricultural damages.");
+        builder.setPositiveButton("I Understand", (dialog, which) -> dialog.dismiss());
+        builder.setCancelable(false);
+        builder.show();
     }
 }

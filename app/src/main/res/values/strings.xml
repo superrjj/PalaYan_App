@@ -68,39 +68,19 @@
     <string name="previous">Previous</string>
 
     <string name="lorem_ipsum">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
-        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
-        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
-        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
-        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
-        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
-        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
-        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
-        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
-        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
-        bibendum, vel congue leo egestas.\n\n
-        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
-        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
-        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
-        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
-        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
-        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
-        est.\n\n
-        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
-        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
-        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
-        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
-        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
-        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
-        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
-        convallis.\n\n
-        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
-        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
-        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
-        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
-        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
-        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </string>
+
+    <!-- Terms and Conditions -->
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="welcome_to_palayan">Welcome to PalaYan</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="terms_and_conditions_content">
+        <![CDATA[
+TERMS AND CONDITIONS FOR PALAYAN APP\n\nLast Updated: October 2025\n\n1. ACCEPTANCE OF TERMS\n\nBy downloading, installing, or using the PalaYan mobile application ("App"), you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to these Terms, please do not use the App.\n\n2. DESCRIPTION OF SERVICE\n\nPalaYan is an agricultural mobile application that provides:\n• Rice disease and pest identification through image recognition\n• Treatment recommendations for identified diseases and pests\n• Rice variety information and cultivation guides\n• Agricultural best practices and tips\n\n3. MEDICAL/AGRICULTURAL DISCLAIMER\n\nIMPORTANT: The App is designed for informational and educational purposes only. The disease and pest identification features are based on machine learning algorithms and may not be 100% accurate.\n\n• The App does not replace professional agricultural consultation\n• Always consult with certified agricultural experts or plant pathologists for critical farming decisions\n• Treatment recommendations are general guidelines and may not be suitable for all situations\n• The App is not responsible for crop losses or agricultural damages
+
+\n\n4. USER RESPONSIBILITIES\n\nYou agree to:\n• Use the App only for legitimate agricultural purposes\n• Provide accurate information when using the App\n• Not rely solely on the App for critical farming decisions\n• Consult with agricultural professionals for serious crop issues\n• Use the App in compliance with local agricultural regulations\n\n5. DATA PRIVACY AND IMAGE USAGE\n\n• Images uploaded to the App are processed for disease identification purposes\n• We may collect and store your images temporarily for analysis\n• Images are not shared with third parties without your consent\n• You retain ownership of your uploaded images\n• We may use anonymized data to improve our algorithms\n\n6. LIMITATION OF LIABILITY\n\nTo the maximum extent permitted by law:\n• The App is provided "as is" without warranties of any kind\n• We are not liable for any crop losses, agricultural damages, or financial losses\n• We are not responsible for the accuracy of disease identification or treatment recommendations\n• Our total liability shall not exceed the amount you paid for the App (if any)\n\n7. INTELLECTUAL PROPERTY\n\n• The App and its content are protected by copyright and other intellectual property laws\n• You may not copy, modify, or distribute the App without permission\n• All trademarks and logos are the property of their respective owners\n\n8. PROHIBITED USES\n\nYou may not:\n• Use the App for any illegal or unauthorized purpose\n• Attempt to reverse engineer or hack the App\n• Use the App to harm or damage crops intentionally\n• Share false or misleading agricultural information\n\n9. MODIFICATIONS\n\nWe reserve the right to:\n• Modify these Terms at any time\n• Update or discontinue the App\n• Change features or functionality without notice\n\n10. TERMINATION\n\nWe may terminate your access to the App at any time for violation of these Terms or for any other reason at our discretion.\n\n11. GOVERNING LAW\n\nThese Terms are governed by the laws of the Philippines. Any disputes shall be resolved in the appropriate courts of the Philippines.\n\n12. CONTACT INFORMATION\n\nFor questions about these Terms, please contact us at:\nEmail: support@palayanapp.com\nPhone: +63 (962) 282-2446\n\n13. ACKNOWLEDGMENT\n\nBy using the PalaYan App, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.\n\n───────────────────────────────────────────────\n\n
+        ]]>
     </string>
 </resources>
