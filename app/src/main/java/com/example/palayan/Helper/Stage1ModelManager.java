@@ -26,7 +26,7 @@ public class Stage1ModelManager {
     private boolean isModelLoaded = false;
 
     // Configuration constants
-    private static final float CONFIDENCE_THRESHOLD = 0.85f; // Increased threshold for stricter filtering
+    private static final float CONFIDENCE_THRESHOLD = 0.7f; // Balanced threshold
     private static final int MIN_IMAGE_SIZE = 100;
     private static final double MIN_BLUR_SCORE = 30.0;
     private static final int INPUT_SIZE = 224;
@@ -200,12 +200,13 @@ public class Stage1ModelManager {
 
             Log.d("Stage1Model", "Original image size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
 
-            // Image quality validation
-            ImageQualityResult qualityResult = validateImageQuality(bitmap);
-            if (!qualityResult.isGood) {
-                Log.w("Stage1Model", "Image quality check failed: " + qualityResult.reason);
-                return false;
-            }
+            // Image quality validation - SKIP for now to rely on ML model
+            // ImageQualityResult qualityResult = validateImageQuality(bitmap);
+            // if (!qualityResult.isGood) {
+            //     Log.w("Stage1Model", "Image quality check failed: " + qualityResult.reason);
+            //     return false;
+            // }
+            Log.d("Stage1Model", "Skipping image quality validation, relying on ML model");
 
             // Preprocess image with correct normalization
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
@@ -229,10 +230,12 @@ public class Stage1ModelManager {
             boolean isRicePlant = riceConfidence > nonRiceConfidence && riceConfidence > CONFIDENCE_THRESHOLD;
 
             Log.d("Stage1Model", "=== FINAL DECISION ===");
-            Log.d("Stage1Model", "Rice confidence: " + riceConfidence);
-            Log.d("Stage1Model", "NonRice confidence: " + nonRiceConfidence);
+            Log.d("Stage1Model", "Raw ML output array: [" + output[0][0] + ", " + output[0][1] + "]");
+            Log.d("Stage1Model", "Rice confidence (index 1): " + riceConfidence + " (" + (riceConfidence * 100) + "%)");
+            Log.d("Stage1Model", "NonRice confidence (index 0): " + nonRiceConfidence + " (" + (nonRiceConfidence * 100) + "%)");
             Log.d("Stage1Model", "Confidence threshold: " + CONFIDENCE_THRESHOLD);
             Log.d("Stage1Model", "Threshold met: " + (riceConfidence > CONFIDENCE_THRESHOLD));
+            Log.d("Stage1Model", "Rice > NonRice: " + (riceConfidence > nonRiceConfidence));
             Log.d("Stage1Model", "Final result (Rice Plant): " + isRicePlant);
             Log.d("Stage1Model", "=== END ANALYSIS ===");
 
@@ -284,18 +287,18 @@ public class Stage1ModelManager {
 
         // Check for green content (rice plant indicator)
         double greenRatio = calculateGreenRatio(bitmap);
-        if (greenRatio < 0.15) { // Must have decent green content
+        if (greenRatio < 0.10) { // Relaxed - just need some green content
             return new ImageQualityResult(false, "Insufficient green content: " + greenRatio);
         }
         
         // Additional check: Rice plants should have some texture/variation, not too uniform
         double texture = calculateBlurScore(bitmap);
-        if (texture > 4000) { // Too uniform (like lettuce, cabbage)
-            return new ImageQualityResult(false, "Image too uniform (not rice): " + texture);
+        if (texture > 5000) { // Relaxed - only reject very uniform images
+            return new ImageQualityResult(false, "Image too uniform (likely not rice): " + texture);
         }
         
-        // Check for specific rice plant characteristics
-        RicePlantValidation validation = validateRicePlantCharacteristics(bitmap);
+        // Check for specific rice plant characteristics (relaxed)
+        RicePlantValidation validation = validateRicePlantCharacteristicsRelaxed(bitmap);
         if (!validation.isRicePlant) {
             return new ImageQualityResult(false, validation.reason);
         }
@@ -419,6 +422,46 @@ public class Stage1ModelManager {
         }
         
         return new RicePlantValidation(true, "Rice plant detected");
+    }
+
+    private RicePlantValidation validateRicePlantCharacteristicsRelaxed(Bitmap bitmap) {
+        // More relaxed validation - accept images with rice characteristics
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int totalPixels = width * height;
+        int[] pixels = new int[totalPixels];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        
+        int greenCount = 0;
+        int yellowCount = 0;
+        
+        for (int pixel : pixels) {
+            int r = (pixel >> 16) & 0xff;
+            int g = (pixel >> 8) & 0xff;
+            int b = pixel & 0xff;
+            
+            // Green colors (rice leaves)
+            if (g > 60 && g > r && g > b) {
+                greenCount++;
+            }
+            // Yellow/golden colors (rice grains)
+            else if (r > 140 && g > 140 && b < 120) {
+                yellowCount++;
+            }
+        }
+        
+        double greenRatio = (double) greenCount / totalPixels;
+        double yellowRatio = (double) yellowCount / totalPixels;
+        
+        Log.d("Stage1Model", "Relaxed validation - Green: " + String.format("%.1f", greenRatio * 100) + 
+              "%, Yellow: " + String.format("%.1f", yellowRatio * 100) + "%");
+        
+        // Accept if has decent green content (rice leaves)
+        if (greenRatio >= 0.10) {
+            return new RicePlantValidation(true, "Rice plant characteristics detected");
+        }
+        
+        return new RicePlantValidation(false, "Too little green content (" + String.format("%.1f", greenRatio * 100) + "%)");
     }
     
     private static class RicePlantValidation {
