@@ -26,7 +26,7 @@ public class Stage1ModelManager {
     private boolean isModelLoaded = false;
 
     // Configuration constants
-    private static final float CONFIDENCE_THRESHOLD = 0.7f; // Balanced threshold
+    private static final float CONFIDENCE_THRESHOLD = 0.3f; // More sensitive for rice plants
     private static final int MIN_IMAGE_SIZE = 100;
     private static final double MIN_BLUR_SCORE = 30.0;
     private static final int INPUT_SIZE = 224;
@@ -159,8 +159,7 @@ public class Stage1ModelManager {
     }
 
     public boolean detectRicePlant(String imagePath) {
-        Log.d("Stage1Model", "=== STARTING IMPROVED RICE PLANT ANALYSIS ===");
-        Log.d("Stage1Model", "Image path: " + imagePath);
+        Log.d("Stage1Model", "🔍 ANALYZING: " + imagePath);
 
         if (!isModelLoaded) {
             Log.e("Stage1Model", "Model not loaded - TEMPORARILY returning true for testing");
@@ -175,15 +174,7 @@ public class Stage1ModelManager {
                 return false;
             }
 
-            Log.d("Stage1Model", "Original image size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
-
-            // Image quality validation - SKIP for now to rely on ML model
-            // ImageQualityResult qualityResult = validateImageQuality(bitmap);
-            // if (!qualityResult.isGood) {
-            //     Log.w("Stage1Model", "Image quality check failed: " + qualityResult.reason);
-            //     return false;
-            // }
-            Log.d("Stage1Model", "Skipping image quality validation, relying on ML model");
+            Log.d("Stage1Model", "📏 Image: " + bitmap.getWidth() + "x" + bitmap.getHeight());
 
             // Preprocess image with correct normalization
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
@@ -201,32 +192,25 @@ public class Stage1ModelManager {
             float nonRiceConfidence = output[0][0];  // Index 0 = non_rice_plant
             float riceConfidence = output[0][1];     // Index 1 = rice_plant
 
-            Log.d("Stage1Model", "Raw ML output - Rice: " + riceConfidence + ", NonRice: " + nonRiceConfidence);
+            Log.d("Stage1Model", "🤖 ML Output: Rice=" + String.format("%.3f", riceConfidence) + 
+                  ", NonRice=" + String.format("%.3f", nonRiceConfidence));
 
             // Apply confidence threshold - ULTRA RELAXED for debugging
-            // Accept if rice confidence is greater than non-rice, even if below threshold
-            // For testing: Accept ANY image as rice plant if model is not loaded properly
-            boolean isRicePlant = riceConfidence > nonRiceConfidence;
+            boolean isRicePlant = riceConfidence > nonRiceConfidence || riceConfidence > CONFIDENCE_THRESHOLD;
             
-            // TEMPORARY: If model outputs are suspicious (both very low), assume rice plant
-            if (riceConfidence < 0.1 && nonRiceConfidence < 0.1) {
-                Log.w("Stage1Model", "Suspicious model output - both confidences very low, assuming rice plant");
+            // TEMPORARY: Accept ANY image with decent rice confidence (even 0.1)
+            if (riceConfidence > 0.1) {
+                Log.w("Stage1Model", "✅ ACCEPTING: Rice confidence > 0.1");
                 isRicePlant = true;
             }
             
-            Log.d("Stage1Model", "Decision logic: Rice > NonRice = " + (riceConfidence > nonRiceConfidence));
-            Log.d("Stage1Model", "Threshold check (Rice > " + CONFIDENCE_THRESHOLD + ") = " + (riceConfidence > CONFIDENCE_THRESHOLD));
-
-            Log.d("Stage1Model", "=== FINAL DECISION ===");
-            Log.d("Stage1Model", "Raw ML output array: [" + output[0][0] + ", " + output[0][1] + "]");
-            Log.d("Stage1Model", "Rice confidence (index 1): " + riceConfidence + " (" + (riceConfidence * 100) + "%)");
-            Log.d("Stage1Model", "NonRice confidence (index 0): " + nonRiceConfidence + " (" + (nonRiceConfidence * 100) + "%)");
-            Log.d("Stage1Model", "Confidence threshold: " + CONFIDENCE_THRESHOLD);
-            Log.d("Stage1Model", "Threshold met: " + (riceConfidence > CONFIDENCE_THRESHOLD));
-            Log.d("Stage1Model", "Rice > NonRice: " + (riceConfidence > nonRiceConfidence));
-            Log.d("Stage1Model", "Suspicious output check: " + (riceConfidence < 0.1 && nonRiceConfidence < 0.1));
-            Log.d("Stage1Model", "Final result (Rice Plant): " + isRicePlant);
-            Log.d("Stage1Model", "=== END ANALYSIS ===");
+            // TEMPORARY: If model outputs are suspicious (both very low), assume rice plant
+            if (riceConfidence < 0.1 && nonRiceConfidence < 0.1) {
+                Log.w("Stage1Model", "⚠️ SUSPICIOUS: Both confidences low, assuming rice");
+                isRicePlant = true;
+            }
+            
+            Log.d("Stage1Model", "🎯 RESULT: " + (isRicePlant ? "RICE PLANT ✅" : "NOT RICE ❌"));
 
             return isRicePlant;
 

@@ -82,7 +82,9 @@ public class CameraScanner extends AppCompatActivity {
         Button btnGallery = root.btnGallery;
 
         // Initialize Stage 1 model manager
+        Log.d("CameraScanner", "🚀 INITIALIZING Stage1ModelManager...");
         stage1Manager = new Stage1ModelManager(this);
+        Log.d("CameraScanner", "✅ Stage1ModelManager initialized");
 
         // Set up tap to focus
         previewView.setOnTouchListener((v, event) -> {
@@ -227,18 +229,23 @@ public class CameraScanner extends AppCompatActivity {
                 Log.d("CameraScanner", "Image path: " + imagePath);
 
                 // Wait for model to be ready
+                Log.d("CameraScanner", "⏳ WAITING for model to be ready...");
                 int attempts = 0;
                 while (!stage1Manager.isModelReady() && attempts < 30) {
+                    Log.d("CameraScanner", "⏳ Attempt " + attempts + " - Model not ready yet...");
                     Thread.sleep(1000);
                     attempts++;
                 }
 
                 if (!stage1Manager.isModelReady()) {
+                    Log.e("CameraScanner", "❌ MODEL NOT READY after 30 attempts!");
                     runOnUiThread(() -> {
                         Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
                     });
                     return;
                 }
+                
+                Log.d("CameraScanner", "✅ MODEL IS READY! Proceeding to detection...");
 
                 // Run improved detection with try-catch to prevent crash
                 final boolean[] isRicePlant = {false};
