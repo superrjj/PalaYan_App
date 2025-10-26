@@ -226,8 +226,12 @@ public class Stage1ModelManager {
 
             Log.d("Stage1Model", "Raw ML output - Rice: " + riceConfidence + ", NonRice: " + nonRiceConfidence);
 
-            // Apply confidence threshold
-            boolean isRicePlant = riceConfidence > nonRiceConfidence && riceConfidence > CONFIDENCE_THRESHOLD;
+            // Apply confidence threshold - RELAXED for debugging
+            // Accept if rice confidence is greater than non-rice, even if below threshold
+            boolean isRicePlant = riceConfidence > nonRiceConfidence;
+            
+            Log.d("Stage1Model", "Decision logic: Rice > NonRice = " + (riceConfidence > nonRiceConfidence));
+            Log.d("Stage1Model", "Threshold check (Rice > " + CONFIDENCE_THRESHOLD + ") = " + (riceConfidence > CONFIDENCE_THRESHOLD));
 
             Log.d("Stage1Model", "=== FINAL DECISION ===");
             Log.d("Stage1Model", "Raw ML output array: [" + output[0][0] + ", " + output[0][1] + "]");
