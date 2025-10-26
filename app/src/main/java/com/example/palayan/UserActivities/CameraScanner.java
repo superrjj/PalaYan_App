@@ -240,18 +240,26 @@ public class CameraScanner extends AppCompatActivity {
                     return;
                 }
 
-                // Run improved detection
-                boolean isRicePlant = stage1Manager.detectRicePlant(imagePath);
-
-                // Get detailed prediction for debugging
-                String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
-                Log.d("CameraScanner", "Detailed prediction: " + detailedPrediction);
+                // Run improved detection with try-catch to prevent crash
+                final boolean[] isRicePlant = {false};
+                try {
+                    isRicePlant[0] = stage1Manager.detectRicePlant(imagePath);
+                    // Get detailed prediction for debugging
+                    String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
+                    Log.d("CameraScanner", "Detailed prediction: " + detailedPrediction);
+                } catch (Exception e) {
+                    Log.e("CameraScanner", "Stage 1 detection failed: " + e.getMessage());
+                    e.printStackTrace();
+                    // Bypass Stage 1 if model crashes - proceed to disease detection
+                    isRicePlant[0] = true;
+                    Log.w("CameraScanner", "Bypassing Stage 1 due to error - proceeding to Stage 2");
+                }
 
                 runOnUiThread(() -> {
                     Log.d("CameraScanner", "=== ANALYSIS RESULTS ===");
-                    Log.d("CameraScanner", "Is Rice Plant detected: " + isRicePlant);
+                    Log.d("CameraScanner", "Is Rice Plant detected: " + isRicePlant[0]);
 
-                    if (isRicePlant) {
+                    if (isRicePlant[0]) {
                         // Rice plant detected - go to DiseaseScanner for disease analysis
                         Log.d("CameraScanner", "Rice plant detected - proceeding to DiseaseScanner...");
                         Intent intent = new Intent(CameraScanner.this, DiseaseScanner.class);

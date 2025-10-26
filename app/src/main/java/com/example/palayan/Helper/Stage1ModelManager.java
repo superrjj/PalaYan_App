@@ -12,6 +12,8 @@ import org.tensorflow.lite.Interpreter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
@@ -78,11 +80,32 @@ public class Stage1ModelManager {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Stage1Model", "Failed to download labels: " + e.getMessage());
-                    // FIXED: Consistent fallback order
-                    stage1Labels.add("non_rice_plant");  // Index 0
-                    stage1Labels.add("rice_plant");      // Index 1
+                    Log.e("Stage1Model", "Failed to download labels from Firebase: " + e.getMessage());
+                    Log.d("Stage1Model", "Trying to load labels from assets as fallback...");
+                    loadLabelsFromAssets();
                 });
+    }
+    
+    private void loadLabelsFromAssets() {
+        try {
+            Log.d("Stage1Model", "Loading labels from assets...");
+            InputStream assetInputStream = context.getAssets().open("models/stage1_labels.txt");
+            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(assetInputStream));
+            String line;
+            stage1Labels.clear();
+            while ((line = reader.readLine()) != null) {
+                stage1Labels.add(line.trim());
+            }
+            reader.close();
+            assetInputStream.close();
+            Log.d("Stage1Model", "Loaded labels from assets: " + stage1Labels);
+        } catch (Exception e) {
+            Log.e("Stage1Model", "Failed to load labels from assets: " + e.getMessage());
+            // Fallback to default labels
+            stage1Labels.clear();
+            stage1Labels.add("non_rice_plant");  // Index 0
+            stage1Labels.add("rice_plant");      // Index 1
+        }
     }
 
     private void loadStage1Model() {
@@ -150,9 +173,34 @@ public class Stage1ModelManager {
                     loadModelFromFile(localFile);
                 })
                 .addOnFailureListener(exception -> {
-                    Log.e("Stage1Model", "Failed to download Stage 1 model: " + exception.getMessage());
-                    isModelLoaded = false;
+                    Log.e("Stage1Model", "Failed to download Stage 1 model from Firebase: " + exception.getMessage());
+                    Log.d("Stage1Model", "Trying to load from assets as fallback...");
+                    loadModelFromAssets(); // Fallback to assets
                 });
+    }
+    
+    private void loadModelFromAssets() {
+        try {
+            Log.d("Stage1Model", "Loading Stage 1 model from assets...");
+            InputStream assetInputStream = context.getAssets().open("models/stage1_rice_plant_classifier.tflite");
+            File localFile = new File(context.getFilesDir(), "stage1_rice_plant_classifier.tflite");
+            
+            // Copy from assets to local storage
+            FileOutputStream outputStream = new FileOutputStream(localFile);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = assetInputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            assetInputStream.close();
+            
+            Log.d("Stage1Model", "Model loaded from assets successfully");
+            loadModelFromFile(localFile);
+        } catch (Exception e) {
+            Log.e("Stage1Model", "Failed to load model from assets: " + e.getMessage());
+            isModelLoaded = false;
+        }
     }
 
     private boolean validateModel() {

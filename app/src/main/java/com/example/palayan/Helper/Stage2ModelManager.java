@@ -13,6 +13,8 @@ import org.tensorflow.lite.Interpreter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
@@ -86,11 +88,32 @@ public class Stage2ModelManager {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Stage2Model", "Failed to download labels: " + e.getMessage());
-                    // Fallback
-                    stage2Labels.add("Healthy");
-                    stage2Labels.add("Bacterial Leaf Blight");
+                    Log.e("Stage2Model", "Failed to download labels from Firebase: " + e.getMessage());
+                    Log.d("Stage2Model", "Trying to load labels from assets as fallback...");
+                    loadStage2LabelsFromAssets();
                 });
+    }
+    
+    private void loadStage2LabelsFromAssets() {
+        try {
+            Log.d("Stage2Model", "Loading labels from assets...");
+            InputStream assetInputStream = context.getAssets().open("models/stage2_labels.txt");
+            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(assetInputStream));
+            String line;
+            stage2Labels.clear();
+            while ((line = reader.readLine()) != null) {
+                stage2Labels.add(line.trim());
+            }
+            reader.close();
+            assetInputStream.close();
+            Log.d("Stage2Model", "Loaded labels from assets: " + stage2Labels);
+        } catch (Exception e) {
+            Log.e("Stage2Model", "Failed to load labels from assets: " + e.getMessage());
+            // Fallback to default labels
+            stage2Labels.clear();
+            stage2Labels.add("Healthy");
+            stage2Labels.add("Bacterial Leaf Blight");
+        }
     }
 
     private void loadStage2Model() {
@@ -167,9 +190,34 @@ public class Stage2ModelManager {
                     loadModelFromFile(localFile);
                 })
                 .addOnFailureListener(exception -> {
-                    Log.e("Stage2Model", "Failed to download Stage 2 model: " + exception.getMessage());
-                    isModelLoaded = false;
+                    Log.e("Stage2Model", "Failed to download Stage 2 model from Firebase: " + exception.getMessage());
+                    Log.d("Stage2Model", "Trying to load from assets as fallback...");
+                    loadModelFromAssets(); // Fallback to assets
                 });
+    }
+    
+    private void loadModelFromAssets() {
+        try {
+            Log.d("Stage2Model", "Loading Stage 2 model from assets...");
+            InputStream assetInputStream = context.getAssets().open("models/stage2_rice_disease_classifier.tflite");
+            File localFile = new File(context.getFilesDir(), "stage2_rice_disease_classifier.tflite");
+            
+            // Copy from assets to local storage
+            FileOutputStream outputStream = new FileOutputStream(localFile);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = assetInputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            assetInputStream.close();
+            
+            Log.d("Stage2Model", "Model loaded from assets successfully");
+            loadModelFromFile(localFile);
+        } catch (Exception e) {
+            Log.e("Stage2Model", "Failed to load model from assets: " + e.getMessage());
+            isModelLoaded = false;
+        }
     }
 
     private boolean validateModel() {
