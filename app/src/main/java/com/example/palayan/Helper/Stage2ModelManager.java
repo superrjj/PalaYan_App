@@ -4,10 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -49,49 +45,12 @@ public class Stage2ModelManager {
     public Stage2ModelManager(Context context) {
         this.context = context;
         loadStage2Model();
-        loadDiseaseDataFromFirebase();
         loadStage2Labels();
     }
 
     private void loadStage2Labels() {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference labelsRef = storage.getReference().child("models/stage2_labels.txt");
-
-        File localFile = new File(context.getFilesDir(), "stage2_labels.txt");
-
-        // Delete old labels first
-        if (localFile.exists()) {
-            localFile.delete();
-            Log.d("Stage2Model", "Deleted old stage2_labels.txt");
-        }
-
-        labelsRef.getFile(localFile)
-                .addOnSuccessListener(taskSnapshot -> {
-                    try {
-                        // Android-compatible file reading
-                        List<String> labels = new ArrayList<>();
-                        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(localFile));
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            labels.add(line.trim());
-                        }
-                        reader.close();
-
-                        stage2Labels.clear();
-                        stage2Labels.addAll(labels);
-                        Log.d("Stage2Model", "Loaded labels: " + stage2Labels);
-                    } catch (Exception e) {
-                        Log.e("Stage2Model", "Failed to read labels: " + e.getMessage());
-                        // Fallback
-                        stage2Labels.add("Healthy");
-                        stage2Labels.add("Bacterial Leaf Blight");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Stage2Model", "Failed to download labels from Firebase: " + e.getMessage());
-                    Log.d("Stage2Model", "Trying to load labels from assets as fallback...");
-                    loadStage2LabelsFromAssets();
-                });
+        Log.d("Stage2Model", "Loading Stage 2 labels from assets...");
+        loadStage2LabelsFromAssets();
     }
     
     private void loadStage2LabelsFromAssets() {
@@ -117,22 +76,8 @@ public class Stage2ModelManager {
     }
 
     private void loadStage2Model() {
-        try {
-            File localModelFile = new File(context.getFilesDir(), "stage2_rice_disease_classifier.tflite");
-            Log.d("Stage2Model", "Checking for local model file: " + localModelFile.getAbsolutePath());
-            Log.d("Stage2Model", "File exists: " + localModelFile.exists());
-
-            if (localModelFile.exists()) {
-                loadModelFromFile(localModelFile);
-            } else {
-                Log.d("Stage2Model", "Local model file not found, downloading from Firebase...");
-                downloadStage2ModelFromFirebase();
-            }
-
-        } catch (Exception e) {
-            Log.e("Stage2Model", "Failed to load Stage 2 model: " + e.getMessage());
-            isModelLoaded = false;
-        }
+        Log.d("Stage2Model", "Loading Stage 2 model from assets...");
+        loadModelFromAssets();
     }
 
     private void loadModelFromFile(File modelFile) {
@@ -167,34 +112,6 @@ public class Stage2ModelManager {
         }
     }
 
-    private void downloadStage2ModelFromFirebase() {
-        Log.d("Stage2Model", "Starting to download Stage 2 model from Firebase Storage...");
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference modelRef = storage.getReference().child("models/stage2_rice_disease_classifier.tflite");
-
-        File localFile = new File(context.getFilesDir(), "stage2_rice_disease_classifier.tflite");
-
-        // Delete old model first before downloading new one
-        if (localFile.exists()) {
-            boolean deleted = localFile.delete();
-            Log.d("Stage2Model", "Deleted old model: " + deleted);
-        }
-
-        Log.d("Stage2Model", "Local file path: " + localFile.getAbsolutePath());
-
-        modelRef.getFile(localFile)
-                .addOnSuccessListener(taskSnapshot -> {
-                    Log.d("Stage2Model", "Stage 2 model downloaded successfully");
-                    Log.d("Stage2Model", "Downloaded file size: " + localFile.length() + " bytes");
-                    loadModelFromFile(localFile);
-                })
-                .addOnFailureListener(exception -> {
-                    Log.e("Stage2Model", "Failed to download Stage 2 model from Firebase: " + exception.getMessage());
-                    Log.d("Stage2Model", "Trying to load from assets as fallback...");
-                    loadModelFromAssets(); // Fallback to assets
-                });
-    }
     
     private void loadModelFromAssets() {
         try {
@@ -250,46 +167,6 @@ public class Stage2ModelManager {
         }
     }
 
-    private void loadDiseaseDataFromFirebase() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("rice_local_diseases")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    diseaseNames.clear();
-                    diseaseMetadata.clear();
-
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String diseaseName = document.getString("name");
-                        if (diseaseName != null && !diseaseName.isEmpty()) {
-                            diseaseNames.add(diseaseName);
-
-                            // Store metadata
-                            DiseaseInfo info = new DiseaseInfo();
-                            info.scientificName = document.getString("scientificName");
-                            info.description = document.getString("description") != null ?
-                                    document.getString("description") : "No description available";
-                            info.symptoms = document.getString("symptoms") != null ?
-                                    document.getString("symptoms") : "No symptoms information available";
-                            info.cause = document.getString("cause") != null ?
-                                    document.getString("cause") : "No cause information available";
-                            info.treatments = document.getString("treatments") != null ?
-                                    document.getString("treatments") : "No treatment information available";
-
-                            diseaseMetadata.put(diseaseName, info);
-
-                            Log.d("Stage2Model", "Loaded disease: " + diseaseName);
-                        }
-                    }
-
-                    isDataLoaded = true;
-                    Log.d("Stage2Model", "Loaded " + diseaseNames.size() + " diseases from Firebase");
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Stage2Model", "Failed to load disease data: " + e.getMessage());
-                    loadFallbackData();
-                });
-    }
 
     private void loadFallbackData() {
         diseaseNames.clear();
