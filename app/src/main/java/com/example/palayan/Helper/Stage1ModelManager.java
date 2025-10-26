@@ -26,7 +26,7 @@ public class Stage1ModelManager {
     private boolean isModelLoaded = false;
 
     // Configuration constants
-    private static final float CONFIDENCE_THRESHOLD = 0.7f;
+    private static final float CONFIDENCE_THRESHOLD = 0.85f; // Increased threshold for stricter filtering
     private static final int MIN_IMAGE_SIZE = 100;
     private static final double MIN_BLUR_SCORE = 30.0;
     private static final int INPUT_SIZE = 224;
@@ -284,8 +284,20 @@ public class Stage1ModelManager {
 
         // Check for green content (rice plant indicator)
         double greenRatio = calculateGreenRatio(bitmap);
-        if (greenRatio < 0.1) {
+        if (greenRatio < 0.15) { // Must have decent green content
             return new ImageQualityResult(false, "Insufficient green content: " + greenRatio);
+        }
+        
+        // Additional check: Rice plants should have some texture/variation, not too uniform
+        double texture = calculateBlurScore(bitmap);
+        if (texture > 4000) { // Too uniform (like lettuce, cabbage)
+            return new ImageQualityResult(false, "Image too uniform (not rice): " + texture);
+        }
+        
+        // Check for specific rice plant characteristics
+        RicePlantValidation validation = validateRicePlantCharacteristics(bitmap);
+        if (!validation.isRicePlant) {
+            return new ImageQualityResult(false, validation.reason);
         }
 
         return new ImageQualityResult(true, "Image quality is good");
@@ -332,6 +344,91 @@ public class Stage1ModelManager {
             }
         }
         return (double) greenPixels / totalPixels;
+    }
+
+    private RicePlantValidation validateRicePlantCharacteristics(Bitmap bitmap) {
+        // Rice plants should have:
+        // 1. Multiple variations in green (not uniform)
+        // 2. Some yellow/brown variations (mature rice grains/bunga)
+        // 3. Natural color distribution (not solid green like lettuce)
+        
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int totalPixels = width * height;
+        int[] pixels = new int[totalPixels];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        
+        int lightGreenCount = 0;
+        int darkGreenCount = 0;
+        int yellowBrownCount = 0;
+        int yellowCount = 0;
+        
+        for (int pixel : pixels) {
+            int r = (pixel >> 16) & 0xff;
+            int g = (pixel >> 8) & 0xff;
+            int b = pixel & 0xff;
+            
+            // Light green (young rice leaves)
+            if (g > 140 && g > r && g > b && g - r < 40) {
+                lightGreenCount++;
+            }
+            // Dark green (mature rice leaves)
+            else if (g > 70 && g < 140 && g > r && g > b) {
+                darkGreenCount++;
+            }
+            // Yellow (rice grains/bunga)
+            else if (r > 180 && g > 150 && b < 150 && g > b) {
+                yellowCount++;
+            }
+            // Yellow-brown (rice grains/bunga - mature)
+            else if (r > 120 && g > 100 && b < 120 && r > g && r > b) {
+                yellowBrownCount++;
+            }
+        }
+        
+        double lightGreenRatio = (double) lightGreenCount / totalPixels;
+        double darkGreenRatio = (double) darkGreenCount / totalPixels;
+        double yellowRatio = (double) yellowCount / totalPixels;
+        double yellowBrownRatio = (double) yellowBrownCount / totalPixels;
+        double totalGreenRatio = lightGreenRatio + darkGreenRatio;
+        double totalRiceColorRatio = totalGreenRatio + yellowRatio + yellowBrownRatio;
+        
+        // Rice plants should have good variation
+        boolean hasGreen = totalGreenRatio > 0.10; // At least 10% green
+        boolean hasVariation = (lightGreenRatio > 0.02 || darkGreenRatio > 0.02) && totalRiceColorRatio > 0.15;
+        
+        Log.d("Stage1Model", "Color analysis - Green: " + String.format("%.1f", totalGreenRatio * 100) + 
+              "%, Yellow: " + String.format("%.1f", yellowRatio * 100) + 
+              "%, YellowBrown: " + String.format("%.1f", yellowBrownRatio * 100) + "%");
+        
+        // Reject if too little green (not a plant)
+        if (!hasGreen) {
+            return new RicePlantValidation(false, "Too little green content (" + String.format("%.1f", totalGreenRatio * 100) + "%)");
+        }
+        
+        // Reject if uniform solid green (likely lettuce/cabbage)
+        if (totalGreenRatio > 0.8 && yellowBrownRatio < 0.05) {
+            return new RicePlantValidation(false, "Too uniform green, no rice characteristics (likely lettuce/cabbage)");
+        }
+        
+        // Accept if has good rice plant color distribution
+        if (hasVariation) {
+            return new RicePlantValidation(true, "Rice plant characteristics detected (Green: " + 
+                String.format("%.1f", totalGreenRatio * 100) + 
+                "%, Grains: " + String.format("%.1f", (yellowRatio + yellowBrownRatio) * 100) + "%)");
+        }
+        
+        return new RicePlantValidation(true, "Rice plant detected");
+    }
+    
+    private static class RicePlantValidation {
+        boolean isRicePlant;
+        String reason;
+        
+        RicePlantValidation(boolean isRice, String reason) {
+            this.isRicePlant = isRice;
+            this.reason = reason;
+        }
     }
 
     public String getDetailedPrediction(String imagePath) {

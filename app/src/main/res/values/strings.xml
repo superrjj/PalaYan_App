@@ -78,9 +78,71 @@
     <string name="decline">Decline</string>
     <string name="terms_and_conditions_content">
         <![CDATA[
-TERMS AND CONDITIONS FOR PALAYAN APP\n\nLast Updated: October 2025\n\n1. ACCEPTANCE OF TERMS\n\nBy downloading, installing, or using the PalaYan mobile application ("App"), you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to these Terms, please do not use the App.\n\n2. DESCRIPTION OF SERVICE\n\nPalaYan is an agricultural mobile application that provides:\n• Rice disease and pest identification through image recognition\n• Treatment recommendations for identified diseases and pests\n• Rice variety information and cultivation guides\n• Agricultural best practices and tips\n\n3. MEDICAL/AGRICULTURAL DISCLAIMER\n\nIMPORTANT: The App is designed for informational and educational purposes only. The disease and pest identification features are based on machine learning algorithms and may not be 100% accurate.\n\n• The App does not replace professional agricultural consultation\n• Always consult with certified agricultural experts or plant pathologists for critical farming decisions\n• Treatment recommendations are general guidelines and may not be suitable for all situations\n• The App is not responsible for crop losses or agricultural damages
+TERMS AND CONDITIONS FOR PALAYAN APP\nLast Updated: October 2025\n
+1. ACCEPTANCE OF TERMS\n
+By downloading, installing, or using the PalaYan mobile application ("App"), you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to these Terms, please do not use the App.
+\n\n2. DESCRIPTION OF SERVICE\n
+PalaYan is an agricultural mobile application that provides:\n
+• Rice disease and pest identification through image recognition\n
+• Treatment recommendations for identified diseases and pests\n
+• Rice variety information and cultivation guides\n
+• Agricultural best practices and tips\n
+\n3. MEDICAL/AGRICULTURAL DISCLAIMER\n\n
+IMPORTANT: The App is designed for informational and educational purposes only.
+The disease and pest identification features are based on machine learning algorithms and may not be 100% accurate.\n\n
+• The App does not replace professional agricultural consultation\n
+• Always consult with certified agricultural experts or plant pathologists for critical farming decisions\n
+• Treatment recommendations are general guidelines and may not be suitable for all situations\n
+• The App is not responsible for crop losses or agricultural damages
 
-\n\n4. USER RESPONSIBILITIES\n\nYou agree to:\n• Use the App only for legitimate agricultural purposes\n• Provide accurate information when using the App\n• Not rely solely on the App for critical farming decisions\n• Consult with agricultural professionals for serious crop issues\n• Use the App in compliance with local agricultural regulations\n\n5. DATA PRIVACY AND IMAGE USAGE\n\n• Images uploaded to the App are processed for disease identification purposes\n• We may collect and store your images temporarily for analysis\n• Images are not shared with third parties without your consent\n• You retain ownership of your uploaded images\n• We may use anonymized data to improve our algorithms\n\n6. LIMITATION OF LIABILITY\n\nTo the maximum extent permitted by law:\n• The App is provided "as is" without warranties of any kind\n• We are not liable for any crop losses, agricultural damages, or financial losses\n• We are not responsible for the accuracy of disease identification or treatment recommendations\n• Our total liability shall not exceed the amount you paid for the App (if any)\n\n7. INTELLECTUAL PROPERTY\n\n• The App and its content are protected by copyright and other intellectual property laws\n• You may not copy, modify, or distribute the App without permission\n• All trademarks and logos are the property of their respective owners\n\n8. PROHIBITED USES\n\nYou may not:\n• Use the App for any illegal or unauthorized purpose\n• Attempt to reverse engineer or hack the App\n• Use the App to harm or damage crops intentionally\n• Share false or misleading agricultural information\n\n9. MODIFICATIONS\n\nWe reserve the right to:\n• Modify these Terms at any time\n• Update or discontinue the App\n• Change features or functionality without notice\n\n10. TERMINATION\n\nWe may terminate your access to the App at any time for violation of these Terms or for any other reason at our discretion.\n\n11. GOVERNING LAW\n\nThese Terms are governed by the laws of the Philippines. Any disputes shall be resolved in the appropriate courts of the Philippines.\n\n12. CONTACT INFORMATION\n\nFor questions about these Terms, please contact us at:\nEmail: support@palayanapp.com\nPhone: +63 (962) 282-2446\n\n13. ACKNOWLEDGMENT\n\nBy using the PalaYan App, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.\n
+\n\n4. USER RESPONSIBILITIES\n\nYou agree to:\n
+• Use the App only for legitimate agricultural purposes\n
+• Provide accurate information when using the App\n
+• Not rely solely on the App for critical farming decisions\n
+• Consult with agricultural professionals for serious crop issues\n
+• Use the App in compliance with local agricultural regulations\n
+
+\n5. DATA PRIVACY AND IMAGE USAGE\n\n
+• Images uploaded to the App are processed for disease identification purposes\n
+• We may collect and store your images temporarily for analysis\n
+• Images are not shared with third parties without your consent\n
+• You retain ownership of your uploaded images\n
+• We may use anonymized data to improve our algorithms\n
+
+\n6. LIMITATION OF LIABILITY\n\nTo the maximum extent permitted by law:\n
+• The App is provided "as is" without warranties of any kind\n
+• We are not liable for any crop losses, agricultural damages, or financial losses\n
+• We are not responsible for the accuracy of disease identification or treatment recommendations\n
+• Our total liability shall not exceed the amount you paid for the App (if any)\n
+
+\n7. INTELLECTUAL PROPERTY\n\n
+• The App and its content are protected by copyright and other intellectual property laws\n
+• You may not copy, modify, or distribute the App without permission\n
+• All trademarks and logos are the property of their respective owners\n
+
+\n8. PROHIBITED USES\n\nYou may not:\n
+• Use the App for any illegal or unauthorized purpose\n
+• Attempt to reverse engineer or hack the App\n
+• Use the App to harm or damage crops intentionally\n
+• Share false or misleading agricultural information\n
+
+\n9. MODIFICATIONS\n\nWe reserve the right to:\n
+• Modify these Terms at any time\n
+ Update or discontinue the App\n
+ • Change features or functionality without notice\n
+
+ \n10. TERMINATION\n
+ \nWe may terminate your access to the App at any time for violation of these Terms or for any other reason at our discretion.\n
+
+ \n11. GOVERNING LAW\n\nThese Terms are governed by the laws of the Philippines.
+ Any disputes shall be resolved in the appropriate courts of the Philippines.\n
+
+ \n12. CONTACT INFORMATION\n\nFor questions about these Terms, please contact us at:\n
+ Email: support@palayanapp.com\n
+ Phone: +63 (962) 282-2446\n
+
+ \n13. ACKNOWLEDGMENT\n
+ \nBy using the PalaYan App, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.\n
         ]]>
     </string>
 </resources>

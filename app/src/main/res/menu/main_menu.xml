@@ -19,12 +19,7 @@
         <item
             android:id="@+id/nav_guide"
             android:icon="@drawable/ic_guide"
-            android:title="Guide"/>
-
-        <item
-            android:id="@+id/nav_terms"
-            android:icon="@android:drawable/ic_menu_info_details"
-            android:title="@string/terms_and_conditions"/>
+            android:title="T&amp;C Policy"/>
 
     </group>
 

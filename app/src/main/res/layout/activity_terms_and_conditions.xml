@@ -37,7 +37,7 @@
                 android:id="@+id/tv_terms_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:justificationMode="inter_word"
                 android:fontFamily="@font/poppins__regular"
                 android:lineSpacingExtra="8dp"
