@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,14 @@ import com.example.palayan.R;
 import com.example.palayan.TabFragment.AllFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class RiceFilterBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
@@ -23,6 +32,8 @@ public class RiceFilterBottomSheetDialogFragment extends BottomSheetDialogFragme
     private Button btnApplyFilter;
 
     private OnFilterAppliedListener filterAppliedListener;
+    
+    private FirebaseFirestore firestore;
 
     public void setOnFilterAppliedListener(OnFilterAppliedListener listener) {
         this.filterAppliedListener = listener;
@@ -47,11 +58,11 @@ public class RiceFilterBottomSheetDialogFragment extends BottomSheetDialogFragme
         actEnvironment = view.findViewById(R.id.act_environment);
         btnApplyFilter = view.findViewById(R.id.btnFilter);
 
-        setupDropdown(actLocation, R.array.region_array);
-        setupDropdown(actYear, R.array.year_array);
-        setupDropdown(actSeason, R.array.seasons_array);
-        setupDropdown(actMethod, R.array.planting_methods_array);
-        setupDropdown(actEnvironment, R.array.environment_array);
+        // Initialize Firebase
+        firestore = FirebaseFirestore.getInstance();
+
+        // Load data from Firebase
+        loadFilterDataFromFirebase();
 
         btnApplyFilter.setOnClickListener(v -> {
             String location = actLocation.getText().toString().trim();
@@ -74,6 +85,92 @@ public class RiceFilterBottomSheetDialogFragment extends BottomSheetDialogFragme
         });
     }
 
+    private void loadFilterDataFromFirebase() {
+        // Load enums from maintenance/rice_varieties_enums
+        firestore.collection("maintenance")
+                .document("rice_varieties_enums")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Load environments
+                        if (documentSnapshot.contains("environments")) {
+                            List<String> environments = (List<String>) documentSnapshot.get("environments");
+                            setupDropdownFromList(actEnvironment, environments);
+                        }
+                        
+                        // Load seasons
+                        if (documentSnapshot.contains("seasons")) {
+                            List<String> seasons = (List<String>) documentSnapshot.get("seasons");
+                            setupDropdownFromList(actSeason, seasons);
+                        }
+                        
+                        // Load planting methods
+                        if (documentSnapshot.contains("plantingMethods")) {
+                            List<String> plantingMethods = (List<String>) documentSnapshot.get("plantingMethods");
+                            setupDropdownFromList(actMethod, plantingMethods);
+                        }
+                        
+                        // Load years
+                        if (documentSnapshot.contains("yearReleases")) {
+                            List<String> years = (List<String>) documentSnapshot.get("yearReleases");
+                            setupDropdownFromList(actYear, years);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FilterBottomSheet", "Failed to load enums: " + e.getMessage());
+                });
+        
+        // Load locations from rice_seed_varieties collection
+        loadLocationsFromRiceVarieties();
+    }
+    
+    private void loadLocationsFromRiceVarieties() {
+        Set<String> uniqueLocations = new LinkedHashSet<>();
+        
+        firestore.collection("rice_seed_varieties")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        // Check if variety is deleted
+                        Boolean isDeleted = document.getBoolean("isDeleted");
+                        if (isDeleted != null && isDeleted) {
+                            continue; // Skip deleted varieties
+                        }
+                        
+                        // Only add location if not deleted
+                        if (document.contains("location") && document.get("location") != null) {
+                            String location = document.getString("location");
+                            if (location != null && !location.isEmpty()) {
+                                uniqueLocations.add(location);
+                            }
+                        }
+                    }
+                    
+                    // Convert to list and sort
+                    List<String> locationList = new ArrayList<>(uniqueLocations);
+                    java.util.Collections.sort(locationList);
+                    
+                    setupDropdownFromList(actLocation, locationList);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FilterBottomSheet", "Failed to load locations: " + e.getMessage());
+                });
+    }
+    
+    private void setupDropdownFromList(AutoCompleteTextView actView, List<String> data) {
+        if (data == null || data.isEmpty()) {
+            return;
+        }
+        
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                data
+        );
+        actView.setAdapter(adapter);
+    }
+    
     private void setupDropdown(AutoCompleteTextView actView, int arrayRes) {
         String[] array = getResources().getStringArray(arrayRes);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),

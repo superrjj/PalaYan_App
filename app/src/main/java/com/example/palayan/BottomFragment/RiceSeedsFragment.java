@@ -21,6 +21,7 @@ public class RiceSeedsFragment extends Fragment {
 
     private FragmentRiceSeedsBinding root;
     private Fragment currentFragment;
+    private RiceFilterBottomSheetDialogFragment bottomSheetDialog;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -75,11 +76,17 @@ public class RiceSeedsFragment extends Fragment {
         });
 
         root.ivFilter.setOnClickListener(v -> {
-            RiceFilterBottomSheetDialogFragment bottomSheet = new RiceFilterBottomSheetDialogFragment();
-            if (currentFragment != null) {
-                bottomSheet.setTargetFragment(currentFragment, 0);
+            // Check if dialog is already showing
+            if (bottomSheetDialog != null && bottomSheetDialog.isAdded()) {
+                return; // Already showing, don't create another instance
             }
-            bottomSheet.show(getChildFragmentManager(), bottomSheet.getTag());
+            
+            // Create new instance only if not already showing
+            bottomSheetDialog = new RiceFilterBottomSheetDialogFragment();
+            if (currentFragment != null) {
+                bottomSheetDialog.setTargetFragment(currentFragment, 0);
+            }
+            bottomSheetDialog.show(getChildFragmentManager(), "RiceFilterBottomSheet");
         });
 
         return root.getRoot();
@@ -122,5 +129,15 @@ public class RiceSeedsFragment extends Fragment {
                     });
                 })
                 .commit();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Clean up bottom sheet dialog
+        if (bottomSheetDialog != null && bottomSheetDialog.isAdded()) {
+            bottomSheetDialog.dismiss();
+        }
+        bottomSheetDialog = null;
     }
 }
