@@ -1,7 +1,6 @@
 package com.example.palayan.UserActivities;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -59,6 +58,12 @@ public class DiseaseScanner extends AppCompatActivity {
         Button btnGallery = root.btnGallery;
 
         stage2Manager = new Stage2ModelManager(this);
+        
+        // Pre-load the model in background for faster detection
+        new Thread(() -> {
+            // This will trigger model loading in background
+            stage2Manager.isModelReady();
+        }).start();
 
         // Register single-select image picker
         pickImageLauncher = registerForActivityResult(
@@ -96,9 +101,6 @@ public class DiseaseScanner extends AppCompatActivity {
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor();
-
-        // Show disclaimer dialog
-        showDisclaimerDialog();
 
         btnCapture.setOnClickListener(v -> {
             if (!isCapturing) takePhoto();
@@ -179,16 +181,19 @@ public class DiseaseScanner extends AppCompatActivity {
         // Show simple toast instead of loading dialog
         Toast.makeText(this, "Analyzing disease...", Toast.LENGTH_SHORT).show();
 
-        // Wait for Stage 2 model to be ready
+        // Check if model is ready immediately, if not wait briefly
         new Thread(() -> {
-            int attempts = 0;
-            while (!stage2Manager.isModelReady() && attempts < 30) {
-                try {
-                    Thread.sleep(1000);
-                    attempts++;
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
+            if (!stage2Manager.isModelReady()) {
+                // Wait only 3 seconds instead of 30
+                int attempts = 0;
+                while (!stage2Manager.isModelReady() && attempts < 3) {
+                    try {
+                        Thread.sleep(1000);
+                        attempts++;
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
                 }
             }
 
@@ -291,12 +296,4 @@ public class DiseaseScanner extends AppCompatActivity {
         }
     }
 
-    private void showDisclaimerDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Important Disclaimer");
-        builder.setMessage("This app is for educational and informational purposes only. Disease identification results are based on machine learning algorithms and may not be 100% accurate. Always consult with certified agricultural experts or plant pathologists for critical farming decisions. The app is not responsible for any crop losses or agricultural damages.");
-        builder.setPositiveButton("I Understand", (dialog, which) -> dialog.dismiss());
-        builder.setCancelable(false);
-        builder.show();
-    }
 }
