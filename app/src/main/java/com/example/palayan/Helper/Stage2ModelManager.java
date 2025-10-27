@@ -66,12 +66,18 @@ public class Stage2ModelManager {
             reader.close();
             assetInputStream.close();
             Log.d("Stage2Model", "Loaded labels from assets: " + stage2Labels);
+            
+            // Load fallback data to set isDataLoaded = true
+            loadFallbackData();
         } catch (Exception e) {
             Log.e("Stage2Model", "Failed to load labels from assets: " + e.getMessage());
             // Fallback to default labels - MATCH THE ORDER IN stage2_labels.txt
             stage2Labels.clear();
             stage2Labels.add("Bacterial Leaf Blight");  // Index 0
             stage2Labels.add("Healthy");                 // Index 1
+            
+            // Load fallback data to set isDataLoaded = true
+            loadFallbackData();
         }
     }
 
@@ -88,6 +94,7 @@ public class Stage2ModelManager {
 
             tfliteInterpreter = new Interpreter(buffer);
             isModelLoaded = true;
+            Log.d("Stage2Model", "Model loaded successfully, isModelLoaded set to true");
 
             // Detect model output size dynamically
             try {
@@ -194,6 +201,7 @@ public class Stage2ModelManager {
 
         isDataLoaded = true;
         Log.d("Stage2Model", "Loaded fallback data with " + diseaseNames.size() + " diseases");
+        Log.d("Stage2Model", "isDataLoaded set to true");
     }
 
     public DiseaseResult predictDisease(Bitmap bitmap) {
@@ -320,7 +328,9 @@ public class Stage2ModelManager {
     }
 
     public boolean isModelReady() {
-        return isModelLoaded && isDataLoaded;
+        boolean ready = isModelLoaded && isDataLoaded;
+        Log.d("Stage2Model", "Model ready check - isModelLoaded: " + isModelLoaded + ", isDataLoaded: " + isDataLoaded + ", ready: " + ready);
+        return ready;
     }
 
     public void close() {
