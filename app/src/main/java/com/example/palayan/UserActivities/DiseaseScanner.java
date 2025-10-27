@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
@@ -42,8 +43,10 @@ public class DiseaseScanner extends AppCompatActivity {
     private ImageCapture imageCapture;
     private ExecutorService cameraExecutor;
     private boolean isCapturing = false;
+    private boolean isFlashOn = false;
     private ActivityDiseaseScannerBinding root;
     private Stage2ModelManager stage2Manager;
+    private Camera camera;
 
     private ActivityResultLauncher<String> pickImageLauncher;
 
@@ -56,6 +59,7 @@ public class DiseaseScanner extends AppCompatActivity {
         previewView = root.previewView;
         Button btnCapture = root.btnCapture;
         Button btnGallery = root.btnGallery;
+        Button btnFlashlight = root.btnFlashlight;
 
         stage2Manager = new Stage2ModelManager(this);
         
@@ -106,6 +110,9 @@ public class DiseaseScanner extends AppCompatActivity {
             if (!isCapturing) takePhoto();
         });
 
+        // Flashlight button
+        btnFlashlight.setOnClickListener(v -> toggleFlashlight());
+
         // Gallery button (single select, with runtime permission)
         btnGallery.setOnClickListener(v -> {
             String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -124,6 +131,27 @@ public class DiseaseScanner extends AppCompatActivity {
         root.ivBack.setOnClickListener(v -> onBackPressed());
     }
 
+    // Flashlight toggle functionality
+    private void toggleFlashlight() {
+        if (camera == null) {
+            Toast.makeText(this, "Camera not ready", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            isFlashOn = !isFlashOn;
+            camera.getCameraControl().enableTorch(isFlashOn);
+            
+            String message = isFlashOn ? "Flashlight ON" : "Flashlight OFF";
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            
+            Log.d("DiseaseScanner", "Flashlight toggled: " + isFlashOn);
+        } catch (Exception e) {
+            Log.e("DiseaseScanner", "Error toggling flashlight: " + e.getMessage());
+            Toast.makeText(this, "Flashlight not available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
                 ProcessCameraProvider.getInstance(this);
@@ -140,7 +168,7 @@ public class DiseaseScanner extends AppCompatActivity {
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
                 cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(
+                camera = cameraProvider.bindToLifecycle(
                         this, cameraSelector, preview, imageCapture);
 
             } catch (ExecutionException | InterruptedException e) {

@@ -64,6 +64,7 @@ public class CameraScanner extends AppCompatActivity {
 
     // Camera control for autofocus
     private Camera camera;
+    private boolean isFlashOn = false;
 
     // Stage 1 detection variables
     private Stage1ModelManager stage1Manager;
@@ -80,6 +81,7 @@ public class CameraScanner extends AppCompatActivity {
         tvWarning = root.tvWarning;
         Button btnCapture = root.btnCapture;
         Button btnGallery = root.btnGallery;
+        Button btnFlashlight = root.btnFlashlight;
 
         // Initialize Stage 1 model manager
         Log.d("CameraScanner", "🚀 INITIALIZING Stage1ModelManager...");
@@ -136,6 +138,9 @@ public class CameraScanner extends AppCompatActivity {
             if (!isCapturing) takePhoto();
         });
 
+        // Flashlight button
+        btnFlashlight.setOnClickListener(v -> toggleFlashlight());
+
         // Gallery button - Fixed permission handling
         btnGallery.setOnClickListener(v -> {
             String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -150,6 +155,27 @@ public class CameraScanner extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
             }
         });
+    }
+
+    // Flashlight toggle functionality
+    private void toggleFlashlight() {
+        if (camera == null) {
+            Toast.makeText(this, "Camera not ready", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            isFlashOn = !isFlashOn;
+            camera.getCameraControl().enableTorch(isFlashOn);
+            
+            String message = isFlashOn ? "Flashlight ON" : "Flashlight OFF";
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            
+            Log.d("CameraScanner", "Flashlight toggled: " + isFlashOn);
+        } catch (Exception e) {
+            Log.e("CameraScanner", "Error toggling flashlight: " + e.getMessage());
+            Toast.makeText(this, "Flashlight not available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Tap to focus functionality
