@@ -36,6 +36,37 @@ public class TextBased extends AppCompatActivity {
 
         root.toolbar.findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
 
+        // Handle data passed from TextBasedFragment
+        Intent intent = getIntent();
+        if (intent != null) {
+            String description = intent.getStringExtra("description");
+            ArrayList<String> affectedParts = intent.getStringArrayListExtra("affectedParts");
+            
+            if (description != null && !description.isEmpty()) {
+                root.txtDescription.setText(description);
+            }
+            
+            if (affectedParts != null && !affectedParts.isEmpty()) {
+                // Pre-select chips based on affected parts
+                for (String part : affectedParts) {
+                    switch (part) {
+                        case "Dahon":
+                            root.chipGroupAffected.check(R.id.chipDahon);
+                            break;
+                        case "Tangkay":
+                            root.chipGroupAffected.check(R.id.chipTangkay);
+                            break;
+                        case "Ugat":
+                            root.chipGroupAffected.check(R.id.chipUgat);
+                            break;
+                        case "Bunga":
+                            root.chipGroupAffected.check(R.id.chipBunga);
+                            break;
+                    }
+                }
+            }
+        }
+
         root.btnSearchDisease.setOnClickListener(v -> {
             String text = root.txtDescription.getText().toString().trim();
 

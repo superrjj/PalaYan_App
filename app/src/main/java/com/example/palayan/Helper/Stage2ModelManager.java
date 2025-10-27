@@ -68,10 +68,10 @@ public class Stage2ModelManager {
             Log.d("Stage2Model", "Loaded labels from assets: " + stage2Labels);
         } catch (Exception e) {
             Log.e("Stage2Model", "Failed to load labels from assets: " + e.getMessage());
-            // Fallback to default labels
+            // Fallback to default labels - MATCH THE ORDER IN stage2_labels.txt
             stage2Labels.clear();
-            stage2Labels.add("Healthy");
-            stage2Labels.add("Bacterial Leaf Blight");
+            stage2Labels.add("Bacterial Leaf Blight");  // Index 0
+            stage2Labels.add("Healthy");                 // Index 1
         }
     }
 
@@ -259,11 +259,11 @@ public class Stage2ModelManager {
         Log.d("Stage2Model", "Raw predictions: " + java.util.Arrays.toString(predictions));
         Log.d("Stage2Model", "Model output size: " + modelOutputSize);
 
-        // Log both confidence scores
-        float healthyConfidence = predictions[0];
-        float diseaseConfidence = predictions[1];
+        // Log both confidence scores - MATCH stage2_labels.txt ORDER
+        float blightConfidence = predictions[0];  // Index 0 = Bacterial Leaf Blight
+        float healthyConfidence = predictions[1];  // Index 1 = Healthy
+        Log.d("Stage2Model", "Bacterial Leaf Blight confidence: " + blightConfidence + " (" + (blightConfidence * 100) + "%)");
         Log.d("Stage2Model", "Healthy confidence: " + healthyConfidence + " (" + (healthyConfidence * 100) + "%)");
-        Log.d("Stage2Model", "Disease confidence: " + diseaseConfidence + " (" + (diseaseConfidence * 100) + "%)");
 
         // Find top prediction
         int maxIndex = 0;
@@ -299,11 +299,11 @@ public class Stage2ModelManager {
     }
 
     private String mapIndexToDiseaseName(int index) {
-        // Map based on your 2-class model
+        // Map based on your 2-class model - MATCH stage2_labels.txt ORDER
         if (index == 0) {
-            return "Healthy";
+            return "Bacterial Leaf Blight";  // Index 0 = Bacterial Leaf Blight
         } else if (index == 1) {
-            return "Bacterial Leaf Blight";
+            return "Healthy";                 // Index 1 = Healthy
         } else {
             return "Unknown Disease (Index: " + index + ")";
         }
