@@ -62,12 +62,6 @@ public class DiseaseScanner extends AppCompatActivity {
         Button btnFlashlight = root.btnFlashlight;
 
         stage2Manager = new Stage2ModelManager(this);
-        
-        // Pre-load the model in background for faster detection
-        new Thread(() -> {
-            // This will trigger model loading in background
-            stage2Manager.isModelReady();
-        }).start();
 
         // Register single-select image picker
         pickImageLauncher = registerForActivityResult(
@@ -209,64 +203,48 @@ public class DiseaseScanner extends AppCompatActivity {
         // Show simple toast instead of loading dialog
         Toast.makeText(this, "Analyzing disease...", Toast.LENGTH_SHORT).show();
 
-        // Check if model is ready immediately, if not wait briefly
+        // Run analysis immediately without waiting
         new Thread(() -> {
+            // Just check if ready, don't wait
             if (!stage2Manager.isModelReady()) {
-                // Wait only 3 seconds instead of 30
-                int attempts = 0;
-                while (!stage2Manager.isModelReady() && attempts < 3) {
-                    try {
-                        Thread.sleep(1000);
-                        attempts++;
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        return;
-                    }
-                }
+                Log.w("DiseaseScanner", "Model not ready yet, but proceeding anyway...");
             }
-
-            if (stage2Manager.isModelReady()) {
-                performDiseaseAnalysis(imagePath);
-            } else {
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
-                });
-            }
+            
+            // Always proceed with analysis
+            performDiseaseAnalysis(imagePath);
         }).start();
     }
 
     private void performDiseaseAnalysis(String imagePath) {
-        new Thread(() -> {
-            try {
-                // Load bitmap
-                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                if (bitmap == null) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Could not load image", Toast.LENGTH_SHORT).show();
-                    });
-                    return;
-                }
-
-                // Run Stage 2 prediction
-                Stage2ModelManager.DiseaseResult result = stage2Manager.predictDisease(bitmap);
-
+        try {
+            // Load bitmap
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            if (bitmap == null) {
                 runOnUiThread(() -> {
-                    if (result != null && result.isSuccess) {
-                        // Pass results to PredictResult
-                        goToPredictResult(result, imagePath);
-                    } else {
-                        Toast.makeText(this, "Disease analysis failed: " +
-                                (result != null ? result.errorMessage : "Unknown error"), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(this, "Could not load image", Toast.LENGTH_SHORT).show();
                 });
-
-            } catch (Exception e) {
-                Log.e("DiseaseScanner", "Error analyzing disease", e);
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error analyzing disease: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                return;
             }
-        }).start();
+
+            // Run Stage 2 prediction
+            Stage2ModelManager.DiseaseResult result = stage2Manager.predictDisease(bitmap);
+
+            runOnUiThread(() -> {
+                if (result != null && result.isSuccess) {
+                    // Pass results to PredictResult
+                    goToPredictResult(result, imagePath);
+                } else {
+                    Toast.makeText(this, "Disease analysis failed: " +
+                            (result != null ? result.errorMessage : "Unknown error"), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch (Exception e) {
+            Log.e("DiseaseScanner", "Error analyzing disease", e);
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Error analyzing disease: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 
     private void goToPredictResult(Stage2ModelManager.DiseaseResult result, String imagePath) {
