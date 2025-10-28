@@ -244,39 +244,25 @@ public class CameraScanner extends AppCompatActivity {
                 });
     }
 
-    // Check rice plant and proceed - IMPROVED
+    // Check rice plant and proceed - OPTIMIZED
     private void checkRicePlantAndProceed(String imagePath) {
         // Show simple toast instead of loading dialog
         Toast.makeText(this, "Analyzing rice plant...", Toast.LENGTH_SHORT).show();
 
         new Thread(() -> {
             try {
-                Log.d("CameraScanner", "=== STARTING IMPROVED RICE PLANT ANALYSIS ===");
+                Log.d("CameraScanner", "=== STARTING RICE PLANT ANALYSIS ===");
                 Log.d("CameraScanner", "Image path: " + imagePath);
 
-                // Wait for model to be ready
-                Log.d("CameraScanner", "⏳ WAITING for model to be ready...");
-                int attempts = 0;
-                while (!stage1Manager.isModelReady() && attempts < 30) {
-                    Log.d("CameraScanner", "⏳ Attempt " + attempts + " - Model not ready yet...");
-                    Thread.sleep(1000);
-                    attempts++;
-                }
-
+                // Just check if ready, don't wait
                 if (!stage1Manager.isModelReady()) {
-                    Log.e("CameraScanner", "❌ MODEL NOT READY after 30 attempts!");
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
-                    });
-                    return;
+                    Log.w("CameraScanner", "Model not ready yet, but proceeding anyway...");
                 }
-                
-                Log.d("CameraScanner", "✅ MODEL IS READY! Proceeding to detection...");
 
-                // Run improved detection with try-catch to prevent crash
-                final boolean[] isRicePlant = {false};
+                // Run detection with try-catch to prevent crash
+                boolean isRicePlant = false;
                 try {
-                    isRicePlant[0] = stage1Manager.detectRicePlant(imagePath);
+                    isRicePlant = stage1Manager.detectRicePlant(imagePath);
                     // Get detailed prediction for debugging
                     String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
                     Log.d("CameraScanner", "Detailed prediction: " + detailedPrediction);
@@ -284,15 +270,16 @@ public class CameraScanner extends AppCompatActivity {
                     Log.e("CameraScanner", "Stage 1 detection failed: " + e.getMessage());
                     e.printStackTrace();
                     // Bypass Stage 1 if model crashes - proceed to disease detection
-                    isRicePlant[0] = true;
+                    isRicePlant = true;
                     Log.w("CameraScanner", "Bypassing Stage 1 due to error - proceeding to Stage 2");
                 }
 
+                final boolean finalIsRicePlant = isRicePlant;
                 runOnUiThread(() -> {
                     Log.d("CameraScanner", "=== ANALYSIS RESULTS ===");
-                    Log.d("CameraScanner", "Is Rice Plant detected: " + isRicePlant[0]);
+                    Log.d("CameraScanner", "Is Rice Plant detected: " + finalIsRicePlant);
 
-                    if (isRicePlant[0]) {
+                    if (finalIsRicePlant) {
                         // Rice plant detected - go to DiseaseScanner for disease analysis
                         Log.d("CameraScanner", "Rice plant detected - proceeding to DiseaseScanner...");
                         Intent intent = new Intent(CameraScanner.this, DiseaseScanner.class);
@@ -301,7 +288,7 @@ public class CameraScanner extends AppCompatActivity {
                     } else {
                         // NonRice detected - show retry message with more details
                         Log.d("CameraScanner", "NonRice detected - showing retry message");
-                        String message = "Not a rice plant detected.";
+                        String message = "Not a rice plant detected. Please try again!";
                         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                     }
                 });
