@@ -39,7 +39,7 @@ public class Stage2ModelManager {
     // Disease data from Firebase Firestore
     private List<String> diseaseNames = new ArrayList<>();
     private Map<String, DiseaseInfo> diseaseMetadata = new HashMap<>();
-    private int modelOutputSize = 2; //Change the comment
+    private int modelOutputSize = 3; // Updated for 3 diseases: Bacterial Leaf Blight, Brown Spot, Healthy
     private List<String> stage2Labels = new ArrayList<>();
 
     public Stage2ModelManager(Context context) {
@@ -74,7 +74,8 @@ public class Stage2ModelManager {
             // Fallback to default labels - MATCH THE ORDER IN stage2_labels.txt
             stage2Labels.clear();
             stage2Labels.add("Bacterial Leaf Blight");  // Index 0
-            stage2Labels.add("Healthy");                 // Index 1
+            stage2Labels.add("Brown Spot");              // Index 1
+            stage2Labels.add("Healthy");                 // Index 2
             
             // Load fallback data to set isDataLoaded = true
             loadFallbackData();
@@ -177,8 +178,9 @@ public class Stage2ModelManager {
 
     private void loadFallbackData() {
         diseaseNames.clear();
-        diseaseNames.add("Healthy");
         diseaseNames.add("Bacterial Leaf Blight");
+        diseaseNames.add("Brown Spot");
+        diseaseNames.add("Healthy");
 
         // Healthy
         DiseaseInfo healthyInfo = new DiseaseInfo();
@@ -188,16 +190,25 @@ public class Stage2ModelManager {
         healthyInfo.cause = "Walang sakit ang palay";
         healthyInfo.treatments = "Walang sakit ang palay";
 
-        // Bacterial Leaf Blast
+        // Bacterial Leaf Blight
         DiseaseInfo blbInfo = new DiseaseInfo();
         blbInfo.scientificName = "Xanthomonas oryzae pv. oryzae";
-        blbInfo.description = "Bacterial Leaf Blast is a serious bacterial disease of rice.";
+        blbInfo.description = "Bacterial Leaf Blight is a serious bacterial disease of rice.";
         blbInfo.symptoms = "Water-soaked lesions, yellowing leaves, wilting";
         blbInfo.cause = "Bacterial pathogen Xanthomonas oryzae pv. oryzae";
         blbInfo.treatments = "Apply copper-based fungicides, improve drainage, use resistant varieties";
 
-        diseaseMetadata.put("Healthy", healthyInfo);
+        // Brown Spot
+        DiseaseInfo bsInfo = new DiseaseInfo();
+        bsInfo.scientificName = "Cochliobolus miyabeanus";
+        bsInfo.description = "Brown Spot is a fungal disease that affects rice leaves and grains.";
+        bsInfo.symptoms = "Small brown spots on leaves, reduced grain quality";
+        bsInfo.cause = "Fungal pathogen Cochliobolus miyabeanus";
+        bsInfo.treatments = "Apply fungicides, improve field drainage, use resistant varieties";
+
         diseaseMetadata.put("Bacterial Leaf Blight", blbInfo);
+        diseaseMetadata.put("Brown Spot", bsInfo);
+        diseaseMetadata.put("Healthy", healthyInfo);
 
         isDataLoaded = true;
         Log.d("Stage2Model", "Loaded fallback data with " + diseaseNames.size() + " diseases");
@@ -267,10 +278,12 @@ public class Stage2ModelManager {
         Log.d("Stage2Model", "Raw predictions: " + java.util.Arrays.toString(predictions));
         Log.d("Stage2Model", "Model output size: " + modelOutputSize);
 
-        // Log both confidence scores - MATCH stage2_labels.txt ORDER
+        // Log all confidence scores - MATCH stage2_labels.txt ORDER
         float blightConfidence = predictions[0];  // Index 0 = Bacterial Leaf Blight
-        float healthyConfidence = predictions[1];  // Index 1 = Healthy
+        float brownSpotConfidence = predictions[1];  // Index 1 = Brown Spot
+        float healthyConfidence = predictions[2];  // Index 2 = Healthy
         Log.d("Stage2Model", "Bacterial Leaf Blight confidence: " + blightConfidence + " (" + (blightConfidence * 100) + "%)");
+        Log.d("Stage2Model", "Brown Spot confidence: " + brownSpotConfidence + " (" + (brownSpotConfidence * 100) + "%)");
         Log.d("Stage2Model", "Healthy confidence: " + healthyConfidence + " (" + (healthyConfidence * 100) + "%)");
 
         // Find top prediction
@@ -307,11 +320,13 @@ public class Stage2ModelManager {
     }
 
     private String mapIndexToDiseaseName(int index) {
-        // Map based on your 2-class model - MATCH stage2_labels.txt ORDER
+        // Map based on your 3-class model - MATCH stage2_labels.txt ORDER
         if (index == 0) {
             return "Bacterial Leaf Blight";  // Index 0 = Bacterial Leaf Blight
         } else if (index == 1) {
-            return "Healthy";                 // Index 1 = Healthy
+            return "Brown Spot";              // Index 1 = Brown Spot
+        } else if (index == 2) {
+            return "Healthy";                 // Index 2 = Healthy
         } else {
             return "Unknown Disease (Index: " + index + ")";
         }
