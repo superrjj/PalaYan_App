@@ -191,13 +191,6 @@
                             android:src="@drawable/ic_add_photo"
                             app:tint="@color/green"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tap to upload photo"
-                            android:fontFamily="@font/poppins__regular"
-                            android:layout_gravity="center"/>
-
 
                         <ImageView
                             android:id="@+id/ivRemove"

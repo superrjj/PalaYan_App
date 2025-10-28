@@ -45,6 +45,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public void onBindViewHolder(@NonNull HistoryAdapter.HistoryHolder historyHolder, int position) {
         HistoryResult history = historyList.get(position);
+        
+        // Safety filter: only show prediction type items in Home
+        if (!"prediction".equals(history.getType())) {
+            historyHolder.itemView.setVisibility(View.GONE);
+            return;
+        }
+        historyHolder.itemView.setVisibility(View.VISIBLE);
 
         // Set disease name as title
         historyHolder.textTitle.setText(history.getDiseaseName());

@@ -33,7 +33,33 @@ public class ViewResultDisease extends AppCompatActivity {
         root.tvDiseaseName.setText(diseaseName);
         root.tvAboutDisease.setText("Ano ang " + diseaseName + "?");
 
-        loadDiseaseDetails(diseaseName);
+        // If details are passed via Intent (e.g., from ML pipeline), use them immediately.
+        String scientificName = getIntent().getStringExtra("scientificName");
+        String description = getIntent().getStringExtra("description");
+        String affectedParts = getIntent().getStringExtra("affectedParts");
+        String symptoms = getIntent().getStringExtra("symptoms");
+        String cause = getIntent().getStringExtra("cause");
+        String treatments = getIntent().getStringExtra("treatments");
+
+        boolean hasInlineDetails =
+                (scientificName != null && !scientificName.trim().isEmpty()) ||
+                (description != null && !description.trim().isEmpty()) ||
+                (affectedParts != null && !affectedParts.trim().isEmpty()) ||
+                (symptoms != null && !symptoms.trim().isEmpty()) ||
+                (cause != null && !cause.trim().isEmpty()) ||
+                (treatments != null && !treatments.trim().isEmpty());
+
+        if (hasInlineDetails) {
+            if (scientificName != null) root.tvScientificName.setText(safeString(scientificName));
+            if (description != null) root.tvDescription.setText(safeString(description));
+            if (affectedParts != null) root.tvAffectedPart.setText(safeString(affectedParts));
+            if (symptoms != null) root.tvSymptoms.setText(extractBulleted(symptoms));
+            if (cause != null) root.tvCause.setText(extractBulleted(cause));
+            if (treatments != null) root.tvTreatments.setText(extractBulleted(treatments));
+        } else {
+            // Fallback to Firestore lookup by name
+            loadDiseaseDetails(diseaseName);
+        }
     }
 
     private void loadDiseaseDetails(String diseaseName) {
@@ -51,6 +77,7 @@ public class ViewResultDisease extends AppCompatActivity {
                     if (m == null) return;
 
                     root.tvLocalName.setText(safeString(m.get("localName")));
+                    root.tvScientificName.setText(safeString(m.get("scientificName")));
                     root.tvDescription.setText(safeString(m.get("description")));
                     root.tvAffectedPart.setText(safeString(m.get("affectedParts")));
 

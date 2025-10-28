@@ -20,10 +20,19 @@ public class PhotoTimelineAdapter extends RecyclerView.Adapter<PhotoTimelineAdap
 
     private final Context context;
     private final List<PhotoTimelineModel> photoList;
+    private OnPhotoClickListener onPhotoClickListener;
 
     public PhotoTimelineAdapter(Context context, List<PhotoTimelineModel> photoList) {
         this.context = context;
         this.photoList = photoList;
+    }
+
+    public interface OnPhotoClickListener {
+        void onPhotoClick(String imageUrl, String date);
+    }
+
+    public void setOnPhotoClickListener(OnPhotoClickListener listener) {
+        this.onPhotoClickListener = listener;
     }
 
     @NonNull
@@ -43,6 +52,12 @@ public class PhotoTimelineAdapter extends RecyclerView.Adapter<PhotoTimelineAdap
                 .placeholder(R.color.light_gray)
                 .centerCrop()
                 .into(holder.ivDiseaseImage);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onPhotoClickListener != null) {
+                onPhotoClickListener.onPhotoClick(item.getImageUrl(), item.getDate());
+            }
+        });
     }
 
     @Override

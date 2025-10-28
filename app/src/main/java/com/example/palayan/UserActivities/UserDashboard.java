@@ -86,6 +86,10 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
             } else if (id == R.id.bot_nav_rice) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RiceSeedsFragment()).commit();
+            } else if (id == R.id.bot_nav_text) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new com.example.palayan.BottomFragment.TextBasedFragment())
+                        .commit();
             }
             return true;
         });

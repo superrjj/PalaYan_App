@@ -42,6 +42,8 @@ public class TreatmentNotes extends AppCompatActivity {
 
     private String diseaseName;
     private String deviceId;
+    private String historyId; // shared id to group multiple updates for one history
+    private boolean isUpdateMode = false;
 
     private Bitmap selectedBitmap;       // from Camera thumbnail
     private Uri selectedImageUri;        // from Gallery
@@ -107,12 +109,23 @@ public class TreatmentNotes extends AppCompatActivity {
         Intent i = getIntent();
         diseaseName = i.getStringExtra("diseaseName");
         deviceId = i.getStringExtra("deviceId");
+        // If launched from TreatmentAppliedDetails for update, these may be provided
+        if (i.hasExtra("history_id")) {
+            historyId = i.getStringExtra("history_id");
+        }
+        if (i.hasExtra("device_id") && (deviceId == null || deviceId.isEmpty())) {
+            deviceId = i.getStringExtra("device_id");
+        }
+        isUpdateMode = historyId != null && !historyId.trim().isEmpty();
 
         root.ivBack.setOnClickListener(v -> onBackPressed());
 
         // Prefill disease and date
         root.tvDiseaseDetected.setText(TextUtils.isEmpty(diseaseName) ? "Unknown" : diseaseName);
-        String today = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(new Date());
+        // Use PH timezone for current date
+        java.text.SimpleDateFormat dateFmt = new java.text.SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        dateFmt.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Manila"));
+        String today = dateFmt.format(new Date());
         root.tvDateApplied.setText(today);
 
         // Placeholder until user selects a photo
@@ -125,7 +138,12 @@ public class TreatmentNotes extends AppCompatActivity {
         // Clear image button
         root.ivRemove.setOnClickListener(v -> clearSelectedImage());
 
-        // Save note
+        // Save/Update button label and behavior
+        if (isUpdateMode) {
+            root.btnSaveNote.setText("Update Note");
+        } else {
+            root.btnSaveNote.setText("Save Note");
+        }
         root.btnSaveNote.setOnClickListener(v -> onSaveNote());
     }
 
@@ -235,7 +253,10 @@ public class TreatmentNotes extends AppCompatActivity {
     }
 
     private void saveNoteToFirestore(String description, String photoUrl) {
-        String docId = (deviceId == null ? "unknown" : deviceId) + "_" + UUID.randomUUID();
+        // For first save, create a new history id. For updates, reuse provided id.
+        if (historyId == null || historyId.trim().isEmpty()) {
+            historyId = (deviceId == null ? "unknown" : deviceId) + "_" + UUID.randomUUID();
+        }
 
         // Friendly date string for display
         String dateApplied = root.tvDateApplied.getText() == null
@@ -249,16 +270,21 @@ public class TreatmentNotes extends AppCompatActivity {
         data.put("description", description);
         data.put("photoUrl", photoUrl);
         data.put("timestamp", FieldValue.serverTimestamp());
-        data.put("documentId", docId);
+        data.put("documentId", historyId);
 
         firestore.collection("users")
                 .document(deviceId == null ? "unknown" : deviceId)
                 .collection("treatment_notes")
-                .document(docId)
+                .document(java.util.UUID.randomUUID().toString())
                 .set(data)
                 .addOnSuccessListener(aVoid -> {
                     loadingDialog.dismiss();
-                    Toast.makeText(this, "Treatment note saved.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, isUpdateMode ? "Treatment note updated." : "Treatment note saved.", Toast.LENGTH_SHORT).show();
+                    // After save/update, navigate to details to view timeline/history
+                    Intent intent = new Intent(this, TreatmentAppliedDetails.class);
+                    intent.putExtra("history_id", historyId);
+                    intent.putExtra("device_id", deviceId == null ? "unknown" : deviceId);
+                    startActivity(intent);
                     finish();
                 })
                 .addOnFailureListener(e -> {

@@ -96,6 +96,20 @@ public class TreatmentAppliedDetails extends AppCompatActivity {
         root.recyclerPhotoTimeline.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         root.recyclerPhotoTimeline.setAdapter(photoTimelineAdapter);
 
+        photoTimelineAdapter.setOnPhotoClickListener((imageUrl, date) -> {
+            // Simple full view dialog
+            android.app.AlertDialog.Builder b = new android.app.AlertDialog.Builder(this);
+            android.widget.ImageView iv = new android.widget.ImageView(this);
+            iv.setAdjustViewBounds(true);
+            iv.setBackgroundColor(getResources().getColor(android.R.color.black));
+            int p = (int) (16 * getResources().getDisplayMetrics().density);
+            iv.setPadding(p, p, p, p);
+            com.bumptech.glide.Glide.with(this).load(imageUrl).into(iv);
+            b.setView(iv);
+            b.setPositiveButton("Close", (d, w) -> d.dismiss());
+            b.show();
+        });
+
         // Initialize treatment history
         treatmentHistoryList = new ArrayList<>();
         treatmentHistoryAdapter = new TreatmentHistoryAdapter(this, treatmentHistoryList);
@@ -106,7 +120,14 @@ public class TreatmentAppliedDetails extends AppCompatActivity {
     private void setupClickListeners() {
         // Back button
         root.ivBack.setOnClickListener(v -> onBackPressed());
-
+        // Update note button -> open TreatmentNotes in update mode
+        root.btnUpdateProgress.setOnClickListener(v -> {
+            Intent i = new Intent(this, TreatmentNotes.class);
+            i.putExtra("history_id", historyId);
+            i.putExtra("device_id", deviceId);
+            i.putExtra("diseaseName", diseaseName);
+            startActivity(i);
+        });
     }
 
     private void loadDiseaseInfo() {
@@ -257,13 +278,13 @@ public class TreatmentAppliedDetails extends AppCompatActivity {
                             }
                         }
 
-                        // Sort by timestamp in descending order (newest first)
+                        // Sort by date string (MMM dd, yyyy) newest first
                         treatmentHistoryList.sort((a, b) -> {
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
                                 Date dateA = sdf.parse(a.getDate());
                                 Date dateB = sdf.parse(b.getDate());
-                                return dateB.compareTo(dateA); // Descending order
+                                return dateB.compareTo(dateA);
                             } catch (Exception e) {
                                 return 0;
                             }

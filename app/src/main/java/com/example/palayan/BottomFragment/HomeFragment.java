@@ -51,7 +51,6 @@ public class HomeFragment extends Fragment {
     private HistoryAdapter adapter;
     private FirebaseFirestore firestore;
     private ListenerRegistration predictionsListener;
-    private ListenerRegistration treatmentListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,9 +93,6 @@ public class HomeFragment extends Fragment {
         if (predictionsListener != null) {
             predictionsListener.remove();
         }
-        if (treatmentListener != null) {
-            treatmentListener.remove();
-        }
     }
 
     private String getDeviceId() {
@@ -110,7 +106,7 @@ public class HomeFragment extends Fragment {
         historyList.clear();
         adapter.notifyDataSetChanged();
 
-        // Load predictions_result subcollection
+        // Load ONLY predictions_result subcollection; do not include treatment_notes in Home history
         predictionsListener = firestore.collection("users")
                 .document(deviceId)
                 .collection("predictions_result")
@@ -120,49 +116,34 @@ public class HomeFragment extends Fragment {
                     }
 
                     for (QueryDocumentSnapshot doc : snapshots) {
-
                         HistoryResult history = doc.toObject(HistoryResult.class);
                         if (history != null) {
-                            history.setDocumentId(doc.getId());
-                            history.setUserId(deviceId);
-                            historyList.add(history);
-                        } else {
+                            // Debug log to see what's being loaded
+                            Log.d("HomeFragment", "Loading item: " + history.getDiseaseName() + 
+                                  ", dateApplied: " + history.getDateApplied() + 
+                                  ", type: " + history.getType());
+                            
+                            // Double check: only add if it's truly from predictions_result
+                            // and doesn't have treatment-specific fields
+                            if (history.getDateApplied() == null || history.getDateApplied().isEmpty()) {
+                                history.setDocumentId(doc.getId());
+                                history.setUserId(deviceId);
+                                history.setExplicitType("prediction"); // ensure Home shows only scans
+                                historyList.add(history);
+                                Log.d("HomeFragment", "Added to history: " + history.getDiseaseName());
+                            } else {
+                                Log.d("HomeFragment", "Skipped treatment item: " + history.getDiseaseName());
+                            }
                         }
                     }
 
-                    // Load treatment_notes subcollection
-                    loadTreatmentNotes(deviceId);
-                });
-    }
-
-    private void loadTreatmentNotes(String deviceId) {
-        treatmentListener = firestore.collection("users")
-                .document(deviceId)
-                .collection("treatment_notes")
-                .addSnapshotListener((snapshots, e) -> {
-                    if (e != null) {
-                        return;
-                    }
-
-                    for (QueryDocumentSnapshot doc : snapshots) {
-
-                        HistoryResult history = doc.toObject(HistoryResult.class);
-                        if (history != null) {
-                            history.setDocumentId(doc.getId());
-                            history.setUserId(deviceId);
-                            historyList.add(history);
-                        } else {
-                        }
-                    }
-
-                    // Sort combined list by timestamp (newest first)
+                    // Sort by timestamp (newest first)
                     historyList.sort((a, b) -> {
                         if (a.getTimestamp() == null && b.getTimestamp() == null) return 0;
                         if (a.getTimestamp() == null) return 1;
                         if (b.getTimestamp() == null) return -1;
                         return b.getTimestamp().compareTo(a.getTimestamp());
                     });
-
                     adapter.notifyDataSetChanged();
 
                     // Show/hide no data message
@@ -171,9 +152,9 @@ public class HomeFragment extends Fragment {
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
-
                 });
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

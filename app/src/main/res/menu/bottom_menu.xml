@@ -11,5 +11,10 @@
         android:title="Rice Seeds"
         android:icon="@drawable/ic_rice_logo"/>
 
+    <item
+        android:id="@+id/bot_nav_text"
+        android:title="Text-Based"
+        android:icon="@drawable/ic_diagnosis"/>
+
 
 </menu>

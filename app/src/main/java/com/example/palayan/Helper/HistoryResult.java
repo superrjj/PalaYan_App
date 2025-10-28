@@ -41,6 +41,9 @@ public class HistoryResult {
     @PropertyName("dateApplied")
     public String dateApplied;
 
+    // Explicit source override (e.g., force "prediction" in Home)
+    private String explicitType;
+
     public HistoryResult() {}
 
     // Helper method to get the image URL (works for both collections)
@@ -53,7 +56,12 @@ public class HistoryResult {
 
     // Helper method to determine if this is a prediction or treatment
     public String getType() {
+        if (explicitType != null && !explicitType.isEmpty()) return explicitType;
         return dateApplied != null ? "treatment" : "prediction";
+    }
+
+    public void setExplicitType(String type) {
+        this.explicitType = type;
     }
 
     // Getters and Setters
