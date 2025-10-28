@@ -39,8 +39,11 @@ public class Stage1ModelManager {
 
     public Stage1ModelManager(Context context) {
         this.context = context;
+        Log.d("Stage1Model", "=== INITIALIZING STAGE 1 MODEL MANAGER ===");
         loadStage1Model();
         loadStage1Labels();
+        Log.d("Stage1Model", "=== STAGE 1 MODEL MANAGER INITIALIZATION COMPLETE ===");
+        Log.d("Stage1Model", "Final model loaded status: " + isModelLoaded);
     }
 
     private void loadStage1Labels() {
@@ -77,12 +80,30 @@ public class Stage1ModelManager {
 
     private void loadModelFromFile(File modelFile) {
         try {
+            Log.d("Stage1Model", "Loading model from file: " + modelFile.getAbsolutePath());
+            Log.d("Stage1Model", "File exists: " + modelFile.exists());
+            Log.d("Stage1Model", "File size: " + modelFile.length() + " bytes");
+            
+            if (!modelFile.exists()) {
+                Log.e("Stage1Model", "Model file does not exist!");
+                isModelLoaded = false;
+                return;
+            }
+            
+            if (modelFile.length() == 0) {
+                Log.e("Stage1Model", "Model file is empty!");
+                isModelLoaded = false;
+                return;
+            }
+            
             FileInputStream inputStream = new FileInputStream(modelFile);
             FileChannel fileChannel = inputStream.getChannel();
             MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, modelFile.length());
 
+            Log.d("Stage1Model", "Creating TensorFlow Lite interpreter...");
             tfliteInterpreter = new Interpreter(buffer);
             isModelLoaded = true;
+            Log.d("Stage1Model", "TensorFlow Lite interpreter created successfully");
 
             // Validate model
             if (validateModel()) {
@@ -94,6 +115,8 @@ public class Stage1ModelManager {
 
         } catch (Exception e) {
             Log.e("Stage1Model", "Failed to load model from file: " + e.getMessage());
+            Log.e("Stage1Model", "Exception details: " + e.getClass().getSimpleName());
+            e.printStackTrace();
             isModelLoaded = false;
         }
     }
@@ -101,8 +124,26 @@ public class Stage1ModelManager {
     
     private void loadModelFromAssets() {
         try {
-            Log.d("Stage1Model", "🔄 Loading Stage 1 model from assets...");
+            Log.d("Stage1Model", "Loading Stage 1 model from assets...");
             Log.d("Stage1Model", "Checking assets/models/stage1_rice_plant_classifier.tflite");
+            
+            // Check if asset exists first
+            String[] assetFiles = context.getAssets().list("models");
+            boolean modelExists = false;
+            if (assetFiles != null) {
+                for (String file : assetFiles) {
+                    Log.d("Stage1Model", "Found asset file: " + file);
+                    if (file.equals("stage1_rice_plant_classifier.tflite")) {
+                        modelExists = true;
+                    }
+                }
+            }
+            
+            if (!modelExists) {
+                Log.e("Stage1Model", "ERROR: stage1_rice_plant_classifier.tflite not found in assets/models/");
+                isModelLoaded = false;
+                return;
+            }
             
             InputStream assetInputStream = context.getAssets().open("models/stage1_rice_plant_classifier.tflite");
             File localFile = new File(context.getFilesDir(), "stage1_rice_plant_classifier.tflite");
@@ -114,18 +155,30 @@ public class Stage1ModelManager {
             FileOutputStream outputStream = new FileOutputStream(localFile);
             byte[] buffer = new byte[1024];
             int length;
+            long totalBytes = 0;
             while ((length = assetInputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
+                totalBytes += length;
             }
             outputStream.close();
             assetInputStream.close();
             
-            Log.d("Stage1Model", "✅ Model copied from assets successfully");
+            Log.d("Stage1Model", "Model copied from assets successfully");
+            Log.d("Stage1Model", "Total bytes copied: " + totalBytes);
             Log.d("Stage1Model", "Local file size: " + localFile.length() + " bytes");
+            
+            if (totalBytes == 0) {
+                Log.e("Stage1Model", "ERROR: No bytes were copied from assets!");
+                isModelLoaded = false;
+                return;
+            }
+            
             loadModelFromFile(localFile);
         } catch (Exception e) {
-            Log.e("Stage1Model", "❌ Failed to load model from assets: " + e.getMessage());
+            Log.e("Stage1Model", "Failed to load model from assets: " + e.getMessage());
             Log.e("Stage1Model", "Exception type: " + e.getClass().getSimpleName());
+            Log.e("Stage1Model", "Exception details: ");
+            e.printStackTrace();
             Log.w("Stage1Model", "No model available - Stage 1 will be bypassed");
             isModelLoaded = false;
         }
@@ -160,11 +213,12 @@ public class Stage1ModelManager {
 
     public boolean detectRicePlant(String imagePath) {
         Log.d("Stage1Model", "🔍 ANALYZING: " + imagePath);
+        Log.d("Stage1Model", "Model loaded status: " + isModelLoaded);
 
         if (!isModelLoaded) {
-            Log.e("Stage1Model", "Model not loaded - TEMPORARILY returning true for testing");
-            Log.w("Stage1Model", "WARNING: No model loaded, bypassing Stage 1 detection");
-            return true; // TEMPORARY: Return true to bypass Stage 1
+            Log.e("Stage1Model", "Model not loaded - returning false");
+            Log.w("Stage1Model", "WARNING: No model loaded, Stage 1 detection failed");
+            return false; // Return false when model is not loaded
         }
 
         try {
@@ -174,7 +228,7 @@ public class Stage1ModelManager {
                 return false;
             }
 
-            Log.d("Stage1Model", "📏 Image: " + bitmap.getWidth() + "x" + bitmap.getHeight());
+            Log.d("Stage1Model", "Image: " + bitmap.getWidth() + "x" + bitmap.getHeight());
 
             // Preprocess image with correct normalization
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
@@ -192,25 +246,13 @@ public class Stage1ModelManager {
             float nonRiceConfidence = output[0][0];  // Index 0 = non_rice_plant
             float riceConfidence = output[0][1];     // Index 1 = rice_plant
 
-            Log.d("Stage1Model", "🤖 ML Output: Rice=" + String.format("%.3f", riceConfidence) + 
+            Log.d("Stage1Model", "ML Output: Rice=" + String.format("%.3f", riceConfidence) +
                   ", NonRice=" + String.format("%.3f", nonRiceConfidence));
 
-            // Apply confidence threshold - ULTRA RELAXED for debugging
-            boolean isRicePlant = riceConfidence > nonRiceConfidence || riceConfidence > CONFIDENCE_THRESHOLD;
+            // Apply confidence threshold
+            boolean isRicePlant = riceConfidence > nonRiceConfidence && riceConfidence > CONFIDENCE_THRESHOLD;
             
-            // TEMPORARY: Accept ANY image with decent rice confidence (even 0.1)
-            if (riceConfidence > 0.1) {
-                Log.w("Stage1Model", "✅ ACCEPTING: Rice confidence > 0.1");
-                isRicePlant = true;
-            }
-            
-            // TEMPORARY: If model outputs are suspicious (both very low), assume rice plant
-            if (riceConfidence < 0.1 && nonRiceConfidence < 0.1) {
-                Log.w("Stage1Model", "⚠️ SUSPICIOUS: Both confidences low, assuming rice");
-                isRicePlant = true;
-            }
-            
-            Log.d("Stage1Model", "🎯 RESULT: " + (isRicePlant ? "RICE PLANT ✅" : "NOT RICE ❌"));
+            Log.d("Stage1Model", "RESULT: " + (isRicePlant ? "RICE PLANT ✅" : "NOT RICE"));
 
             return isRicePlant;
 
