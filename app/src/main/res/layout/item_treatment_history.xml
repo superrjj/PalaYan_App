@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:text="Oct 13, 2025"
                 android:fontFamily="@font/poppins__regular"
-                android:textColor="@color/black"
+                android:textColor="@color/green"
                 android:textStyle="bold"
                 android:textSize="14sp"/>
 

@@ -62,6 +62,7 @@ public class DiseaseScanner extends AppCompatActivity {
         Button btnFlashlight = root.btnFlashlight;
 
         stage2Manager = new Stage2ModelManager(this);
+        root.ivBack.setOnClickListener(v -> onBackPressed());
 
         // Register single-select image picker
         pickImageLauncher = registerForActivityResult(
@@ -139,9 +140,8 @@ public class DiseaseScanner extends AppCompatActivity {
             String message = isFlashOn ? "Flashlight ON" : "Flashlight OFF";
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
             
-            Log.d("DiseaseScanner", "Flashlight toggled: " + isFlashOn);
+
         } catch (Exception e) {
-            Log.e("DiseaseScanner", "Error toggling flashlight: " + e.getMessage());
             Toast.makeText(this, "Flashlight not available", Toast.LENGTH_SHORT).show();
         }
     }
@@ -166,7 +166,7 @@ public class DiseaseScanner extends AppCompatActivity {
                         this, cameraSelector, preview, imageCapture);
 
             } catch (ExecutionException | InterruptedException e) {
-                Log.e("DiseaseScanner", "Camera initialization failed", e);
+
             }
         }, ContextCompat.getMainExecutor(this));
     }
@@ -207,7 +207,7 @@ public class DiseaseScanner extends AppCompatActivity {
         new Thread(() -> {
             // Just check if ready, don't wait
             if (!stage2Manager.isModelReady()) {
-                Log.w("DiseaseScanner", "Model not ready yet, but proceeding anyway...");
+
             }
             
             // Always proceed with analysis
@@ -240,7 +240,6 @@ public class DiseaseScanner extends AppCompatActivity {
             });
 
         } catch (Exception e) {
-            Log.e("DiseaseScanner", "Error analyzing disease", e);
             runOnUiThread(() -> {
                 Toast.makeText(this, "Error analyzing disease: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });

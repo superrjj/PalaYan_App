@@ -84,9 +84,9 @@ public class CameraScanner extends AppCompatActivity {
         Button btnFlashlight = root.btnFlashlight;
 
         // Initialize Stage 1 model manager
-        Log.d("CameraScanner", "🚀 INITIALIZING Stage1ModelManager...");
         stage1Manager = new Stage1ModelManager(this);
-        Log.d("CameraScanner", "✅ Stage1ModelManager initialized");
+
+        root.ivBack.setOnClickListener(v1 -> onBackPressed());
 
         // Set up tap to focus
         previewView.setOnTouchListener((v, event) -> {
@@ -94,6 +94,8 @@ public class CameraScanner extends AppCompatActivity {
                 focusOnTap(event.getX(), event.getY());
             }
             return true;
+
+
         });
 
         // Register single-select image picker
@@ -170,10 +172,8 @@ public class CameraScanner extends AppCompatActivity {
             
             String message = isFlashOn ? "Flashlight ON" : "Flashlight OFF";
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-            
-            Log.d("CameraScanner", "Flashlight toggled: " + isFlashOn);
+
         } catch (Exception e) {
-            Log.e("CameraScanner", "Error toggling flashlight: " + e.getMessage());
             Toast.makeText(this, "Flashlight not available", Toast.LENGTH_SHORT).show();
         }
     }
@@ -204,19 +204,16 @@ public class CameraScanner extends AppCompatActivity {
             Toast.makeText(this, "Focusing...", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
-            Log.e("CameraScanner", "Error focusing: " + e.getMessage());
         }
     }
 
     private void takePhoto() {
-        Log.d("CameraScanner", "=== TAKING PHOTO ===");
         isCapturing = true;
 
         File cachePath = new File(getCacheDir(), "images");
         cachePath.mkdirs();
         File file = new File(cachePath, "captured.jpg");
 
-        Log.d("CameraScanner", "Photo will be saved to: " + file.getAbsolutePath());
 
         ImageCapture.OutputFileOptions outputOptions =
                 new ImageCapture.OutputFileOptions.Builder(file).build();
@@ -226,8 +223,6 @@ public class CameraScanner extends AppCompatActivity {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         isCapturing = false;
-                        Log.d("CameraScanner", "Photo saved successfully");
-                        Log.d("CameraScanner", "File size: " + file.length() + " bytes");
 
                         // Check if it's a rice plant first
                         checkRicePlantAndProceed(file.getAbsolutePath());
@@ -236,7 +231,6 @@ public class CameraScanner extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
                         isCapturing = false;
-                        Log.e("CameraScanner", "Photo capture failed: " + exception.getMessage());
                         Toast.makeText(CameraScanner.this,
                                 "Capture failed: " + exception.getMessage(),
                                 Toast.LENGTH_SHORT).show();
@@ -251,12 +245,10 @@ public class CameraScanner extends AppCompatActivity {
 
         new Thread(() -> {
             try {
-                Log.d("CameraScanner", "=== STARTING RICE PLANT ANALYSIS ===");
-                Log.d("CameraScanner", "Image path: " + imagePath);
 
                 // Just check if ready, don't wait
                 if (!stage1Manager.isModelReady()) {
-                    Log.w("CameraScanner", "Model not ready yet, but proceeding anyway...");
+
                 }
 
                 // Run detection with try-catch to prevent crash
@@ -265,36 +257,29 @@ public class CameraScanner extends AppCompatActivity {
                     isRicePlant = stage1Manager.detectRicePlant(imagePath);
                     // Get detailed prediction for debugging
                     String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
-                    Log.d("CameraScanner", "Detailed prediction: " + detailedPrediction);
                 } catch (Exception e) {
-                    Log.e("CameraScanner", "Stage 1 detection failed: " + e.getMessage());
                     e.printStackTrace();
                     // Bypass Stage 1 if model crashes - proceed to disease detection
                     isRicePlant = true;
-                    Log.w("CameraScanner", "Bypassing Stage 1 due to error - proceeding to Stage 2");
                 }
 
                 final boolean finalIsRicePlant = isRicePlant;
                 runOnUiThread(() -> {
-                    Log.d("CameraScanner", "=== ANALYSIS RESULTS ===");
-                    Log.d("CameraScanner", "Is Rice Plant detected: " + finalIsRicePlant);
+
 
                     if (finalIsRicePlant) {
                         // Rice plant detected - go to DiseaseScanner for disease analysis
-                        Log.d("CameraScanner", "Rice plant detected - proceeding to DiseaseScanner...");
                         Intent intent = new Intent(CameraScanner.this, DiseaseScanner.class);
                         startActivity(intent);
                         finish();
                     } else {
                         // NonRice detected - show retry message with more details
-                        Log.d("CameraScanner", "NonRice detected - showing retry message");
                         String message = "Not a rice plant detected. Please try again!";
                         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                     }
                 });
 
             } catch (Exception e) {
-                Log.e("CameraScanner", "Analysis failed: " + e.getMessage());
                 e.printStackTrace();
                 runOnUiThread(() -> {
                     Toast.makeText(this, "Analysis failed. Please try again.", Toast.LENGTH_SHORT).show();
@@ -329,7 +314,7 @@ public class CameraScanner extends AppCompatActivity {
                         this, cameraSelector, preview, imageCapture, imageAnalysis);
 
             } catch (ExecutionException | InterruptedException e) {
-                Log.e("CameraScanner", "Camera initialization failed", e);
+
             }
         }, ContextCompat.getMainExecutor(this));
     }
