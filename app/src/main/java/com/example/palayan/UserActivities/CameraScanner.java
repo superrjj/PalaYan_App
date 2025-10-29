@@ -254,8 +254,6 @@ public class CameraScanner extends AppCompatActivity {
                 // Run detection with try-catch to prevent crash
                 boolean isRicePlant = false;
                 try {
-                    // DEBUG: Test the image first
-                    stage1Manager.debugTestImage(imagePath);
                     
                     isRicePlant = stage1Manager.detectRicePlant(imagePath);
                     // Get detailed prediction for debugging
