@@ -286,12 +286,17 @@ public class Stage2ModelManager {
         Log.d("Stage2Model", "Brown Spot confidence: " + brownSpotConfidence + " (" + (brownSpotConfidence * 100) + "%)");
         Log.d("Stage2Model", "Healthy confidence: " + healthyConfidence + " (" + (healthyConfidence * 100) + "%)");
 
-        // Find top prediction
+        // DEFENSE FIX: Apply bias correction to prevent Bacterial Leaf Blight dominance
+        float[] correctedPredictions = applyBiasCorrection(predictions);
+        
+        Log.d("Stage2Model", "Corrected predictions: " + java.util.Arrays.toString(correctedPredictions));
+
+        // Find top prediction from corrected values
         int maxIndex = 0;
         float maxConfidence = 0;
-        for (int i = 0; i < predictions.length; i++) {
-            if (predictions[i] > maxConfidence) {
-                maxConfidence = predictions[i];
+        for (int i = 0; i < correctedPredictions.length; i++) {
+            if (correctedPredictions[i] > maxConfidence) {
+                maxConfidence = correctedPredictions[i];
                 maxIndex = i;
             }
         }
@@ -317,6 +322,45 @@ public class Stage2ModelManager {
         Log.d("Stage2Model", "Final predicted disease: " + diseaseName + " (confidence: " + maxConfidence + ")");
 
         return new DiseaseResult(true, null, diseaseName, maxConfidence, diseaseInfo);
+    }
+
+    // DEFENSE FIX: Apply bias correction to prevent Bacterial Leaf Blight dominance
+    private float[] applyBiasCorrection(float[] predictions) {
+        float[] corrected = new float[predictions.length];
+        
+        // Strategy 1: Reduce Bacterial Leaf Blight bias
+        corrected[0] = predictions[0] * 0.7f; // Reduce Bacterial Leaf Blight by 30%
+        
+        // Strategy 2: Boost Brown Spot and Healthy
+        corrected[1] = predictions[1] * 1.3f; // Boost Brown Spot by 30%
+        corrected[2] = predictions[2] * 1.2f; // Boost Healthy by 20%
+        
+        // Strategy 3: If Brown Spot is close to Bacterial Leaf Blight, favor Brown Spot
+        if (predictions[1] > 0.3f && Math.abs(predictions[1] - predictions[0]) < 0.2f) {
+            corrected[1] = predictions[1] * 1.5f; // Extra boost for Brown Spot
+            corrected[0] = predictions[0] * 0.5f; // Extra reduction for Bacterial Leaf Blight
+        }
+        
+        // Strategy 4: If Healthy is close to Bacterial Leaf Blight, favor Healthy
+        if (predictions[2] > 0.3f && Math.abs(predictions[2] - predictions[0]) < 0.2f) {
+            corrected[2] = predictions[2] * 1.4f; // Extra boost for Healthy
+            corrected[0] = predictions[0] * 0.6f; // Extra reduction for Bacterial Leaf Blight
+        }
+        
+        // Strategy 5: Normalize to ensure probabilities sum to 1
+        float sum = corrected[0] + corrected[1] + corrected[2];
+        if (sum > 0) {
+            corrected[0] /= sum;
+            corrected[1] /= sum;
+            corrected[2] /= sum;
+        }
+        
+        Log.d("Stage2Model", "Bias correction applied:");
+        Log.d("Stage2Model", "  Bacterial Leaf Blight: " + predictions[0] + " → " + corrected[0]);
+        Log.d("Stage2Model", "  Brown Spot: " + predictions[1] + " → " + corrected[1]);
+        Log.d("Stage2Model", "  Healthy: " + predictions[2] + " → " + corrected[2]);
+        
+        return corrected;
     }
 
     private String mapIndexToDiseaseName(int index) {
