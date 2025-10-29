@@ -576,27 +576,92 @@ public class Stage1ModelManager {
         try {
             Log.d("Stage1Model", "🧪 Testing model with dummy data...");
             
-            // Create a simple test bitmap (all green)
-            Bitmap testBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Bitmap.Config.ARGB_8888);
-            testBitmap.eraseColor(0xFF00FF00); // Green color
+            // Test 1: All green bitmap (should be rice)
+            Bitmap greenBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Bitmap.Config.ARGB_8888);
+            greenBitmap.eraseColor(0xFF00FF00); // Green color
             
-            ByteBuffer testInput = preprocessImageCorrectly(testBitmap);
-            float[][] testOutput = new float[1][2];
+            ByteBuffer greenInput = preprocessImageCorrectly(greenBitmap);
+            float[][] greenOutput = new float[1][2];
+            tfliteInterpreter.run(greenInput, greenOutput);
             
-            tfliteInterpreter.run(testInput, testOutput);
+            Log.d("Stage1Model", "🧪 GREEN Test: Rice=" + greenOutput[0][1] + ", NonRice=" + greenOutput[0][0]);
             
-            Log.d("Stage1Model", "🧪 Test output: Rice=" + testOutput[0][1] + ", NonRice=" + testOutput[0][0]);
-            Log.d("Stage1Model", "🧪 Test sum: " + (testOutput[0][0] + testOutput[0][1]));
+            // Test 2: All red bitmap (should be non-rice)
+            Bitmap redBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Bitmap.Config.ARGB_8888);
+            redBitmap.eraseColor(0xFFFF0000); // Red color
             
-            // Show test result in Toast
+            ByteBuffer redInput = preprocessImageCorrectly(redBitmap);
+            float[][] redOutput = new float[1][2];
+            tfliteInterpreter.run(redInput, redOutput);
+            
+            Log.d("Stage1Model", "🧪 RED Test: Rice=" + redOutput[0][1] + ", NonRice=" + redOutput[0][0]);
+            
+            // Test 3: All white bitmap
+            Bitmap whiteBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Bitmap.Config.ARGB_8888);
+            whiteBitmap.eraseColor(0xFFFFFFFF); // White color
+            
+            ByteBuffer whiteInput = preprocessImageCorrectly(whiteBitmap);
+            float[][] whiteOutput = new float[1][2];
+            tfliteInterpreter.run(whiteInput, whiteOutput);
+            
+            Log.d("Stage1Model", "🧪 WHITE Test: Rice=" + whiteOutput[0][1] + ", NonRice=" + whiteOutput[0][0]);
+            
+            // Show comprehensive test results
             android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
             mainHandler.post(() -> {
-                String testMessage = String.format("🧪 Test: Rice=%.2f, NonRice=%.2f", testOutput[0][1], testOutput[0][0]);
+                String testMessage = String.format("🧪 GREEN: R%.2f/N%.2f | RED: R%.2f/N%.2f | WHITE: R%.2f/N%.2f", 
+                    greenOutput[0][1], greenOutput[0][0],
+                    redOutput[0][1], redOutput[0][0], 
+                    whiteOutput[0][1], whiteOutput[0][0]);
                 android.widget.Toast.makeText(context, testMessage, android.widget.Toast.LENGTH_LONG).show();
             });
             
         } catch (Exception e) {
             Log.e("Stage1Model", "🧪 Test failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // DEBUG METHOD: Test with actual image
+    public void debugTestImage(String imagePath) {
+        if (!isModelLoaded) {
+            Log.e("Stage1Model", "Model not loaded for debug test");
+            return;
+        }
+        
+        try {
+            Log.d("Stage1Model", "🔍 DEBUG TESTING: " + imagePath);
+            
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            if (bitmap == null) {
+                Log.e("Stage1Model", "Failed to load image for debug test");
+                return;
+            }
+            
+            Log.d("Stage1Model", "Debug image size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
+            
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
+            ByteBuffer inputBuffer = preprocessImageCorrectly(resizedBitmap);
+            float[][] output = new float[1][2];
+            
+            tfliteInterpreter.run(inputBuffer, output);
+            
+            float nonRiceConfidence = output[0][0];
+            float riceConfidence = output[0][1];
+            
+            Log.d("Stage1Model", "🔍 DEBUG OUTPUT: Rice=" + riceConfidence + ", NonRice=" + nonRiceConfidence);
+            Log.d("Stage1Model", "🔍 DEBUG RAW: [" + output[0][0] + ", " + output[0][1] + "]");
+            Log.d("Stage1Model", "🔍 DEBUG SUM: " + (output[0][0] + output[0][1]));
+            
+            // Show debug result
+            android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+            mainHandler.post(() -> {
+                String debugMessage = String.format("🔍 DEBUG: Rice=%.3f, NonRice=%.3f", riceConfidence, nonRiceConfidence);
+                android.widget.Toast.makeText(context, debugMessage, android.widget.Toast.LENGTH_LONG).show();
+            });
+            
+        } catch (Exception e) {
+            Log.e("Stage1Model", "Debug test failed: " + e.getMessage());
             e.printStackTrace();
         }
     }
