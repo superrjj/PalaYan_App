@@ -254,8 +254,13 @@ public class Stage1ModelManager {
             Log.d("Stage1Model", "ML Output: Rice=" + String.format("%.3f", riceConfidence) +
                   ", NonRice=" + String.format("%.3f", nonRiceConfidence));
 
-            // Apply confidence threshold
-            boolean isRicePlant = riceConfidence > nonRiceConfidence && riceConfidence > CONFIDENCE_THRESHOLD;
+            // Apply STRICT confidence threshold for defense
+            boolean isRicePlant = riceConfidence > nonRiceConfidence && riceConfidence > 0.7f; // Very high threshold
+            
+            // Additional validation: Rice confidence must be significantly higher than non-rice
+            if (isRicePlant && (riceConfidence - nonRiceConfidence) < 0.3f) {
+                isRicePlant = false; // Too close, reject
+            }
             
             Log.d("Stage1Model", "RESULT: " + (isRicePlant ? "RICE PLANT ✅" : "NOT RICE"));
             
