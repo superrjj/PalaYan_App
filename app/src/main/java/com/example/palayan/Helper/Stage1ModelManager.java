@@ -44,6 +44,9 @@ public class Stage1ModelManager {
         loadStage1Labels();
         Log.d("Stage1Model", "=== STAGE 1 MODEL MANAGER INITIALIZATION COMPLETE ===");
         Log.d("Stage1Model", "Final model loaded status: " + isModelLoaded);
+        
+        // Show Toast for debugging
+        android.widget.Toast.makeText(context, "Stage1 Model Status: " + (isModelLoaded ? "LOADED ✅" : "FAILED ❌"), android.widget.Toast.LENGTH_LONG).show();
     }
 
     private void loadStage1Labels() {
@@ -218,6 +221,8 @@ public class Stage1ModelManager {
         if (!isModelLoaded) {
             Log.e("Stage1Model", "Model not loaded - returning false");
             Log.w("Stage1Model", "WARNING: No model loaded, Stage 1 detection failed");
+            // Show Toast for debugging
+            android.widget.Toast.makeText(context, "❌ Stage1 Model NOT LOADED!", android.widget.Toast.LENGTH_LONG).show();
             return false; // Return false when model is not loaded
         }
 
@@ -253,12 +258,20 @@ public class Stage1ModelManager {
             boolean isRicePlant = riceConfidence > nonRiceConfidence && riceConfidence > CONFIDENCE_THRESHOLD;
             
             Log.d("Stage1Model", "RESULT: " + (isRicePlant ? "RICE PLANT ✅" : "NOT RICE"));
+            
+            // Show Toast with detailed results for debugging
+            String resultMessage = String.format("Rice: %.1f%% | NonRice: %.1f%% | %s", 
+                riceConfidence * 100, nonRiceConfidence * 100, 
+                isRicePlant ? "✅ RICE PLANT" : "❌ NOT RICE");
+            android.widget.Toast.makeText(context, resultMessage, android.widget.Toast.LENGTH_LONG).show();
 
             return isRicePlant;
 
         } catch (Exception e) {
             Log.e("Stage1Model", "Analysis failed: " + e.getMessage());
             e.printStackTrace();
+            // Show Toast for debugging
+            android.widget.Toast.makeText(context, "❌ Analysis Error: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
             return false;
         }
     }
