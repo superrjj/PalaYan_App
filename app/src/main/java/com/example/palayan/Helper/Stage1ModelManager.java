@@ -277,7 +277,7 @@ public class Stage1ModelManager {
             Log.d("Stage1Model", "Raw output array: [" + output[0][0] + ", " + output[0][1] + "]");
             Log.d("Stage1Model", "Sum of probabilities: " + (output[0][0] + output[0][1]));
 
-            // DEFENSE EMERGENCY: Multiple detection strategies
+            // BALANCED DEFENSE: Non-biased detection strategies
             boolean isRicePlant = false;
             
             // Check if model outputs are valid (not NaN or extreme values)
@@ -286,34 +286,38 @@ public class Stage1ModelManager {
                 Log.e("Stage1Model", "Invalid model outputs detected!");
                 isRicePlant = false;
             } else {
-                // STRATEGY 1: Simple comparison
+                // BALANCED STRATEGY 1: Simple comparison (no color bias)
                 if (riceConfidence > nonRiceConfidence) {
                     isRicePlant = true;
-                    Log.d("Stage1Model", "✅ STRATEGY 1: Rice > NonRice");
+                    Log.d("Stage1Model", "✅ BALANCED 1: Rice > NonRice");
                 }
                 
-                // STRATEGY 2: Minimum threshold
-                if (riceConfidence > 0.2f) {
+                // BALANCED STRATEGY 2: Moderate threshold (not too low)
+                if (riceConfidence > 0.4f) {
                     isRicePlant = true;
-                    Log.d("Stage1Model", "✅ STRATEGY 2: Rice > 0.2");
+                    Log.d("Stage1Model", "✅ BALANCED 2: Rice > 0.4");
                 }
                 
-                // STRATEGY 3: Difference threshold
-                if ((riceConfidence - nonRiceConfidence) > 0.1f) {
+                // BALANCED STRATEGY 3: Significant difference (not just slight)
+                if ((riceConfidence - nonRiceConfidence) > 0.2f) {
                     isRicePlant = true;
-                    Log.d("Stage1Model", "✅ STRATEGY 3: Difference > 0.1");
+                    Log.d("Stage1Model", "✅ BALANCED 3: Difference > 0.2");
                 }
                 
-                // STRATEGY 4: If both are low, assume rice (model uncertainty)
+                // BALANCED STRATEGY 4: If model is uncertain, use image analysis
                 if (riceConfidence < 0.1f && nonRiceConfidence < 0.1f) {
-                    isRicePlant = true;
-                    Log.d("Stage1Model", "✅ STRATEGY 4: Both low, assuming rice");
+                    // Check if image has plant-like characteristics (not just green bias)
+                    boolean hasPlantCharacteristics = checkPlantCharacteristics(bitmap);
+                    if (hasPlantCharacteristics) {
+                        isRicePlant = true;
+                        Log.d("Stage1Model", "✅ BALANCED 4: Plant characteristics detected");
+                    }
                 }
                 
-                // STRATEGY 5: DEFENSE EMERGENCY - if rice is not zero, accept it
-                if (riceConfidence > 0.01f) {
+                // BALANCED STRATEGY 5: DEFENSE - only if reasonable confidence
+                if (riceConfidence > 0.3f && riceConfidence > nonRiceConfidence) {
                     isRicePlant = true;
-                    Log.d("Stage1Model", "✅ STRATEGY 5: DEFENSE EMERGENCY - Rice > 0.01");
+                    Log.d("Stage1Model", "✅ BALANCED 5: Reasonable confidence");
                 }
             }
             
@@ -654,6 +658,74 @@ public class Stage1ModelManager {
         } catch (Exception e) {
             Log.e("Stage1Model", "🧪 Test failed: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    // BALANCED plant characteristics check (not green-biased)
+    private boolean checkPlantCharacteristics(Bitmap bitmap) {
+        try {
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            int totalPixels = width * height;
+            int[] pixels = new int[totalPixels];
+            bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+            
+            int greenCount = 0;
+            int brownCount = 0;
+            int yellowCount = 0;
+            int textureVariation = 0;
+            
+            for (int i = 0; i < pixels.length; i++) {
+                int pixel = pixels[i];
+                int r = (pixel >> 16) & 0xff;
+                int g = (pixel >> 8) & 0xff;
+                int b = pixel & 0xff;
+                
+                // Count different plant colors (not just green)
+                if (g > r && g > b && g > 60) {
+                    greenCount++; // Green (leaves)
+                } else if (r > 100 && g > 80 && b < 100 && r > g) {
+                    brownCount++; // Brown (stems, soil)
+                } else if (r > 150 && g > 150 && b < 120) {
+                    yellowCount++; // Yellow (flowers, grains)
+                }
+                
+                // Check texture variation (plants have more variation than solid objects)
+                if (i > 0) {
+                    int prevPixel = pixels[i-1];
+                    int prevR = (prevPixel >> 16) & 0xff;
+                    int prevG = (prevPixel >> 8) & 0xff;
+                    int prevB = prevPixel & 0xff;
+                    
+                    int colorDiff = Math.abs(r - prevR) + Math.abs(g - prevG) + Math.abs(b - prevB);
+                    if (colorDiff > 30) {
+                        textureVariation++;
+                    }
+                }
+            }
+            
+            double greenRatio = (double) greenCount / totalPixels;
+            double brownRatio = (double) brownCount / totalPixels;
+            double yellowRatio = (double) yellowCount / totalPixels;
+            double textureRatio = (double) textureVariation / totalPixels;
+            
+            Log.d("Stage1Model", "Plant analysis - Green: " + String.format("%.1f", greenRatio * 100) + 
+                  "%, Brown: " + String.format("%.1f", brownRatio * 100) + 
+                  "%, Yellow: " + String.format("%.1f", yellowRatio * 100) + 
+                  "%, Texture: " + String.format("%.1f", textureRatio * 100) + "%");
+            
+            // BALANCED criteria: Need some plant colors AND texture variation
+            boolean hasPlantColors = (greenRatio > 0.05) || (brownRatio > 0.05) || (yellowRatio > 0.05);
+            boolean hasTexture = textureRatio > 0.1; // Plants have more texture variation
+            
+            boolean isPlant = hasPlantColors && hasTexture;
+            Log.d("Stage1Model", "Plant characteristics: Colors=" + hasPlantColors + ", Texture=" + hasTexture + ", Result=" + isPlant);
+            
+            return isPlant;
+            
+        } catch (Exception e) {
+            Log.e("Stage1Model", "Plant characteristics check failed: " + e.getMessage());
+            return false;
         }
     }
 
