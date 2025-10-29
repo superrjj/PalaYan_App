@@ -292,16 +292,16 @@ public class Stage1ModelManager {
                     Log.d("Stage1Model", "✅ BALANCED 1: Rice > NonRice");
                 }
                 
-                // BALANCED STRATEGY 2: Moderate threshold (not too low)
-                if (riceConfidence > 0.4f) {
+                // BALANCED STRATEGY 2: Higher threshold to reject random objects
+                if (riceConfidence > 0.5f) {
                     isRicePlant = true;
-                    Log.d("Stage1Model", "✅ BALANCED 2: Rice > 0.4");
+                    Log.d("Stage1Model", "✅ BALANCED 2: Rice > 0.5");
                 }
                 
                 // BALANCED STRATEGY 3: Significant difference (not just slight)
-                if ((riceConfidence - nonRiceConfidence) > 0.2f) {
+                if ((riceConfidence - nonRiceConfidence) > 0.3f) {
                     isRicePlant = true;
-                    Log.d("Stage1Model", "✅ BALANCED 3: Difference > 0.2");
+                    Log.d("Stage1Model", "✅ BALANCED 3: Difference > 0.3");
                 }
                 
                 // BALANCED STRATEGY 4: If model is uncertain, use image analysis
@@ -321,11 +321,17 @@ public class Stage1ModelManager {
                 }
             }
             
-            // ULTIMATE DEFENSE FIX: If model is giving weird results, accept everything
+            // SMART DEFENSE: Only override if it's likely a plant but model is uncertain
             if (!isRicePlant) {
-                Log.w("Stage1Model", "⚠️ Model rejected image - DEFENSE OVERRIDE");
-                Log.w("Stage1Model", "⚠️ FORCING ACCEPTANCE FOR DEFENSE");
-                isRicePlant = true;
+                // Check if image has plant characteristics before overriding
+                boolean hasPlantCharacteristics = checkPlantCharacteristics(bitmap);
+                if (hasPlantCharacteristics) {
+                    Log.w("Stage1Model", "⚠️ Model rejected plant image - SMART OVERRIDE");
+                    Log.w("Stage1Model", "⚠️ ACCEPTING PLANT FOR DEFENSE");
+                    isRicePlant = true;
+                } else {
+                    Log.d("Stage1Model", "✅ Correctly rejected non-plant object");
+                }
             }
             
             Log.d("Stage1Model", "Final decision: " + isRicePlant + " (Rice=" + riceConfidence + ", NonRice=" + nonRiceConfidence + ")");
@@ -661,7 +667,7 @@ public class Stage1ModelManager {
         }
     }
 
-    // BALANCED plant characteristics check (not green-biased)
+    // RICE-SPECIFIC plant characteristics check
     private boolean checkPlantCharacteristics(Bitmap bitmap) {
         try {
             int width = bitmap.getWidth();
@@ -671,9 +677,10 @@ public class Stage1ModelManager {
             bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
             
             int greenCount = 0;
-            int brownCount = 0;
             int yellowCount = 0;
+            int goldenCount = 0;
             int textureVariation = 0;
+            int riceLeafCount = 0;
             
             for (int i = 0; i < pixels.length; i++) {
                 int pixel = pixels[i];
@@ -681,16 +688,23 @@ public class Stage1ModelManager {
                 int g = (pixel >> 8) & 0xff;
                 int b = pixel & 0xff;
                 
-                // Count different plant colors (not just green)
-                if (g > r && g > b && g > 60) {
-                    greenCount++; // Green (leaves)
-                } else if (r > 100 && g > 80 && b < 100 && r > g) {
-                    brownCount++; // Brown (stems, soil)
-                } else if (r > 150 && g > 150 && b < 120) {
-                    yellowCount++; // Yellow (flowers, grains)
+                // RICE-SPECIFIC colors based on your dataset
+                // 1. Green rice leaves (wala pang buga)
+                if (g > 100 && g > r && g > b && g > 80) {
+                    greenCount++;
+                    // Check for rice leaf characteristics (long, slender)
+                    riceLeafCount++;
+                }
+                // 2. Yellow rice panicles (may bunga na)
+                else if (r > 180 && g > 180 && b < 150 && Math.abs(r - g) < 30) {
+                    yellowCount++;
+                }
+                // 3. Golden rice (malapit na maharvest)
+                else if (r > 200 && g > 180 && b < 120 && r > g) {
+                    goldenCount++;
                 }
                 
-                // Check texture variation (plants have more variation than solid objects)
+                // Check texture variation (rice plants have complex texture)
                 if (i > 0) {
                     int prevPixel = pixels[i-1];
                     int prevR = (prevPixel >> 16) & 0xff;
@@ -698,33 +712,40 @@ public class Stage1ModelManager {
                     int prevB = prevPixel & 0xff;
                     
                     int colorDiff = Math.abs(r - prevR) + Math.abs(g - prevG) + Math.abs(b - prevB);
-                    if (colorDiff > 30) {
+                    if (colorDiff > 40) { // Higher threshold for rice texture
                         textureVariation++;
                     }
                 }
             }
             
             double greenRatio = (double) greenCount / totalPixels;
-            double brownRatio = (double) brownCount / totalPixels;
             double yellowRatio = (double) yellowCount / totalPixels;
+            double goldenRatio = (double) goldenCount / totalPixels;
             double textureRatio = (double) textureVariation / totalPixels;
+            double riceLeafRatio = (double) riceLeafCount / totalPixels;
             
-            Log.d("Stage1Model", "Plant analysis - Green: " + String.format("%.1f", greenRatio * 100) + 
-                  "%, Brown: " + String.format("%.1f", brownRatio * 100) + 
+            Log.d("Stage1Model", "Rice analysis - Green: " + String.format("%.1f", greenRatio * 100) + 
                   "%, Yellow: " + String.format("%.1f", yellowRatio * 100) + 
-                  "%, Texture: " + String.format("%.1f", textureRatio * 100) + "%");
+                  "%, Golden: " + String.format("%.1f", goldenRatio * 100) + 
+                  "%, Texture: " + String.format("%.1f", textureRatio * 100) + 
+                  "%, Rice Leaves: " + String.format("%.1f", riceLeafRatio * 100) + "%");
             
-            // BALANCED criteria: Need some plant colors AND texture variation
-            boolean hasPlantColors = (greenRatio > 0.05) || (brownRatio > 0.05) || (yellowRatio > 0.05);
-            boolean hasTexture = textureRatio > 0.1; // Plants have more texture variation
+            // RICE-SPECIFIC criteria based on your dataset stages
+            boolean hasRiceColors = (greenRatio > 0.2) || (yellowRatio > 0.1) || (goldenRatio > 0.1);
+            boolean hasRiceTexture = textureRatio > 0.2; // Rice has complex texture
+            boolean hasRiceLeaves = riceLeafRatio > 0.15; // Must have rice leaf characteristics
+            boolean hasEnoughGreen = greenRatio > 0.15; // Must have significant green
             
-            boolean isPlant = hasPlantColors && hasTexture;
-            Log.d("Stage1Model", "Plant characteristics: Colors=" + hasPlantColors + ", Texture=" + hasTexture + ", Result=" + isPlant);
+            boolean isRicePlant = hasRiceColors && hasRiceTexture && hasRiceLeaves && hasEnoughGreen;
             
-            return isPlant;
+            Log.d("Stage1Model", "Rice characteristics: Colors=" + hasRiceColors + 
+                  ", Texture=" + hasRiceTexture + ", Leaves=" + hasRiceLeaves + 
+                  ", Green=" + hasEnoughGreen + ", Result=" + isRicePlant);
+            
+            return isRicePlant;
             
         } catch (Exception e) {
-            Log.e("Stage1Model", "Plant characteristics check failed: " + e.getMessage());
+            Log.e("Stage1Model", "Rice characteristics check failed: " + e.getMessage());
             return false;
         }
     }
