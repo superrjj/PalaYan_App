@@ -83,22 +83,20 @@ public class CameraScanner extends AppCompatActivity {
         Button btnGallery = root.btnGallery;
         Button btnFlashlight = root.btnFlashlight;
 
-        // Initialize Stage 1 model manager
+// Initialize Stage 1 model manager
+        Log.d("CameraScanner", "🚀 INITIALIZING Stage1ModelManager...");
         stage1Manager = new Stage1ModelManager(this);
+        Log.d("CameraScanner", "✅ Stage1ModelManager initialized");
 
-        root.ivBack.setOnClickListener(v1 -> onBackPressed());
-
-        // Set up tap to focus
+// Set up tap to focus
         previewView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 focusOnTap(event.getX(), event.getY());
             }
             return true;
-
-
         });
 
-        // Register single-select image picker
+// Register single-select image picker
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
@@ -117,7 +115,7 @@ public class CameraScanner extends AppCompatActivity {
                             }
                         }
 
-                        // Check if it's a rice plant first
+// Check if it's a rice plant first
                         checkRicePlantAndProceed(file.getAbsolutePath());
                     } catch (Exception e) {
                         Toast.makeText(CameraScanner.this, "Failed to use selected image", Toast.LENGTH_SHORT).show();
@@ -125,7 +123,7 @@ public class CameraScanner extends AppCompatActivity {
                 }
         );
 
-        // Camera permission
+// Camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -143,17 +141,17 @@ public class CameraScanner extends AppCompatActivity {
         // Flashlight button
         btnFlashlight.setOnClickListener(v -> toggleFlashlight());
 
-        // Gallery button - Fixed permission handling
+// Gallery button - Fixed permission handling
         btnGallery.setOnClickListener(v -> {
             String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                     ? Manifest.permission.READ_MEDIA_IMAGES
                     : Manifest.permission.READ_EXTERNAL_STORAGE;
 
             if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
-                // Permission already granted, launch gallery
+// Permission already granted, launch gallery
                 pickImageLauncher.launch("image/*");
             } else {
-                // Request permission first
+// Request permission first
                 ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
             }
         });
@@ -169,11 +167,13 @@ public class CameraScanner extends AppCompatActivity {
         try {
             isFlashOn = !isFlashOn;
             camera.getCameraControl().enableTorch(isFlashOn);
-            
+
             String message = isFlashOn ? "Flashlight ON" : "Flashlight OFF";
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
+            Log.d("CameraScanner", "Flashlight toggled: " + isFlashOn);
         } catch (Exception e) {
+            Log.e("CameraScanner", "Error toggling flashlight: " + e.getMessage());
             Toast.makeText(this, "Flashlight not available", Toast.LENGTH_SHORT).show();
         }
     }
@@ -183,37 +183,40 @@ public class CameraScanner extends AppCompatActivity {
         if (camera == null) return;
 
         try {
-            // Create metering point factory
+// Create metering point factory
             MeteringPointFactory factory = new SurfaceOrientedMeteringPointFactory(
                     previewView.getWidth(), previewView.getHeight());
 
-            // Create metering point
+// Create metering point
             MeteringPoint point = factory.createPoint(x, y);
 
-            // Create focus action
+// Create focus action
             FocusMeteringAction action = new FocusMeteringAction.Builder(point)
                     .addPoint(point, FocusMeteringAction.FLAG_AF)
                     .addPoint(point, FocusMeteringAction.FLAG_AE)
                     .addPoint(point, FocusMeteringAction.FLAG_AWB)
                     .build();
 
-            // Start focus
+// Start focus
             camera.getCameraControl().startFocusAndMetering(action);
 
-            // Show focus indicator
+// Show focus indicator
             Toast.makeText(this, "Focusing...", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
+            Log.e("CameraScanner", "Error focusing: " + e.getMessage());
         }
     }
 
     private void takePhoto() {
+        Log.d("CameraScanner", "=== TAKING PHOTO ===");
         isCapturing = true;
 
         File cachePath = new File(getCacheDir(), "images");
         cachePath.mkdirs();
         File file = new File(cachePath, "captured.jpg");
 
+        Log.d("CameraScanner", "Photo will be saved to: " + file.getAbsolutePath());
 
         ImageCapture.OutputFileOptions outputOptions =
                 new ImageCapture.OutputFileOptions.Builder(file).build();
@@ -223,14 +226,17 @@ public class CameraScanner extends AppCompatActivity {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         isCapturing = false;
+                        Log.d("CameraScanner", "Photo saved successfully");
+                        Log.d("CameraScanner", "File size: " + file.length() + " bytes");
 
-                        // Check if it's a rice plant first
+// Check if it's a rice plant first
                         checkRicePlantAndProceed(file.getAbsolutePath());
                     }
 
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
                         isCapturing = false;
+                        Log.e("CameraScanner", "Photo capture failed: " + exception.getMessage());
                         Toast.makeText(CameraScanner.this,
                                 "Capture failed: " + exception.getMessage(),
                                 Toast.LENGTH_SHORT).show();
@@ -238,56 +244,73 @@ public class CameraScanner extends AppCompatActivity {
                 });
     }
 
-    // Check rice plant and proceed - OPTIMIZED
+    // Check rice plant and proceed - IMPROVED
     private void checkRicePlantAndProceed(String imagePath) {
-        // Show simple toast instead of loading dialog
-        Toast.makeText(this, "🔍 Starting rice plant analysis...", Toast.LENGTH_SHORT).show();
+// Show simple toast instead of loading dialog
+        Toast.makeText(this, "Analyzing rice plant...", Toast.LENGTH_SHORT).show();
 
         new Thread(() -> {
             try {
+                Log.d("CameraScanner", "=== STARTING IMPROVED RICE PLANT ANALYSIS ===");
+                Log.d("CameraScanner", "Image path: " + imagePath);
 
-                // Just check if ready, don't wait
+// Wait for model to be ready
+                Log.d("CameraScanner", "⏳ WAITING for model to be ready...");
+                int attempts = 0;
+                while (!stage1Manager.isModelReady() && attempts < 30) {
+                    Log.d("CameraScanner", "⏳ Attempt " + attempts + " - Model not ready yet...");
+                    Thread.sleep(1000);
+                    attempts++;
+                }
+
                 if (!stage1Manager.isModelReady()) {
-
-                }
-
-                // Run detection with try-catch to prevent crash
-                boolean isRicePlant = false;
-                try {
-                    
-                    isRicePlant = stage1Manager.detectRicePlant(imagePath);
-                    // Get detailed prediction for debugging
-                    String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    // If model crashes, DON'T proceed - show error instead
-                    isRicePlant = false;
-                    // Move Toast to UI thread
+                    Log.e("CameraScanner", "❌ MODEL NOT READY after 30 attempts!");
                     runOnUiThread(() -> {
-                        Toast.makeText(CameraScanner.this, "❌ Detection Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
                     });
+                    return;
                 }
 
-                final boolean finalIsRicePlant = isRicePlant;
+                Log.d("CameraScanner", "✅ MODEL IS READY! Proceeding to detection...");
+
+// Run improved detection with try-catch to prevent crash
+                final boolean[] isRicePlant = {false};
+                try {
+                    isRicePlant[0] = stage1Manager.detectRicePlant(imagePath);
+// Get detailed prediction for debugging
+                    String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
+                    Log.d("CameraScanner", "Detailed prediction: " + detailedPrediction);
+                } catch (Exception e) {
+                    Log.e("CameraScanner", "Stage 1 detection failed: " + e.getMessage());
+                    e.printStackTrace();
+// Bypass Stage 1 if model crashes - proceed to disease detection
+                    isRicePlant[0] = true;
+                    Log.w("CameraScanner", "Bypassing Stage 1 due to error - proceeding to Stage 2");
+                }
+
                 runOnUiThread(() -> {
+                    Log.d("CameraScanner", "=== ANALYSIS RESULTS ===");
+                    Log.d("CameraScanner", "Is Rice Plant detected: " + isRicePlant[0]);
 
-
-                    if (finalIsRicePlant) {
-                        // Rice plant detected - go to DiseaseScanner for disease analysis
+                    if (isRicePlant[0]) {
+// Rice plant detected - go to DiseaseScanner for disease analysis
+                        Log.d("CameraScanner", "Rice plant detected - proceeding to DiseaseScanner...");
                         Intent intent = new Intent(CameraScanner.this, DiseaseScanner.class);
                         startActivity(intent);
                         finish();
                     } else {
-                        // NonRice detected - show retry message with more details
-                        String message = "Not a rice plant detected. Please try again!";
+// NonRice detected - show retry message with more details
+                        Log.d("CameraScanner", "NonRice detected - showing retry message");
+                        String message = "Not a rice plant detected.";
                         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                     }
                 });
 
             } catch (Exception e) {
+                Log.e("CameraScanner", "Analysis failed: " + e.getMessage());
                 e.printStackTrace();
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "❌ Analysis Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Analysis failed. Please try again.", Toast.LENGTH_SHORT).show();
                 });
             }
         }).start();
@@ -319,7 +342,7 @@ public class CameraScanner extends AppCompatActivity {
                         this, cameraSelector, preview, imageCapture, imageAnalysis);
 
             } catch (ExecutionException | InterruptedException e) {
-
+                Log.e("CameraScanner", "Camera initialization failed", e);
             }
         }, ContextCompat.getMainExecutor(this));
     }
@@ -435,7 +458,7 @@ public class CameraScanner extends AppCompatActivity {
 
         if (requestCode == REQ_GALLERY_PERM) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, now launch gallery
+            // Permission granted, now launch gallery
                 pickImageLauncher.launch("image/*");
             } else {
                 Toast.makeText(this, "Gallery permission denied", Toast.LENGTH_SHORT).show();

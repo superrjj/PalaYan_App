@@ -18,6 +18,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Stage2ModelManager {
+    
+    // Disease result class
+    public static class DiseaseResult {
+        public boolean isSuccess;
+        public String diseaseName;
+        public float confidence;
+        public String errorMessage;
+        public DiseaseInfo diseaseInfo;
+        
+        public DiseaseResult(boolean isSuccess, String diseaseName, float confidence, String errorMessage, DiseaseInfo diseaseInfo) {
+            this.isSuccess = isSuccess;
+            this.diseaseName = diseaseName;
+            this.confidence = confidence;
+            this.errorMessage = errorMessage;
+            this.diseaseInfo = diseaseInfo;
+        }
+    }
+    
+    // Disease info class
+    public static class DiseaseInfo {
+        public String scientificName;
+        public String description;
+        public String symptoms;
+        public String cause;
+        public String treatments;
+        
+        public DiseaseInfo(String scientificName, String description, String symptoms, String cause, String treatments) {
+            this.scientificName = scientificName;
+            this.description = description;
+            this.symptoms = symptoms;
+            this.cause = cause;
+            this.treatments = treatments;
+        }
+    }
     private Interpreter tfliteInterpreter;
     private Context context;
     private boolean isModelLoaded = false;
@@ -68,19 +102,33 @@ public class Stage2ModelManager {
     }
 
     private boolean loadModelFromAssets() {
-        try {
-            InputStream inputStream = context.getAssets().open("stage2_rice_disease_classifier.tflite");
-            byte[] modelBytes = new byte[inputStream.available()];
-            inputStream.read(modelBytes);
-            inputStream.close();
-            
-            tfliteInterpreter = new Interpreter(modelBytes);
-            Log.d("Stage2Model", "Model loaded from assets, size: " + modelBytes.length + " bytes");
-            return true;
-        } catch (Exception e) {
-            Log.e("Stage2Model", "Failed to load model from assets: " + e.getMessage());
-            return false;
+        // Try models/ path first, then root assets as fallback
+        final String[] candidatePaths = new String[] {
+                "models/stage2_rice_disease_classifier.tflite",
+                "stage2_rice_disease_classifier.tflite"
+        };
+        for (String assetPath : candidatePaths) {
+            try {
+                InputStream inputStream = context.getAssets().open(assetPath);
+                byte[] modelBytes = new byte[inputStream.available()];
+                inputStream.read(modelBytes);
+                inputStream.close();
+
+                // Convert byte array to ByteBuffer
+                ByteBuffer modelBuffer = ByteBuffer.allocateDirect(modelBytes.length);
+                modelBuffer.put(modelBytes);
+                modelBuffer.rewind();
+
+                Interpreter.Options options = new Interpreter.Options();
+                tfliteInterpreter = new Interpreter(modelBuffer, options);
+                Log.d("Stage2Model", "Model loaded from assets (" + assetPath + "), size: " + modelBytes.length + " bytes");
+                return true;
+            } catch (Exception e) {
+                Log.w("Stage2Model", "Could not load model at assets/" + assetPath + ": " + e.getMessage());
+            }
         }
+        Log.e("Stage2Model", "Failed to load model from any asset path");
+        return false;
     }
 
     private boolean loadModelFromFile() {
@@ -95,7 +143,8 @@ public class Stage2ModelManager {
             FileChannel fileChannel = inputStream.getChannel();
             MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
             
-            tfliteInterpreter = new Interpreter(buffer);
+            Interpreter.Options options = new Interpreter.Options();
+            tfliteInterpreter = new Interpreter(buffer, options);
             Log.d("Stage2Model", "Model loaded from file, size: " + modelFile.length() + " bytes");
             return true;
         } catch (Exception e) {
@@ -105,25 +154,38 @@ public class Stage2ModelManager {
     }
 
     private void loadStage2Labels() {
-        try {
-            InputStream inputStream = context.getAssets().open("stage2_labels.txt");
-            byte[] buffer = new byte[inputStream.available()];
-            inputStream.read(buffer);
-            inputStream.close();
-            
-            String labelsContent = new String(buffer);
-            String[] lines = labelsContent.split("\n");
-            
-            for (String line : lines) {
-                if (!line.trim().isEmpty()) {
-                    stage2Labels.add(line.trim());
+        stage2Labels.clear();
+        final String[] candidatePaths = new String[] {
+                "models/stage2_labels.txt",
+                "stage2_labels.txt"
+        };
+
+        for (String assetPath : candidatePaths) {
+            try {
+                InputStream inputStream = context.getAssets().open(assetPath);
+                byte[] buffer = new byte[inputStream.available()];
+                inputStream.read(buffer);
+                inputStream.close();
+
+                String labelsContent = new String(buffer);
+                String[] lines = labelsContent.split("\n");
+
+                for (String line : lines) {
+                    if (!line.trim().isEmpty()) {
+                        stage2Labels.add(line.trim());
+                    }
                 }
+
+                Log.d("Stage2Model", "Loaded " + stage2Labels.size() + " labels from assets/" + assetPath + ": " + stage2Labels);
+                if (!stage2Labels.isEmpty()) return;
+            } catch (Exception e) {
+                Log.w("Stage2Model", "Could not load labels at assets/" + assetPath + ": " + e.getMessage());
             }
-            
-            Log.d("Stage2Model", "Loaded " + stage2Labels.size() + " labels: " + stage2Labels);
-        } catch (Exception e) {
-            Log.e("Stage2Model", "Failed to load labels: " + e.getMessage());
-            // Fallback labels
+        }
+
+        if (stage2Labels.isEmpty()) {
+            Log.e("Stage2Model", "Failed to load labels from assets. Using fallback labels.");
+            // Fallback labels (MUST match model output order)
             stage2Labels.add("Bacterial Leaf Blight");
             stage2Labels.add("Brown Spot");
             stage2Labels.add("Healthy");
@@ -148,8 +210,9 @@ public class Stage2ModelManager {
 
             Log.d("Stage2Model", "Original image size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
 
-            // Preprocess image with Keras EfficientNet normalization
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
+            // Center-crop to reduce background, then resize
+            Bitmap cropped = centerCropToSquare(bitmap);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(cropped, INPUT_SIZE, INPUT_SIZE, true);
             ByteBuffer inputBuffer = preprocessImageCorrectly(resizedBitmap);
 
             // Run ML inference
@@ -276,6 +339,151 @@ public class Stage2ModelManager {
         }
 
         return inputBuffer;
+    }
+
+    private Bitmap centerCropToSquare(Bitmap src) {
+        int w = src.getWidth();
+        int h = src.getHeight();
+        if (w == h) return src;
+        int size = Math.min(w, h);
+        int x = (w - size) / 2;
+        int y = (h - size) / 2;
+        try {
+            return Bitmap.createBitmap(src, x, y, size, size);
+        } catch (Exception e) {
+            return src;
+        }
+    }
+
+    private Bitmap rotateBitmap(Bitmap src, float degrees) {
+        android.graphics.Matrix m = new android.graphics.Matrix();
+        m.postRotate(degrees);
+        try {
+            return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), m, true);
+        } catch (Exception e) {
+            return src;
+        }
+    }
+
+    public DiseaseResult predictDisease(Bitmap bitmap) {
+        Log.d("Stage2Model", "=== STARTING DISEASE PREDICTION ===");
+        
+        if (!isModelLoaded) {
+            Log.e("Stage2Model", "Model not loaded");
+            return new DiseaseResult(false, null, 0f, "Model not loaded", null);
+        }
+
+        try {
+            Log.d("Stage2Model", "Original image size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
+
+            // Preprocess image with Keras EfficientNet normalization
+            Bitmap cropped = centerCropToSquare(bitmap);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(cropped, INPUT_SIZE, INPUT_SIZE, true);
+            ByteBuffer inputBuffer = preprocessImageCorrectly(resizedBitmap);
+
+            // Run ML inference
+            float[][] output = new float[1][modelOutputSize];
+            long startTime = System.currentTimeMillis();
+            tfliteInterpreter.run(inputBuffer, output);
+            long inferenceTime = System.currentTimeMillis() - startTime;
+
+            Log.d("Stage2Model", "ML inference completed in: " + inferenceTime + "ms");
+
+            // Process results
+            float[] correctedPredictions = applyBiasCorrection(output[0]);
+            
+            // Find the index with highest confidence
+            int maxIndex = 0;
+            float maxConfidence = correctedPredictions[0];
+            
+            for (int i = 1; i < correctedPredictions.length; i++) {
+                if (correctedPredictions[i] > maxConfidence) {
+                    maxConfidence = correctedPredictions[i];
+                    maxIndex = i;
+                }
+            }
+            
+            // Map index to disease name (prefer labels file if available)
+            String diseaseName;
+            if (stage2Labels != null && stage2Labels.size() >= modelOutputSize && maxIndex < stage2Labels.size()) {
+                diseaseName = stage2Labels.get(maxIndex);
+            } else {
+                diseaseName = mapIndexToDiseaseName(maxIndex);
+            }
+            
+            Log.d("Stage2Model", "Raw predictions: [" + output[0][0] + ", " + output[0][1] + ", " + output[0][2] + "]");
+            Log.d("Stage2Model", "Corrected predictions: [" + correctedPredictions[0] + ", " + correctedPredictions[1] + ", " + correctedPredictions[2] + "]");
+            Log.d("Stage2Model", "Max index: " + maxIndex + ", Confidence: " + maxConfidence);
+            
+            // Get disease info
+            DiseaseInfo diseaseInfo = getDiseaseInfo(diseaseName);
+            
+            Log.d("Stage2Model", "=== FINAL DISEASE RESULT ===");
+            Log.d("Stage2Model", "Detected disease: " + diseaseName + " (confidence: " + maxConfidence + ")");
+            
+            // If confidence is low, try a rotated pass (90°) for angle robustness
+            if (maxConfidence < 0.5f) {
+                Bitmap rotated = rotateBitmap(cropped, 90);
+                Bitmap resizedRot = Bitmap.createScaledBitmap(rotated, INPUT_SIZE, INPUT_SIZE, true);
+                ByteBuffer inputRot = preprocessImageCorrectly(resizedRot);
+                float[][] outRot = new float[1][modelOutputSize];
+                tfliteInterpreter.run(inputRot, outRot);
+                float[] correctedRot = applyBiasCorrection(outRot[0]);
+                int maxIdxRot = 0; float maxConfRot = correctedRot[0];
+                for (int i = 1; i < correctedRot.length; i++) {
+                    if (correctedRot[i] > maxConfRot) { maxConfRot = correctedRot[i]; maxIdxRot = i; }
+                }
+                if (maxConfRot > maxConfidence) {
+                    maxConfidence = maxConfRot;
+                    diseaseName = (stage2Labels != null && stage2Labels.size() > maxIdxRot) ? stage2Labels.get(maxIdxRot) : mapIndexToDiseaseName(maxIdxRot);
+                    diseaseInfo = getDiseaseInfo(diseaseName);
+                }
+            }
+
+            return new DiseaseResult(true, diseaseName, maxConfidence, null, diseaseInfo);
+
+        } catch (Exception e) {
+            Log.e("Stage2Model", "Prediction failed: " + e.getMessage());
+            e.printStackTrace();
+            return new DiseaseResult(false, null, 0f, "Prediction failed: " + e.getMessage(), null);
+        }
+    }
+    
+    private DiseaseInfo getDiseaseInfo(String diseaseName) {
+        switch (diseaseName) {
+            case "Bacterial Leaf Blight":
+                return new DiseaseInfo(
+                    "Xanthomonas oryzae pv. oryzae",
+                    "Bacterial leaf blight is a serious disease of rice caused by the bacterium Xanthomonas oryzae pv. oryzae. It can cause significant yield losses in rice production.",
+                    "Water-soaked lesions on leaf tips and margins, yellowing of leaves, wilting, and eventual death of affected plants.",
+                    "Bacterial infection through wounds, contaminated water, or infected seeds. Favored by high humidity and warm temperatures.",
+                    "Use resistant varieties, proper field sanitation, avoid overhead irrigation, apply copper-based fungicides, and practice crop rotation."
+                );
+            case "Brown Spot":
+                return new DiseaseInfo(
+                    "Cochliobolus miyabeanus",
+                    "Brown spot is a fungal disease of rice caused by Cochliobolus miyabeanus. It affects rice leaves and can reduce grain quality and yield.",
+                    "Small, circular to oval brown spots on leaves, spots may coalesce to form larger lesions, yellowing and premature leaf drop.",
+                    "Fungal infection favored by high humidity, warm temperatures, and poor soil fertility. Spreads through spores.",
+                    "Improve soil fertility, use resistant varieties, proper field drainage, apply fungicides, and remove infected plant debris."
+                );
+            case "Healthy":
+                return new DiseaseInfo(
+                    "Oryza sativa (Healthy)",
+                    "Healthy rice plant showing no signs of disease. Proper growth and development with normal green coloration.",
+                    "Normal green leaves, healthy growth pattern, no visible lesions or discoloration, proper plant structure.",
+                    "No disease present. Maintained through proper cultivation practices and disease prevention.",
+                    "Continue current practices: proper irrigation, balanced fertilization, regular monitoring, and preventive measures."
+                );
+            default:
+                return new DiseaseInfo(
+                    "Unknown",
+                    "Disease identification not available.",
+                    "Symptoms not documented.",
+                    "Cause not identified.",
+                    "Treatment recommendations not available."
+                );
+        }
     }
 
     public boolean isModelReady() {

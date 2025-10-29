@@ -1,5 +1,6 @@
 package com.example.palayan.UserActivities;
 
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -62,7 +63,6 @@ public class DiseaseScanner extends AppCompatActivity {
         Button btnFlashlight = root.btnFlashlight;
 
         stage2Manager = new Stage2ModelManager(this);
-        root.ivBack.setOnClickListener(v -> onBackPressed());
 
         // Register single-select image picker
         pickImageLauncher = registerForActivityResult(
@@ -90,7 +90,7 @@ public class DiseaseScanner extends AppCompatActivity {
                 }
         );
 
-        // Camera permission
+// Camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -105,20 +105,20 @@ public class DiseaseScanner extends AppCompatActivity {
             if (!isCapturing) takePhoto();
         });
 
-        // Flashlight button
+// Flashlight button
         btnFlashlight.setOnClickListener(v -> toggleFlashlight());
 
-        // Gallery button (single select, with runtime permission)
+// Gallery button (single select, with runtime permission)
         btnGallery.setOnClickListener(v -> {
             String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                     ? Manifest.permission.READ_MEDIA_IMAGES
                     : Manifest.permission.READ_EXTERNAL_STORAGE;
 
             if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
-                // Permission already granted, launch gallery
+// Permission already granted, launch gallery
                 pickImageLauncher.launch("image/*");
             } else {
-                // Request permission first
+// Request permission first
                 ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
             }
         });
@@ -136,12 +136,13 @@ public class DiseaseScanner extends AppCompatActivity {
         try {
             isFlashOn = !isFlashOn;
             camera.getCameraControl().enableTorch(isFlashOn);
-            
+
             String message = isFlashOn ? "Flashlight ON" : "Flashlight OFF";
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-            
 
+            Log.d("DiseaseScanner", "Flashlight toggled: " + isFlashOn);
         } catch (Exception e) {
+            Log.e("DiseaseScanner", "Error toggling flashlight: " + e.getMessage());
             Toast.makeText(this, "Flashlight not available", Toast.LENGTH_SHORT).show();
         }
     }
@@ -166,7 +167,7 @@ public class DiseaseScanner extends AppCompatActivity {
                         this, cameraSelector, preview, imageCapture);
 
             } catch (ExecutionException | InterruptedException e) {
-
+                Log.e("DiseaseScanner", "Camera initialization failed", e);
             }
         }, ContextCompat.getMainExecutor(this));
     }
@@ -200,7 +201,7 @@ public class DiseaseScanner extends AppCompatActivity {
     }
 
     private void analyzeDiseaseFromImage(String imagePath) {
-        // Show simple toast instead of loading dialog
+// Show simple toast instead of loading dialog
         Toast.makeText(this, "Analyzing disease...", Toast.LENGTH_SHORT).show();
 
         // Run analysis immediately without waiting
@@ -209,7 +210,16 @@ public class DiseaseScanner extends AppCompatActivity {
             if (!stage2Manager.isModelReady()) {
 
             }
-            
+
+            if (stage2Manager.isModelReady()) {
+                performDiseaseAnalysis(imagePath);
+            } else {
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
+                });
+                Log.w("DiseaseScanner", "Model not ready yet, but proceeding anyway...");
+            }
+
             // Always proceed with analysis
             performDiseaseAnalysis(imagePath);
         }).start();
@@ -240,6 +250,7 @@ public class DiseaseScanner extends AppCompatActivity {
             });
 
         } catch (Exception e) {
+            Log.e("DiseaseScanner", "Error analyzing disease", e);
             runOnUiThread(() -> {
                 Toast.makeText(this, "Error analyzing disease: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
@@ -300,5 +311,4 @@ public class DiseaseScanner extends AppCompatActivity {
             }
         }
     }
-
 }
