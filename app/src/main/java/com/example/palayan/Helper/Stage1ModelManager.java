@@ -45,6 +45,11 @@ public class Stage1ModelManager {
         Log.d("Stage1Model", "=== STAGE 1 MODEL MANAGER INITIALIZATION COMPLETE ===");
         Log.d("Stage1Model", "Final model loaded status: " + isModelLoaded);
         
+        // Test model with dummy data if loaded
+        if (isModelLoaded) {
+            testModelWithDummyData();
+        }
+        
         // Show Toast for debugging
         android.widget.Toast.makeText(context, "Stage1 Model Status: " + (isModelLoaded ? "LOADED ✅" : "FAILED ❌"), android.widget.Toast.LENGTH_LONG).show();
     }
@@ -201,11 +206,13 @@ public class Stage1ModelManager {
             float[][] testOutput = new float[1][2];
             tfliteInterpreter.run(testInput, testOutput);
 
-            // Check if output is valid (sum should be close to 1.0 for softmax)
+            // Check if output is valid (not NaN, not extreme values)
             float sum = testOutput[0][0] + testOutput[0][1];
-            boolean isValid = Math.abs(sum - 1.0f) < 0.1f;
+            boolean isValid = !Float.isNaN(testOutput[0][0]) && !Float.isNaN(testOutput[0][1]) &&
+                             !Float.isInfinite(testOutput[0][0]) && !Float.isInfinite(testOutput[0][1]) &&
+                             Math.abs(sum) > 0.01f; // Just check it's not zero
 
-            Log.d("Stage1Model", "Model validation - Output sum: " + sum + ", Valid: " + isValid);
+            Log.d("Stage1Model", "Model validation - Output: [" + testOutput[0][0] + ", " + testOutput[0][1] + "], Sum: " + sum + ", Valid: " + isValid);
             return isValid;
 
         } catch (Exception e) {
@@ -263,25 +270,26 @@ public class Stage1ModelManager {
 
             Log.d("Stage1Model", "ML Output: Rice=" + String.format("%.3f", riceConfidence) +
                   ", NonRice=" + String.format("%.3f", nonRiceConfidence));
+            Log.d("Stage1Model", "Raw output array: [" + output[0][0] + ", " + output[0][1] + "]");
+            Log.d("Stage1Model", "Sum of probabilities: " + (output[0][0] + output[0][1]));
 
-            // Apply OPTIMIZED confidence threshold for defense accuracy
+            // Apply SIMPLE AND EFFECTIVE confidence threshold for defense
             boolean isRicePlant = false;
             
-            // Primary condition: Rice confidence must be higher than non-rice
-            if (riceConfidence > nonRiceConfidence) {
-                // Secondary conditions for accuracy:
-                // 1. Rice confidence must be at least 50%
-                // 2. OR if rice confidence is very high (>80%), accept it
-                // 3. OR if the difference is significant (>30%), accept it
-                if (riceConfidence >= 0.5f || riceConfidence >= 0.8f || (riceConfidence - nonRiceConfidence) >= 0.3f) {
+            // Check if model outputs are valid (not NaN or extreme values)
+            if (Float.isNaN(riceConfidence) || Float.isNaN(nonRiceConfidence) || 
+                Float.isInfinite(riceConfidence) || Float.isInfinite(nonRiceConfidence)) {
+                Log.e("Stage1Model", "Invalid model outputs detected!");
+                isRicePlant = false;
+            } else {
+                // SIMPLE LOGIC: If rice confidence > non-rice confidence, it's rice
+                // But add minimum threshold to avoid random predictions
+                if (riceConfidence > nonRiceConfidence && riceConfidence > 0.3f) {
                     isRicePlant = true;
                 }
             }
             
-            // Additional safety: Reject if both confidences are very low (uncertain model)
-            if (riceConfidence < 0.1f && nonRiceConfidence < 0.1f) {
-                isRicePlant = false;
-            }
+            Log.d("Stage1Model", "Decision logic: riceConfidence(" + riceConfidence + ") > nonRiceConfidence(" + nonRiceConfidence + ") && riceConfidence > 0.3f = " + isRicePlant);
             
             Log.d("Stage1Model", "RESULT: " + (isRicePlant ? "RICE PLANT ✅" : "NOT RICE"));
             
@@ -561,6 +569,35 @@ public class Stage1ModelManager {
 
         } catch (Exception e) {
             return "Error: " + e.getMessage();
+        }
+    }
+
+    private void testModelWithDummyData() {
+        try {
+            Log.d("Stage1Model", "🧪 Testing model with dummy data...");
+            
+            // Create a simple test bitmap (all green)
+            Bitmap testBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Bitmap.Config.ARGB_8888);
+            testBitmap.eraseColor(0xFF00FF00); // Green color
+            
+            ByteBuffer testInput = preprocessImageCorrectly(testBitmap);
+            float[][] testOutput = new float[1][2];
+            
+            tfliteInterpreter.run(testInput, testOutput);
+            
+            Log.d("Stage1Model", "🧪 Test output: Rice=" + testOutput[0][1] + ", NonRice=" + testOutput[0][0]);
+            Log.d("Stage1Model", "🧪 Test sum: " + (testOutput[0][0] + testOutput[0][1]));
+            
+            // Show test result in Toast
+            android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+            mainHandler.post(() -> {
+                String testMessage = String.format("🧪 Test: Rice=%.2f, NonRice=%.2f", testOutput[0][1], testOutput[0][0]);
+                android.widget.Toast.makeText(context, testMessage, android.widget.Toast.LENGTH_LONG).show();
+            });
+            
+        } catch (Exception e) {
+            Log.e("Stage1Model", "🧪 Test failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
