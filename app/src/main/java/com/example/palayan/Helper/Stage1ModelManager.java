@@ -217,12 +217,22 @@ public class Stage1ModelManager {
     public boolean detectRicePlant(String imagePath) {
         Log.d("Stage1Model", "🔍 ANALYZING: " + imagePath);
         Log.d("Stage1Model", "Model loaded status: " + isModelLoaded);
+        
+        // Create Handler once for all Toasts
+        android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+        
+        // Debug Toast - always show
+        mainHandler.post(() -> {
+            android.widget.Toast.makeText(context, "🔍 Starting analysis...", android.widget.Toast.LENGTH_SHORT).show();
+        });
 
         if (!isModelLoaded) {
             Log.e("Stage1Model", "Model not loaded - returning false");
             Log.w("Stage1Model", "WARNING: No model loaded, Stage 1 detection failed");
             // Show Toast for debugging
-            android.widget.Toast.makeText(context, "❌ Stage1 Model NOT LOADED!", android.widget.Toast.LENGTH_LONG).show();
+            mainHandler.post(() -> {
+                android.widget.Toast.makeText(context, "❌ Stage1 Model NOT LOADED!", android.widget.Toast.LENGTH_LONG).show();
+            });
             return false; // Return false when model is not loaded
         }
 
@@ -254,21 +264,21 @@ public class Stage1ModelManager {
             Log.d("Stage1Model", "ML Output: Rice=" + String.format("%.3f", riceConfidence) +
                   ", NonRice=" + String.format("%.3f", nonRiceConfidence));
 
-            // Apply STRICT confidence threshold for defense
-            boolean isRicePlant = riceConfidence > nonRiceConfidence && riceConfidence > 0.7f; // Very high threshold
-            
-            // Additional validation: Rice confidence must be significantly higher than non-rice
-            if (isRicePlant && (riceConfidence - nonRiceConfidence) < 0.3f) {
-                isRicePlant = false; // Too close, reject
-            }
+            // Apply MODERATE confidence threshold for defense
+            boolean isRicePlant = riceConfidence > 0.6f && riceConfidence > (nonRiceConfidence + 0.2f); // Moderate threshold
             
             Log.d("Stage1Model", "RESULT: " + (isRicePlant ? "RICE PLANT ✅" : "NOT RICE"));
             
-            // Show Toast with detailed results for debugging
+            // Show Toast with detailed results for debugging - ALWAYS show
             String resultMessage = String.format("Rice: %.1f%% | NonRice: %.1f%% | %s", 
                 riceConfidence * 100, nonRiceConfidence * 100, 
                 isRicePlant ? "✅ RICE PLANT" : "❌ NOT RICE");
-            android.widget.Toast.makeText(context, resultMessage, android.widget.Toast.LENGTH_LONG).show();
+            
+            // Force Toast to show
+            mainHandler.post(() -> {
+                android.widget.Toast toast = android.widget.Toast.makeText(context, resultMessage, android.widget.Toast.LENGTH_LONG);
+                toast.show();
+            });
 
             return isRicePlant;
 
@@ -276,7 +286,9 @@ public class Stage1ModelManager {
             Log.e("Stage1Model", "Analysis failed: " + e.getMessage());
             e.printStackTrace();
             // Show Toast for debugging
-            android.widget.Toast.makeText(context, "❌ Analysis Error: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+            mainHandler.post(() -> {
+                android.widget.Toast.makeText(context, "❌ Analysis Error: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+            });
             return false;
         }
     }

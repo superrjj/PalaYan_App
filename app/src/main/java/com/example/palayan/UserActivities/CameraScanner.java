@@ -241,7 +241,7 @@ public class CameraScanner extends AppCompatActivity {
     // Check rice plant and proceed - OPTIMIZED
     private void checkRicePlantAndProceed(String imagePath) {
         // Show simple toast instead of loading dialog
-        Toast.makeText(this, "Analyzing rice plant...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "🔍 Starting rice plant analysis...", Toast.LENGTH_SHORT).show();
 
         new Thread(() -> {
             try {
@@ -259,8 +259,12 @@ public class CameraScanner extends AppCompatActivity {
                     String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    // Bypass Stage 1 if model crashes - proceed to disease detection
-                    isRicePlant = true;
+                    // If model crashes, DON'T proceed - show error instead
+                    isRicePlant = false;
+                    // Move Toast to UI thread
+                    runOnUiThread(() -> {
+                        Toast.makeText(CameraScanner.this, "❌ Detection Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
                 }
 
                 final boolean finalIsRicePlant = isRicePlant;
@@ -282,7 +286,7 @@ public class CameraScanner extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Analysis failed. Please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "❌ Analysis Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         }).start();
