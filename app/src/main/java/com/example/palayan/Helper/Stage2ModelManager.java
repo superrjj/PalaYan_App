@@ -262,6 +262,8 @@ public class Stage2ModelManager {
             float b = (pixel & 0xFF) / 255.0f;
 
             // EfficientNet (Keras) preprocessing: scale to [-1, 1]
+            // Keras EfficientNet preprocessing: (x/255 - 0.5) * 2
+            // This matches your training preprocessing
             r = (r - 0.5f) * 2.0f;
             g = (g - 0.5f) * 2.0f;
             b = (b - 0.5f) * 2.0f;
