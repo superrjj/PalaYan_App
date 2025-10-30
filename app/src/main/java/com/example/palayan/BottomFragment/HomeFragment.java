@@ -48,9 +48,12 @@ public class HomeFragment extends Fragment {
     private TextView tvNoData;
 
     private List<HistoryResult> historyList;
+    private List<HistoryResult> predictionItems;
+    private List<HistoryResult> treatmentItems;
     private HistoryAdapter adapter;
     private FirebaseFirestore firestore;
     private ListenerRegistration predictionsListener;
+    private ListenerRegistration treatmentListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +69,8 @@ public class HomeFragment extends Fragment {
 
         // Initialize history list and adapter
         historyList = new ArrayList<>();
+        predictionItems = new ArrayList<>();
+        treatmentItems = new ArrayList<>();
         adapter = new HistoryAdapter(historyList, getContext());
 
         // Setup RecyclerView
@@ -93,6 +98,9 @@ public class HomeFragment extends Fragment {
         if (predictionsListener != null) {
             predictionsListener.remove();
         }
+        if (treatmentListener != null) {
+            treatmentListener.remove();
+        }
     }
 
     private String getDeviceId() {
@@ -106,53 +114,94 @@ public class HomeFragment extends Fragment {
         historyList.clear();
         adapter.notifyDataSetChanged();
 
-        // Load ONLY predictions_result subcollection; do not include treatment_notes in Home history
+        // Remove previous listeners
+        if (predictionsListener != null) {
+            predictionsListener.remove();
+            predictionsListener = null;
+        }
+        if (treatmentListener != null) {
+            treatmentListener.remove();
+            treatmentListener = null;
+        }
+
+        // Reset source lists
+        predictionItems.clear();
+        treatmentItems.clear();
+
+        // Listen to predictions_result
         predictionsListener = firestore.collection("users")
                 .document(deviceId)
                 .collection("predictions_result")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {
+                        Log.e("HomeFragment", "Firestore error: " + e.getMessage());
                         return;
                     }
 
-                    for (QueryDocumentSnapshot doc : snapshots) {
-                        HistoryResult history = doc.toObject(HistoryResult.class);
-                        if (history != null) {
-                            // Debug log to see what's being loaded
-                            Log.d("HomeFragment", "Loading item: " + history.getDiseaseName() + 
-                                  ", dateApplied: " + history.getDateApplied() + 
-                                  ", type: " + history.getType());
-                            
-                            // Double check: only add if it's truly from predictions_result
-                            // and doesn't have treatment-specific fields
-                            if (history.getDateApplied() == null || history.getDateApplied().isEmpty()) {
-                                history.setDocumentId(doc.getId());
-                                history.setUserId(deviceId);
-                                history.setExplicitType("prediction"); // ensure Home shows only scans
-                                historyList.add(history);
-                                Log.d("HomeFragment", "Added to history: " + history.getDiseaseName());
-                            } else {
-                                Log.d("HomeFragment", "Skipped treatment item: " + history.getDiseaseName());
+                    predictionItems.clear();
+
+                    if (snapshots != null) {
+                        for (QueryDocumentSnapshot doc : snapshots) {
+                            HistoryResult history = doc.toObject(HistoryResult.class);
+                            if (history != null) {
+                                if (history.getDateApplied() == null || history.getDateApplied().isEmpty()) {
+                                    history.setDocumentId(doc.getId());
+                                    history.setUserId(deviceId);
+                                    history.setExplicitType("prediction");
+                                    predictionItems.add(history);
+                                }
                             }
                         }
                     }
 
-                    // Sort by timestamp (newest first)
-                    historyList.sort((a, b) -> {
-                        if (a.getTimestamp() == null && b.getTimestamp() == null) return 0;
-                        if (a.getTimestamp() == null) return 1;
-                        if (b.getTimestamp() == null) return -1;
-                        return b.getTimestamp().compareTo(a.getTimestamp());
-                    });
-                    adapter.notifyDataSetChanged();
-
-                    // Show/hide no data message
-                    if (historyList.isEmpty()) {
-                        tvNoData.setVisibility(View.VISIBLE);
-                    } else {
-                        tvNoData.setVisibility(View.GONE);
-                    }
+                    refreshMergedHistory();
                 });
+
+        // Listen to treatment_notes
+        treatmentListener = firestore.collection("users")
+                .document(deviceId)
+                .collection("treatment_notes")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.e("HomeFragment", "Firestore error (treatment): " + e.getMessage());
+                        return;
+                    }
+
+                    treatmentItems.clear();
+
+                    if (snapshots != null) {
+                        for (QueryDocumentSnapshot doc : snapshots) {
+                            HistoryResult history = doc.toObject(HistoryResult.class);
+                            if (history != null) {
+                                history.setDocumentId(doc.getString("documentId") != null ? doc.getString("documentId") : doc.getId());
+                                history.setUserId(deviceId);
+                                history.setExplicitType("treatment");
+                                treatmentItems.add(history);
+                            }
+                        }
+                    }
+
+                    refreshMergedHistory();
+                });
+    }
+
+    private void refreshMergedHistory() {
+        historyList.clear();
+        historyList.addAll(predictionItems);
+        historyList.addAll(treatmentItems);
+
+        // Sort by timestamp desc (nulls last)
+        historyList.sort((a, b) -> {
+            if (a.getTimestamp() == null && b.getTimestamp() == null) return 0;
+            if (a.getTimestamp() == null) return 1;
+            if (b.getTimestamp() == null) return -1;
+            return b.getTimestamp().compareTo(a.getTimestamp());
+        });
+
+        adapter.notifyDataSetChanged();
+        tvNoData.setVisibility(historyList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
 
