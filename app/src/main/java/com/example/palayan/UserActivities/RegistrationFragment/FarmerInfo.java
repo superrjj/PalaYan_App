@@ -9,13 +9,29 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
+import android.provider.Settings;
+import android.content.Intent;
+import android.os.Handler;
+import android.widget.TextView;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.example.palayan.R;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.palayan.UserActivities.UserDashboard;
+import androidx.core.content.res.ResourcesCompat;
 
 public class FarmerInfo extends Fragment {
 
@@ -46,6 +62,15 @@ public class FarmerInfo extends Fragment {
 
     // Terms text moved to strings resource (terms_conditions_tl)
 
+    // PSGC API endpoints
+    private static final String PSGC_BASE = "https://psgc.rootscratch.com";
+    // PSGC ID for Tarlac Province
+    private static final String TARLAC_PSGC_ID = "0369000000";
+
+    // Cache and mapping for dynamic data
+    private java.util.Map<String, String> municipalityNameToId = new java.util.HashMap<>();
+    private java.util.List<String> dynamicMunicipalities = new java.util.ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,6 +81,14 @@ public class FarmerInfo extends Fragment {
         AutoCompleteTextView actBarangay = view.findViewById(R.id.act_barangay);
         AutoCompleteTextView actGender = view.findViewById(R.id.act_kasarian);
         CheckBox chkTerms = view.findViewById(R.id.chkTerms);
+        Button btnRegister = view.findViewById(R.id.btnRegister);
+
+        TextInputEditText etFirst = view.findViewById(R.id.txtUnangPangalan);
+        TextInputEditText etMiddle = view.findViewById(R.id.txtGitnangPangalan);
+        TextInputEditText etLast = view.findViewById(R.id.txtApelyido);
+        TextInputEditText etAge = view.findViewById(R.id.txtEdad);
+        TextInputEditText etPhone = view.findViewById(R.id.txtTelepono);
+        TextInputEditText etEmail = view.findViewById(R.id.txtEmailAddress);
 
         // Province adapter (Tarlac only)
         ArrayAdapter<String> provinceAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, PROVINCES);
@@ -80,7 +113,102 @@ public class FarmerInfo extends Fragment {
             }
         });
 
+        btnRegister.setOnClickListener(v -> handleRegister(
+                v,
+                etFirst.getText().toString().trim(),
+                etMiddle.getText().toString().trim(),
+                etLast.getText().toString().trim(),
+                etAge.getText().toString().trim(),
+                actGender.getText().toString().trim(),
+                etPhone.getText().toString().trim(),
+                etEmail.getText().toString().trim(),
+                actProvince.getText().toString().trim(),
+                actMunicipality.getText().toString().trim(),
+                actBarangay.getText().toString().trim(),
+                chkTerms.isChecked()
+        ));
+
         return view;
+    }
+
+    private void handleRegister(View anchor,
+                                String first,
+                                String middle,
+                                String last,
+                                String age,
+                                String gender,
+                                String phone,
+                                String email,
+                                String province,
+                                String municipality,
+                                String barangay,
+                                boolean acceptedTerms) {
+        // Basic validations
+        if (!acceptedTerms) {
+            showSnack(anchor, "Pakisundin ang tuntunin at kondisyon muna.", R.color.dark_red);
+            return;
+        }
+        if (first.isEmpty() || last.isEmpty() || age.isEmpty() || gender.isEmpty() ||
+                province.isEmpty() || municipality.isEmpty() || barangay.isEmpty()) {
+            showSnack(anchor, "Pakipunan ang mga kinakailangang field.", R.color.dark_red);
+            return;
+        }
+
+        int ageInt;
+        try {
+            ageInt = Integer.parseInt(age);
+        } catch (NumberFormatException e) {
+            showSnack(anchor, "Di wastong edad.", R.color.dark_red);
+            return;
+        }
+
+        java.util.Map<String, Object> data = new java.util.HashMap<>();
+        com.google.firebase.Timestamp nowTs = com.google.firebase.Timestamp.now();
+        String deviceId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        data.put("first_name", first);
+        data.put("middle_name", middle);
+        data.put("last_name", last);
+        data.put("age", ageInt);
+        data.put("gender", gender);
+        data.put("phone", phone);
+        data.put("email", email);
+        data.put("province", province);
+        data.put("municipality", municipality);
+        data.put("barangay", barangay);
+        data.put("device_id", deviceId);
+        data.put("created_at", nowTs);
+        data.put("updated_at", null);
+
+        FirebaseFirestore.getInstance()
+                .collection("farmers")
+                .document(deviceId)
+                .set(data)
+                .addOnSuccessListener(unused -> {
+                    showSnack(anchor, "Matagumpay na nairehistro.", R.color.green, 2000);
+                    new Handler().postDelayed(() -> {
+                        Intent intent = new Intent(requireContext(), UserDashboard.class);
+                        startActivity(intent);
+                        requireActivity().finish();
+                    }, 2000);
+                })
+                .addOnFailureListener(err -> showSnack(anchor, "Hindi nairehistro: " + err.getMessage(), R.color.dark_red));
+    }
+
+    private void showSnack(View anchor, String message, int colorRes) {
+        showSnack(anchor, message, colorRes, 3000);
+    }
+
+    private void showSnack(View anchor, String message, int colorRes, int durationMs) {
+        Snackbar sb = Snackbar.make(anchor, message, Snackbar.LENGTH_INDEFINITE);
+        sb.setDuration(durationMs);
+        sb.setBackgroundTint(ContextCompat.getColor(requireContext(), colorRes));
+        sb.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white));
+        TextView tv = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        if (tv != null) {
+            android.graphics.Typeface tf = ResourcesCompat.getFont(requireContext(), R.font.poppins__regular);
+            if (tf != null) tv.setTypeface(tf);
+        }
+        sb.show();
     }
 
     private void showTermsDialog(CheckBox chkTerms) {

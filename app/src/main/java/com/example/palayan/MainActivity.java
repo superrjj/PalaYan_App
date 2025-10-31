@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
+import android.provider.Settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -38,9 +39,22 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(MainActivity.this, FarmerRegistration.class);
-                startActivity(intent);
-                finish();
+                String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                FirebaseFirestore.getInstance()
+                        .collection("farmers")
+                        .document(deviceId)
+                        .get()
+                        .addOnSuccessListener(doc -> {
+                            Class<?> next = doc.exists() ? com.example.palayan.UserActivities.UserDashboard.class : FarmerRegistration.class;
+                            Intent intent = new Intent(MainActivity.this, next);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            Intent intent = new Intent(MainActivity.this, FarmerRegistration.class);
+                            startActivity(intent);
+                            finish();
+                        });
             }
         }, 2000);
 
