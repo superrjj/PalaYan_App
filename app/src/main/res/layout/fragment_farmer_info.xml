@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    tools:context=".UserActivities.RegistrationFragment.FarmerInfo">
+
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="vertical"
+           android:padding="20dp"
+           android:background="@color/white">
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="vertical"
+               android:background="@color/white"
+               android:padding="10dp">
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:fontFamily="@font/poppins_bold"
+                   android:textSize="20sp"
+                   android:textColor="@color/green"
+                   android:text="Personal na Impormasyon"/>
+
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="15dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Unang Pangalan"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_red"
+                       android:text="*"
+                       android:textSize="15sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Ex. Juan">
+
+                   <com.google.android.material.textfield.TextInputEditText
+                       android:id="@+id/txtUnangPangalan"
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:inputType="text"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Gitnang Pangalan"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_red"
+                       android:text="*"
+                       android:textSize="15sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Ex. Mercado">
+
+                   <com.google.android.material.textfield.TextInputEditText
+                       android:id="@+id/txtGitnangPangalan"
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:inputType="text"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Apelyido"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_red"
+                       android:text="*"
+                       android:textSize="15sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Ex. Dela Cruz">
+
+                   <com.google.android.material.textfield.TextInputEditText
+                       android:id="@+id/txtApelyido"
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:inputType="text"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Edad"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_red"
+                       android:text="*"
+                       android:textSize="15sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Ex. 40">
+
+                   <com.google.android.material.textfield.TextInputEditText
+                       android:id="@+id/txtEdad"
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:inputType="text"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Kasarian"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_red"
+                       android:text="*"
+                       android:textSize="15sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Pumili ng kasarian"
+                   app:boxStrokeColor="@color/green"
+                   app:endIconMode="dropdown_menu">
+
+                   <AutoCompleteTextView
+                       android:id="@+id/act_kasarian"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:clickable="true"
+                       android:focusable="false"
+                       android:fontFamily="@font/poppins__medium"
+                       android:inputType="none"
+                       android:padding="12dp"
+                       android:textColor="@color/black"
+                       android:textSize="15sp" />
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Telepono"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_gray"
+                       android:text="(optional)"
+                       android:textSize="14sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Ex. 09XXXXXXXXXX">
+
+                   <com.google.android.material.textfield.TextInputEditText
+                       android:id="@+id/txtTelepono"
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:inputType="text"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Email Address"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_gray"
+                       android:text="(optional)"
+                       android:textSize="14sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Ex. juandelacruz@gmail.com">
+
+                   <com.google.android.material.textfield.TextInputEditText
+                       android:id="@+id/txtEmailAddress"
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:inputType="text"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:fontFamily="@font/poppins_bold"
+                   android:textSize="20sp"
+                   android:layout_marginTop="20sp"
+                   android:textColor="@color/green"
+                   android:text="Tirahan"/>
+
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="15dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Probinsya"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_red"
+                       android:text="*"
+                       android:textSize="15sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Pumili ng probinsya"
+                   app:boxStrokeColor="@color/green"
+                   app:endIconMode="dropdown_menu">
+
+                   <AutoCompleteTextView
+                       android:id="@+id/act_probinsya"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:clickable="true"
+                       android:focusable="false"
+                       android:fontFamily="@font/poppins__medium"
+                       android:inputType="none"
+                       android:padding="12dp"
+                       android:textColor="@color/black"
+                       android:textSize="15sp" />
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Munisipalidad/Syudad"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_red"
+                       android:text="*"
+                       android:textSize="15sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Pumili ng munisipalidad/syudad"
+                   app:boxStrokeColor="@color/green"
+                   app:endIconMode="dropdown_menu">
+
+                   <AutoCompleteTextView
+                       android:id="@+id/act_municipality"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:clickable="true"
+                       android:focusable="false"
+                       android:fontFamily="@font/poppins__medium"
+                       android:inputType="none"
+                       android:padding="12dp"
+                       android:textColor="@color/black"
+                       android:textSize="15sp" />
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:orientation="horizontal">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/black"
+                       android:text="Barangay"
+                       android:textSize="15sp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/dark_red"
+                       android:text="*"
+                       android:textSize="15sp"
+                       android:paddingStart="5dp"
+                       android:fontFamily="@font/poppins__regular"/>
+
+               </LinearLayout>
+
+               <com.google.android.material.textfield.TextInputLayout
+
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:hint="Pumili ng barangay"
+                   app:boxStrokeColor="@color/green"
+                   app:endIconMode="dropdown_menu">
+
+                   <AutoCompleteTextView
+                       android:id="@+id/act_barangay"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:clickable="true"
+                       android:focusable="false"
+                       android:fontFamily="@font/poppins__medium"
+                       android:inputType="none"
+                       android:padding="12dp"
+                       android:textColor="@color/black"
+                       android:textSize="15sp" />
+
+               </com.google.android.material.textfield.TextInputLayout>
+
+              <CheckBox
+                  android:id="@+id/chkTerms"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="30dp"
+                  android:text="Sumasang-ayon ako sa mga tuntunin ng app at sa paggamit ng aking datos para sa layuning pang-agrikultura."
+                  android:textColor="@color/black"
+                  android:justificationMode="inter_word"
+                  android:fontFamily="@font/poppins__medium"
+                  android:textSize="14sp"/>
+
+              <Button
+                   android:id="@+id/btnRegister"
+                   android:layout_width="match_parent"
+                   android:layout_height="50dp"
+                   android:layout_marginTop="50dp"
+                   android:background="@drawable/button_solid"
+                   android:text="Irehistro"
+                   android:fontFamily="@font/poppins__medium"
+                   android:textColor="@color/white"
+                   android:textSize="15sp"/>
+
+           </LinearLayout>
+
+       </LinearLayout>
+
+
+   </ScrollView>
+
+</RelativeLayout>

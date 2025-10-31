@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tarlac_city_barangays">
+        <item>Aguso</item>
+        <item>Alvindia</item>
+        <item>Amucao</item>
+        <item>Armenia</item>
+        <item>Asturias</item>
+        <item>Atioc</item>
+        <item>Balanti</item>
+        <item>Balete</item>
+        <item>Balibago I</item>
+        <item>Balibago II</item>
+        <item>Balingcanaway</item>
+        <item>Banaba</item>
+        <item>Bantog</item>
+        <item>Baras-baras</item>
+        <item>Batang-batang</item>
+        <item>Binauganan</item>
+        <item>Bora</item>
+        <item>Buenavista</item>
+        <item>Buhilit</item>
+        <item>Burot</item>
+        <item>Calingcuan</item>
+        <item>Capehan</item>
+        <item>Carangian</item>
+        <item>Care</item>
+        <item>Central</item>
+        <item>Culipat</item>
+        <item>Cut-Cut I</item>
+        <item>Cut-Cut II</item>
+        <item>Dalayap</item>
+        <item>Dela Paz</item>
+        <item>Dolores</item>
+        <item>Laoang</item>
+        <item>Ligtasan</item>
+        <item>Lourdes</item>
+        <item>Mabini</item>
+        <item>Maligaya</item>
+        <item>Maliwalo</item>
+        <item>Mapalacsiao</item>
+        <item>Mapalad</item>
+        <item>Matatalaib</item>
+        <item>Panampunan</item>
+        <item>Paraiso</item>
+        <item>Poblacion</item>
+        <item>Salapungan</item>
+        <item>San Carlos</item>
+        <item>San Francisco</item>
+        <item>San Isidro</item>
+        <item>San Jose</item>
+        <item>San Jose de Urquico</item>
+        <item>San Juan Bautista</item>
+        <item>San Juan de Mata</item>
+        <item>San Luis</item>
+        <item>San Manuel</item>
+        <item>San Miguel</item>
+        <item>San Nicolas</item>
+        <item>San Pablo</item>
+        <item>San Pascual</item>
+        <item>San Rafael</item>
+        <item>San Roque</item>
+        <item>San Sebastian</item>
+        <item>San Vicente</item>
+        <item>Santa Cruz</item>
+        <item>Santa Maria</item>
+        <item>Santo Cristo</item>
+        <item>Santo Domingo</item>
+        <item>Santo Niño</item>
+        <item>Sapang Maragul</item>
+        <item>Sapang Tagalog</item>
+        <item>Sepung Calzada</item>
+        <item>Sinait</item>
+        <item>Suizo</item>
+        <item>Tariji</item>
+        <item>Tibag</item>
+        <item>Tibagan</item>
+        <item>Trinidad</item>
+        <item>Ungot</item>
+        <item>Villa Bacolor</item>
+    </string-array>
+
+    <string-array name="gerona_barangays">
+        <item>Abagon</item>
+        <item>Amacalan</item>
+        <item>Apsayan</item>
+        <item>Ayson</item>
+        <item>Bawa</item>
+        <item>Buenlag</item>
+        <item>Bularit</item>
+        <item>Calayaan</item>
+        <item>Carbonel</item>
+        <item>Cardona</item>
+        <item>Caturay</item>
+        <item>Danzo</item>
+        <item>Dicolor</item>
+        <item>Don Basilio</item>
+        <item>Luna</item>
+        <item>Mabini</item>
+        <item>Magaspac</item>
+        <item>Malayep</item>
+        <item>Matapitap</item>
+        <item>Matayuncab</item>
+        <item>New Salem</item>
+        <item>Oloybuaya</item>
+        <item>Padapada</item>
+        <item>Parsolingan</item>
+        <item>Pinasling</item>
+        <item>Plastado</item>
+        <item>Poblacion 1</item>
+        <item>Poblacion 2</item>
+        <item>Poblacion 3</item>
+        <item>Quezon</item>
+        <item>Rizal</item>
+        <item>Salapungan</item>
+        <item>San Agustin</item>
+        <item>San Antonio</item>
+        <item>San Bartolome</item>
+        <item>San Jose</item>
+        <item>Santiago</item>
+        <item>Sembrano</item>
+        <item>Santa Lucia</item>
+        <item>Sulipa</item>
+        <item>Tagumbao</item>
+        <item>Tangcaran</item>
+        <item>Villa Paz</item>
+    </string-array>
+
+    <string-array name="capas_barangays">
+        <item>Aranguren</item>
+        <item>Bueno</item>
+        <item>Cristo Rey</item>
+        <item>Cubcub</item>
+        <item>Cutcut I</item>
+        <item>Cutcut II</item>
+        <item>Dolores</item>
+        <item>Estrada</item>
+        <item>Lawy</item>
+        <item>Manga</item>
+        <item>Manlapig</item>
+        <item>Maruglu</item>
+        <item>O Donnell</item>
+        <item>Sta. Juliana</item>
+        <item>Sta. Lucia</item>
+        <item>Sta. Rita</item>
+        <item>Sto. Domingo I</item>
+        <item>Sto. Domingo II</item>
+        <item>Sto. Rosario</item>
+        <item>Talaga</item>
+    </string-array>
+
+    <string-array name="bamban_barangays">
+        <item>Anupul</item>
+        <item>Banaba</item>
+        <item>Bangcu</item>
+        <item>Culubasa</item>
+        <item>Dela Cruz</item>
+        <item>La Paz</item>
+        <item>Lourdes</item>
+        <item>Malonzo</item>
+        <item>San Nicolas (Pob.)</item>
+        <item>San Pedro</item>
+        <item>San Rafael</item>
+        <item>San Roque</item>
+        <item>San Vicente</item>
+        <item>Santo Niño</item>
+        <item>Virgen de los Remedios (Pacalcal)</item>
+    </string-array>
+
+    <string-array name="concepcion_barangays">
+        <item>Alfonso</item>
+        <item>Balutu</item>
+        <item>Cafe</item>
+        <item>Calius Gueco</item>
+        <item>Caluluan</item>
+        <item>Castillo</item>
+        <item>Corazon de Jesus (Darabulbul)</item>
+        <item>Culatingan</item>
+        <item>Dungan</item>
+        <item>Dutung-A-Matas (Jefmin)</item>
+        <item>Green Village</item>
+        <item>Lilibangan</item>
+        <item>Mabilog</item>
+        <item>Magao</item>
+        <item>Malupa</item>
+        <item>Minane</item>
+        <item>Panalicsican</item>
+        <item>Pando</item>
+        <item>Parang</item>
+        <item>Parulung</item>
+        <item>Pitabunan</item>
+        <item>San Agustin (Murcia)</item>
+        <item>San Antonio</item>
+        <item>San Bartolome</item>
+        <item>San Francisco</item>
+        <item>San Isidro (Almendras)</item>
+        <item>San Jose (Poblacion)</item>
+        <item>San Juan (Castro)</item>
+        <item>San Martin</item>
+        <item>San Nicolas (Poblacion)</item>
+        <item>San Nicolas Balas</item>
+        <item>San Vicente (Calius/Corba)</item>
+        <item>Santa Cruz</item>
+        <item>Santa Maria</item>
+        <item>Santa Monica</item>
+        <item>Santa Rita</item>
+        <item>Santa Rosa (Bucsit)</item>
+        <item>Santiago</item>
+        <item>Santo Cristo</item>
+        <item>Santo Niño</item>
+        <item>Santo Rosario (Magunting)</item>
+        <item>Talimunduc Marimla</item>
+        <item>Talimunduc San Miguel</item>
+        <item>Telabanca</item>
+        <item>Tinang</item>
+    </string-array>
+
+    <string-array name="la_paz_barangays">
+        <item>Balanoy</item>
+        <item>Bantog-Caricutan</item>
+        <item>Caramutan</item>
+        <item>Caut</item>
+        <item>Comillas</item>
+        <item>Dumarais</item>
+        <item>Guevara</item>
+        <item>Kapanikian</item>
+        <item>La Purisima</item>
+        <item>Lara</item>
+        <item>Laungcupang</item>
+        <item>Lomboy</item>
+        <item>Macalong</item>
+        <item>Matayumtayum</item>
+        <item>Mayang</item>
+        <item>Motrico</item>
+        <item>Paludpud</item>
+        <item>Rizal</item>
+        <item>San Isidro (Poblacion)</item>
+        <item>San Roque (Poblacion)</item>
+        <item>Sierra</item>
+    </string-array>
+
+    <string-array name="san_jose_barangays">
+        <item>Burgos</item>
+        <item>David</item>
+        <item>Iba</item>
+        <item>Labney</item>
+        <item>Lawacamulag</item>
+        <item>Lubigan</item>
+        <item>Maamot</item>
+        <item>Mababanaba</item>
+        <item>Moriones</item>
+        <item>Pao</item>
+        <item>San Juan de Valdez</item>
+        <item>Sula</item>
+        <item>Villa Aglipay</item>
+    </string-array>
+
+    <string-array name="victoria_barangays">
+        <item>Baculong</item>
+        <item>Balayang</item>
+        <item>Balbaloto</item>
+        <item>Bangar</item>
+        <item>Bantog</item>
+        <item>Batang-batang</item>
+        <item>Bulo (Poblacion)</item>
+        <item>Calibungan</item>
+        <item>Canarem</item>
+        <item>Cruz</item>
+        <item>Lalapac</item>
+        <item>Maliuid</item>
+        <item>Mangolago</item>
+        <item>Masalasa</item>
+        <item>Palac-palac</item>
+        <item>San Agustin</item>
+        <item>San Andres</item>
+        <item>San Fernando (Poblacion)</item>
+        <item>San Francisco</item>
+        <item>San Gavino (Poblacion)</item>
+        <item>San Jacinto</item>
+        <item>San Nicolas (Poblacion)</item>
+        <item>San Vicente (Poblacion)</item>
+        <item>Santa Barbara (Poblacion)</item>
+        <item>Santa Lucia (Poblacion)</item>
+    </string-array>
+
+    <string-array name="santa_ignacia_barangays">
+        <item>Baldios</item>
+        <item>Botbotones</item>
+        <item>Caanamongan</item>
+        <item>Cabaruan</item>
+        <item>Cabugbugan</item>
+        <item>Caduldulaoan</item>
+        <item>Calipayan</item>
+        <item>Macaguing</item>
+        <item>Nambalan</item>
+        <item>Padapada</item>
+        <item>Pilipila</item>
+        <item>Pinpinas</item>
+        <item>Poblacion East</item>
+        <item>Poblacion West</item>
+        <item>Pugo-Cecilio</item>
+        <item>San Francisco</item>
+        <item>San Sotero</item>
+        <item>San Vicente</item>
+        <item>Santa Ines Centro</item>
+        <item>Santa Ines East</item>
+        <item>Santa Ines West</item>
+        <item>Taguiporo</item>
+        <item>Timmaguab</item>
+        <item>Vargas</item>
+    </string-array>
+
+    <string-array name="mayantoc_barangays">
+        <item>Ambalingit</item>
+        <item>Baybayaoas</item>
+        <item>Bigbiga</item>
+        <item>Binbinaca</item>
+        <item>Calabtangan</item>
+        <item>Caocaoayan</item>
+        <item>Carabaoan</item>
+        <item>Cubcub</item>
+        <item>Gayonggayong</item>
+        <item>Gossod</item>
+        <item>Labney</item>
+        <item>Mamonit</item>
+        <item>Maniniog</item>
+        <item>Mapandan</item>
+        <item>Melecio Manganaan</item>
+        <item>Nambalan</item>
+        <item>Pedro L. Quines</item>
+        <item>Pitombayog</item>
+        <item>Poblacion Norte</item>
+        <item>Poblacion Sur</item>
+        <item>Rotrottooc</item>
+        <item>San Bartolome</item>
+        <item>San Jose</item>
+        <item>Taldiapan</item>
+    </string-array>
+
+    <string-array name="camiling_barangays">
+        <item>Anoling 1st</item>
+        <item>Anoling 2nd</item>
+        <item>Anoling 3rd</item>
+        <item>Bacabac</item>
+        <item>Bacsay</item>
+        <item>Bancay 1st</item>
+        <item>Bilad</item>
+        <item>Birbira</item>
+        <item>Bobon 1st (Casaratan)</item>
+        <item>Bobon 2nd</item>
+        <item>Bobon Caarosipan</item>
+        <item>Cabanabaan</item>
+        <item>Cacamilingan Norte</item>
+        <item>Cacamilingan Sur</item>
+        <item>Caniag</item>
+        <item>Carael</item>
+        <item>Cayaoan</item>
+        <item>Cayasan</item>
+        <item>Florida</item>
+        <item>Lasong</item>
+        <item>Libueg (with Sitio Pugo)</item>
+        <item>Malacampa</item>
+        <item>Manaquem</item>
+        <item>Manupeg</item>
+        <item>Marawi</item>
+        <item>Matubog</item>
+        <item>Nagrambacan</item>
+        <item>Nagserialan</item>
+        <item>Palimbo Proper</item>
+        <item>Palimbo Caarosipan</item>
+        <item>Pao 1st</item>
+        <item>Pao 2nd</item>
+        <item>Pao 3rd</item>
+        <item>Papaac</item>
+        <item>Pindangan 1st</item>
+        <item>Pindangan 2nd</item>
+        <item>Poblacion A</item>
+        <item>Poblacion B</item>
+        <item>Poblacion C</item>
+        <item>Poblacion D</item>
+        <item>Poblacion E</item>
+        <item>Poblacion F</item>
+        <item>Poblacion G</item>
+        <item>Poblacion H</item>
+        <item>Poblacion I</item>
+        <item>Poblacion J</item>
+        <item>San Isidro (Bancay 2nd)</item>
+        <item>Santa Maria</item>
+        <item>Sawat</item>
+        <item>Sinilian 1st</item>
+        <item>Sinilian 2nd</item>
+        <item>Sinilian 3rd (Northern, Bitawa, Centro)</item>
+        <item>Sinilian Cacalibosoan</item>
+        <item>Sinulatan 1st</item>
+        <item>Sinulatan 2nd</item>
+        <item>Surgui 1st</item>
+        <item>Surgui 2nd</item>
+        <item>Surgui 3rd</item>
+        <item>Tambugan</item>
+        <item>Telbang</item>
+        <item>Tuec</item>
+    </string-array>
+
+    <string-array name="san_clemente_barangays">
+        <item>Balloc</item>
+        <item>Bamban</item>
+        <item>Casipo</item>
+        <item>Catagudingan</item>
+        <item>Daldalayap</item>
+        <item>Doclong 1</item>
+        <item>Doclong 2</item>
+        <item>Maasin</item>
+        <item>Nagsabaran</item>
+        <item>Pit-ao</item>
+        <item>Poblacion Norte</item>
+        <item>Poblacion Sur</item>
+    </string-array>
+
+    <string-array name="san_manuel_barangays">
+        <item>Colubot</item>
+        <item>Lanat</item>
+        <item>Legaspi</item>
+        <item>Mangandingay</item>
+        <item>Matarannoc</item>
+        <item>Pacpaco</item>
+        <item>Poblacion</item>
+        <item>Salcedo</item>
+        <item>San Agustin</item>
+        <item>San Felipe</item>
+        <item>San Jacinto</item>
+        <item>San Miguel</item>
+        <item>San Narciso</item>
+        <item>San Vicente</item>
+        <item>Santa Maria</item>
+    </string-array>
+
+    <string-array name="moncada_barangays">
+        <item>Ablang-Sapang</item>
+        <item>Aringin</item>
+        <item>Atencio</item>
+        <item>Banaoang East</item>
+        <item>Banaoang West</item>
+        <item>Baquero Norte</item>
+        <item>Baquero Sur</item>
+        <item>Burgos</item>
+        <item>Calamay</item>
+        <item>Calapan</item>
+        <item>Camangaan East</item>
+        <item>Camangaan West</item>
+        <item>Camposanto 1 - Norte</item>
+        <item>Camposanto 1 - Sur</item>
+        <item>Camposanto 2</item>
+        <item>Capaoayan</item>
+        <item>Lapsing</item>
+        <item>Mabini</item>
+        <item>Maluac</item>
+        <item>Poblacion 1</item>
+        <item>Poblacion 2</item>
+        <item>Poblacion 3</item>
+        <item>Poblacion 4</item>
+        <item>Rizal</item>
+        <item>San Juan</item>
+        <item>San Julian</item>
+        <item>San Leon</item>
+        <item>San Pedro</item>
+        <item>San Roque</item>
+        <item>Santa Lucia East</item>
+        <item>Santa Lucia West</item>
+        <item>Santa Maria</item>
+        <item>Santa Monica</item>
+        <item>Tolega Norte</item>
+        <item>Tolega Sur</item>
+        <item>Tubectubang</item>
+        <item>Villa</item>
+    </string-array>
+
+    <string-array name="paniqui_barangays">
+        <item>Abogado</item>
+        <item>Acocolao</item>
+        <item>Aduas</item>
+        <item>Apulid</item>
+        <item>Balaoang</item>
+        <item>Barang</item>
+        <item>Brillante</item>
+        <item>Burgos</item>
+        <item>Cabayaoasan</item>
+        <item>Canaan</item>
+        <item>Carino</item>
+        <item>Cayanga</item>
+        <item>Colibangbang</item>
+        <item>Coral</item>
+        <item>Dapdap</item>
+        <item>Estacion</item>
+        <item>Mabilang</item>
+        <item>Manaoag</item>
+        <item>Matalapitap</item>
+        <item>Nagmisan</item>
+        <item>Nancamarinan</item>
+        <item>Nipaco</item>
+        <item>Patalan</item>
+        <item>Poblacion Norte</item>
+        <item>Poblacion Sur</item>
+        <item>Rang-ayan</item>
+        <item>Salomague</item>
+        <item>Samput</item>
+        <item>San Carlos</item>
+        <item>San Isidro</item>
+        <item>San Juan de Milla</item>
+        <item>Santa Ines</item>
+        <item>Sinigpit</item>
+        <item>Tablang</item>
+        <item>Ventenilla</item>
+    </string-array>
+
+    <string-array name="pura_barangays">
+        <item>Balite</item>
+        <item>Buenavista</item>
+        <item>Cadanglaan</item>
+        <item>Estipona</item>
+        <item>Linao</item>
+        <item>Maasin</item>
+        <item>Matindeg</item>
+        <item>Maungib</item>
+        <item>Naya</item>
+        <item>Nilasin 1st</item>
+        <item>Nilasin 2nd</item>
+        <item>Poblacion 1</item>
+        <item>Poblacion 2</item>
+        <item>Poblacion 3</item>
+        <item>Poroc</item>
+        <item>Singat</item>
+    </string-array>
+
+    <string-array name="anao_barangays">
+        <item>Baguindoc (Baguinloc)</item>
+        <item>Bantog</item>
+        <item>Campos</item>
+        <item>Carmen</item>
+        <item>Casili</item>
+        <item>Don Ramon</item>
+        <item>Hernando</item>
+        <item>Poblacion</item>
+        <item>Rizal</item>
+        <item>San Francisco East</item>
+        <item>San Francisco West</item>
+        <item>San Jose North</item>
+        <item>San Jose South</item>
+        <item>San Juan</item>
+        <item>San Roque</item>
+        <item>Santo Domingo</item>
+        <item>Sinense</item>
+        <item>Suaverdez</item>
+    </string-array>
+
+    <string-array name="ramos_barangays">
+        <item>Coral-Iloco</item>
+        <item>Guiteb</item>
+        <item>Pance</item>
+        <item>Poblacion Center</item>
+        <item>Poblacion North</item>
+        <item>Poblacion South</item>
+        <item>San Juan</item>
+        <item>San Raymundo</item>
+        <item>Toledo</item>
+    </string-array>
+</resources>
+

@@ -9,8 +9,7 @@ import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 
-import com.example.palayan.UserActivities.TermsAndConditionsActivity;
-import com.example.palayan.UserActivities.UserDashboard;
+import com.example.palayan.UserActivities.FarmerRegistration;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
@@ -39,19 +38,7 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Check if it's the first time launching the app
-                SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                boolean isFirstTime = prefs.getBoolean(KEY_FIRST_TIME, true);
-                
-                Intent intent;
-                if (isFirstTime) {
-                    // First time - show Terms and Conditions
-                    intent = new Intent(MainActivity.this, TermsAndConditionsActivity.class);
-                    intent.putExtra("is_first_time", true);
-                } else {
-                    // Not first time - go directly to UserDashboard
-                    intent = new Intent(MainActivity.this, UserDashboard.class);
-                }
+                Intent intent = new Intent(MainActivity.this, FarmerRegistration.class);
                 startActivity(intent);
                 finish();
             }
