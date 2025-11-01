@@ -28,7 +28,7 @@ public class PhotoTimelineAdapter extends RecyclerView.Adapter<PhotoTimelineAdap
     }
 
     public interface OnPhotoClickListener {
-        void onPhotoClick(String imageUrl, String date);
+        void onPhotoClick(String imageUrl, String date, String description);
     }
 
     public void setOnPhotoClickListener(OnPhotoClickListener listener) {
@@ -55,7 +55,11 @@ public class PhotoTimelineAdapter extends RecyclerView.Adapter<PhotoTimelineAdap
 
         holder.itemView.setOnClickListener(v -> {
             if (onPhotoClickListener != null) {
-                onPhotoClickListener.onPhotoClick(item.getImageUrl(), item.getDate());
+                onPhotoClickListener.onPhotoClick(
+                    item.getImageUrl(), 
+                    item.getDate(),
+                    item.getDescription() != null ? item.getDescription() : "Walang paglalarawan"
+                );
             }
         });
     }

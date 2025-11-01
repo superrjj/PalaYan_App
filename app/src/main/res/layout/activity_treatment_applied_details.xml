@@ -151,58 +151,21 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Photo Timeline"
-                    android:fontFamily="@font/poppins__regular"
+                    android:text="Timeline ng Paggamot"
+                    android:fontFamily="@font/poppins__semibold"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerPhotoTimeline"
-                    android:layout_width="match_parent"
-                    android:layout_height="110dp"
-                    android:overScrollMode="never"
-                    android:scrollbars="none"
-                    android:orientation="horizontal"
-                    tools:listitem="@layout/list_image_rice_disease"
-                    android:clipToPadding="false"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/white"
-            android:layout_marginTop="15dp"
-            app:strokeColor="@color/white">
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Treatment History"
-                    android:fontFamily="@font/poppins__regular"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvTreatmentHistory"
+                    android:id="@+id/rvTreatmentTimeline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:overScrollMode="never"
                     android:scrollbars="none"
                     android:orientation="vertical"
-                    tools:listitem="@layout/item_treatment_history"
+                    tools:listitem="@layout/item_treatment_timeline"
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp" />
 

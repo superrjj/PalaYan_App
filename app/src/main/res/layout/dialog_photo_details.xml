@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_rounded"
+    android:padding="0dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/tvPhotoTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Detalye ng Larawan"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="#1F000000"/>
+    </LinearLayout>
+
+    <!-- Image Container -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:background="#F5F5F5"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/ivPhotoFull"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="Full size photo"/>
+    </FrameLayout>
+
+    <!-- Date and Description Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:paddingTop="16dp">
+
+        <!-- Date Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📅"
+                android:textSize="18sp"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Petsa ng Paggamot:"
+                android:textColor="@color/semi_black"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins__semibold"/>
+
+            <TextView
+                android:id="@+id/tvPhotoDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Oct 12, 2025"
+                android:textColor="@color/green"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins__medium"/>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#1F000000"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Description Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📝 Paglalarawan:"
+            android:textColor="@color/semi_black"
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins__semibold"
+            android:layout_marginBottom="8dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="150dp"
+            android:fillViewport="false">
+
+            <TextView
+                android:id="@+id/tvPhotoDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Walang paglalarawan"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp"
+                android:padding="8dp"
+                android:background="#F9F9F9"
+                android:fontFamily="@font/poppins__regular"/>
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- Close Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:padding="20dp"
+        android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btnClosePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I-sarado"
+            android:textSize="15sp"
+            android:fontFamily="@font/poppins__medium"
+            android:background="@drawable/button_solid"
+            android:minWidth="120dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"/>
+    </LinearLayout>
+
+</LinearLayout>
+

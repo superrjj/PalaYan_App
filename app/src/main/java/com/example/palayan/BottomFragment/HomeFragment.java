@@ -33,6 +33,7 @@ import com.example.palayan.Adapter.HistoryAdapter;
 import com.example.palayan.Helper.HistoryResult;
 import com.example.palayan.R;
 import com.example.palayan.UserActivities.CameraScanner;
+import com.example.palayan.UserActivities.FarmerJournal;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
@@ -46,6 +47,7 @@ import java.util.Calendar;
 public class HomeFragment extends Fragment {
 
     private CardView btnCamera;
+    private View btnJournal;
     private RecyclerView recycleViewerHistoryResult;
     private TextView tvNoData;
     private TextView tvGreetings;
@@ -64,6 +66,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         btnCamera = view.findViewById(R.id.btnCamera);
+        btnJournal = view.findViewById(R.id.btnJournal);
         recycleViewerHistoryResult = view.findViewById(R.id.recycleViewer_HistoryResult);
         tvNoData = view.findViewById(R.id.tvNoData);
         tvGreetings = view.findViewById(R.id.tvGreetings);
@@ -86,6 +89,11 @@ public class HomeFragment extends Fragment {
 
         btnCamera.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), CameraScanner.class);
+            startActivity(intent);
+        });
+
+        btnJournal.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), FarmerJournal.class);
             startActivity(intent);
         });
 
