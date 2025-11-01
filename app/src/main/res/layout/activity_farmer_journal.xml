@@ -10,11 +10,15 @@
     tools:context=".UserActivities.FarmerJournal">
 
     <LinearLayout
+        android:id="@+id/layoutBack"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:background="@color/white"
-        android:elevation="4dp">
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
 
         <ImageView
             android:id="@+id/ivBack"
@@ -24,7 +28,6 @@
             android:padding="10dp"
             android:layout_gravity="center"
             app:tint="@color/green"/>
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,9 +44,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
+        <Button
+            android:id="@+id/btnAddJournal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/button_solid"
+            android:text="Magdagdag ng palayan"
+            android:fontFamily="@font/poppins__regular"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"/>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRiceFields"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Walang nakatalang palayan.\nMagdagdag ng palayan para makapagsimula."
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins__regular"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:visibility="visible"/>
 
     </LinearLayout>
 

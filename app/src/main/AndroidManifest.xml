@@ -25,6 +25,9 @@
             android:name=".UserActivities.FarmerJournal"
             android:exported="false" />
         <activity
+            android:name=".UserActivities.AddFarmerJournal"
+            android:exported="false" />
+        <activity
             android:name=".UserActivities.FarmerRegistration"
             android:exported="false" />
         <activity

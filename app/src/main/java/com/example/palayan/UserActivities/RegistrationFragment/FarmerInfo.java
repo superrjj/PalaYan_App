@@ -165,7 +165,7 @@ public class FarmerInfo extends Fragment {
         data.put("updated_at", null);
 
         FirebaseFirestore.getInstance()
-                .collection("farmers")
+                .collection("users")
                 .document(deviceId)
                 .set(data)
                 .addOnSuccessListener(unused -> {

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                 FirebaseFirestore.getInstance()
-                        .collection("farmers")
+                        .collection("users")
                         .document(deviceId)
                         .get()
                         .addOnSuccessListener(doc -> {

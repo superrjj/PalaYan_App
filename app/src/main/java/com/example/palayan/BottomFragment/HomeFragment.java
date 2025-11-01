@@ -239,7 +239,7 @@ public class HomeFragment extends Fragment {
         }
         
         // Fetch farmer's first name from Firestore
-        firestore.collection("farmers")
+        firestore.collection("users")
                 .document(deviceId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="5dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:strokeColor="@color/green"
+        app:strokeWidth="1dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="vertical">
+
+            <!-- Name -->
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Palayan A"
+                android:fontFamily="@font/poppins__semibold"
+                android:textColor="@color/green"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Rice Variety -->
+            <TextView
+                android:id="@+id/tvRiceVariety"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NSIC Rc 222"
+                android:fontFamily="@font/poppins__regular"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Soil Type -->
+            <TextView
+                android:id="@+id/tvSoilType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Irrigated Lowland"
+                android:fontFamily="@font/poppins__regular"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Size -->
+            <TextView
+                android:id="@+id/tvSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1.5 hektarya"
+                android:fontFamily="@font/poppins__regular"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Planting Date -->
+            <TextView
+                android:id="@+id/tvPlantingDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Petsa: Oct 15, 2025"
+                android:fontFamily="@font/poppins__regular"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                android:layout_marginTop="8dp"
+                android:textStyle="italic"/>
+
+            <!-- History Count -->
+            <TextView
+                android:id="@+id/tvHistoryCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0 naitalang kasaysayan"
+                android:fontFamily="@font/poppins__regular"
+                android:textColor="@color/green"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
+
