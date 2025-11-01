@@ -40,12 +40,15 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.Calendar;
 
 public class HomeFragment extends Fragment {
 
     private CardView btnCamera;
     private RecyclerView recycleViewerHistoryResult;
     private TextView tvNoData;
+    private TextView tvGreetings;
 
     private List<HistoryResult> historyList;
     private List<HistoryResult> predictionItems;
@@ -63,9 +66,13 @@ public class HomeFragment extends Fragment {
         btnCamera = view.findViewById(R.id.btnCamera);
         recycleViewerHistoryResult = view.findViewById(R.id.recycleViewer_HistoryResult);
         tvNoData = view.findViewById(R.id.tvNoData);
+        tvGreetings = view.findViewById(R.id.tvGreetings);
 
         // Initialize Firebase
         firestore = FirebaseFirestore.getInstance();
+
+        // Load and update greeting
+        updateGreeting();
 
         // Initialize history list and adapter
         historyList = new ArrayList<>();
@@ -88,6 +95,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        updateGreeting(); // Refresh greeting when fragment becomes visible
         loadHistoryData();
     }
 
@@ -204,6 +212,48 @@ public class HomeFragment extends Fragment {
         tvNoData.setVisibility(historyList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
+
+    private void updateGreeting() {
+        String deviceId = getDeviceId();
+        
+        // Get current time in Philippine timezone (Asia/Manila, UTC+8)
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        
+        // Determine greeting based on time
+        String greeting;
+        if (hour >= 5 && hour < 12) {
+            greeting = "Magandang Umaga";
+        } else if (hour >= 12 && hour < 18) {
+            greeting = "Magandang Hapon";
+        } else {
+            greeting = "Magandang Gabi";
+        }
+        
+        // Fetch farmer's first name from Firestore
+        firestore.collection("farmers")
+                .document(deviceId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String firstName = documentSnapshot.getString("first_name");
+                        if (firstName != null && !firstName.isEmpty()) {
+                            // Capitalize first letter
+                            firstName = firstName.substring(0, 1).toUpperCase() + 
+                                       (firstName.length() > 1 ? firstName.substring(1).toLowerCase() : "");
+                            tvGreetings.setText(greeting + ", " + firstName + "!");
+                        } else {
+                            tvGreetings.setText(greeting + "!");
+                        }
+                    } else {
+                        tvGreetings.setText(greeting + "!");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("HomeFragment", "Error fetching farmer name: " + e.getMessage());
+                    tvGreetings.setText(greeting + "!");
+                });
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

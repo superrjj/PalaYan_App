@@ -271,7 +271,8 @@
                        android:id="@+id/txtTelepono"
                        android:layout_width="match_parent"
                        android:layout_height="match_parent"
-                       android:inputType="text"
+                       android:inputType="phone"
+                       android:maxLength="11"
                        android:fontFamily="@font/poppins__regular"/>
 
                </com.google.android.material.textfield.TextInputLayout>

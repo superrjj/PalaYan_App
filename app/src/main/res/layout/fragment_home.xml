@@ -19,7 +19,7 @@
           android:id="@+id/tvGreetings"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:textSize="25sp"
+          android:textSize="20sp"
           android:layout_marginTop="10dp"
           android:text="Magandang Umaga!"
           android:textColor="@color/green"
@@ -27,40 +27,85 @@
           android:padding="10dp"/>
 
 
-      <androidx.cardview.widget.CardView
-          android:id="@+id/btnCamera"
-          android:layout_width="match_parent"
-          android:layout_height="150dp"
-          app:cardBackgroundColor="@color/green"
-          android:layout_marginTop="15dp"
-          app:cardCornerRadius="12dp">
-
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:gravity="center"
-              android:orientation="vertical">
-
-              <ImageView
-                  android:layout_width="70dp"
-                  android:layout_height="70dp"
-                  android:src="@drawable/ic_camera"
-                  app:tint="@color/white"
-                  android:padding="10dp"/>
-
-              <TextView
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="Mag-iscan"
-                  android:textColor="@color/white"
-                  android:fontFamily="@font/poppins__medium"
-                  android:textSize="18sp"/>
-
-          </LinearLayout>
-
-      </androidx.cardview.widget.CardView>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnCamera"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="4dp"
+        android:layout_marginTop="15dp"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_disease_scanner"
+                android:padding="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mag-iscan"
+                android:textColor="@color/green"
+                android:fontFamily="@font/poppins__medium"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnJournal"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_weight="1"
+        android:layout_margin="10dp"
+        app:cardBackgroundColor="@color/white"
+        app:strokeColor="@color/white"
+        app:cardElevation="4dp"
+        android:layout_marginTop="15dp"
+        app:cardCornerRadius="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_palay"
+                android:padding="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aking talaan"
+                android:textColor="@color/green"
+                android:fontFamily="@font/poppins__medium"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

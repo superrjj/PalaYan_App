@@ -13,12 +13,6 @@ import android.provider.Settings;
 import android.content.Intent;
 import android.os.Handler;
 import android.widget.TextView;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.annotation.NonNull;
@@ -61,15 +55,6 @@ public class FarmerInfo extends Fragment {
     private static final String[] GENDERS = new String[] { "Lalake", "Babae" };
 
     // Terms text moved to strings resource (terms_conditions_tl)
-
-    // PSGC API endpoints
-    private static final String PSGC_BASE = "https://psgc.rootscratch.com";
-    // PSGC ID for Tarlac Province
-    private static final String TARLAC_PSGC_ID = "0369000000";
-
-    // Cache and mapping for dynamic data
-    private java.util.Map<String, String> municipalityNameToId = new java.util.HashMap<>();
-    private java.util.List<String> dynamicMunicipalities = new java.util.ArrayList<>();
 
     @Nullable
     @Override
