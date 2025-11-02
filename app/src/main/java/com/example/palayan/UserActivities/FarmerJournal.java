@@ -85,11 +85,13 @@ public class FarmerJournal extends AppCompatActivity implements RiceFieldAdapter
                             RiceFieldProfile riceField = new RiceFieldProfile();
                             riceField.setId(document.getString("id"));
                             riceField.setName(document.getString("name"));
-                            riceField.setSizeHectares(document.getDouble("sizeHectares") != null ? 
-                                    document.getDouble("sizeHectares") : 0.0);
-                            riceField.setSoilType(document.getString("soilType"));
-                            riceField.setRiceVariety(document.getString("riceVariety"));
-                            riceField.setPlantingDate(document.getString("plantingDate"));
+                               riceField.setImageUrl(document.getString("imageUrl"));
+                               riceField.setProvince(document.getString("province"));
+                               riceField.setCity(document.getString("city"));
+                               riceField.setBarangay(document.getString("barangay"));
+                               riceField.setSizeHectares(document.getDouble("sizeHectares") != null ? 
+                                       document.getDouble("sizeHectares") : 0.0);
+                               riceField.setSoilType(document.getString("soilType"));
                             
                             // Parse history from JSON string
                             String historyJson = document.getString("history");

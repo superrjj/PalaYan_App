@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/semi_white"
     tools:context=".UserActivities.FarmerJournal">
 
     <LinearLayout
@@ -51,7 +51,8 @@
             android:id="@+id/btnAddJournal"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/button_solid"
+            android:background="@drawable/btn_outline_blue"
+            app:backgroundTint="@null"
             android:text="Magdagdag ng palayan"
             android:fontFamily="@font/poppins__regular"
             android:textColor="@color/white"
@@ -61,6 +62,7 @@
             android:id="@+id/rvRiceFields"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@color/semi_white"
             android:layout_weight="1"
             android:visibility="gone"/>
 

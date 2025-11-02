@@ -1,6 +1,12 @@
 package com.example.palayan.UserActivities.RegistrationFragment;
 
 import android.os.Bundle;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +35,9 @@ import androidx.core.content.res.ResourcesCompat;
 
 public class FarmerInfo extends Fragment {
 
+    private AlertDialog currentTermsDialog;
+    private boolean isLinkClicked = false;
+    private boolean isProgrammaticCheck = false;
     private static final String[] PROVINCES = new String[] { "Tarlac" };
 
     private static final String[] TARLAC_MUNICIPALITIES = new String[] {
@@ -92,10 +101,41 @@ public class FarmerInfo extends Fragment {
         ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, GENDERS);
         actGender.setAdapter(genderAdapter);
 
-        chkTerms.setOnClickListener(v -> {
-            if (chkTerms.isChecked()) {
+        // Set clickable link for "tuntunin at kondisyon" in checkbox text
+        String fullText = "Nabasa ko at sumasang-ayon ako sa mga tuntunin at kondisyon ng PalaYan app.";
+        SpannableString spannableString = new SpannableString(fullText);
+        
+        int startIndex = fullText.indexOf("tuntunin at kondisyon");
+        int endIndex = startIndex + "tuntunin at kondisyon".length();
+        
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                // Prevent checkbox click from firing when link is clicked
+                isLinkClicked = true;
                 showTermsDialog(chkTerms);
+                // Reset after a short delay to allow onClick to check it
+                new Handler().postDelayed(() -> isLinkClicked = false, 100);
             }
+        };
+        
+        spannableString.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)), 
+                startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        
+        chkTerms.setText(spannableString);
+        chkTerms.setMovementMethod(LinkMovementMethod.getInstance());
+
+        chkTerms.setOnClickListener(v -> {
+            // Don't show dialog if link was clicked or if it was checked programmatically
+            if (!isLinkClicked && !isProgrammaticCheck) {
+                if (chkTerms.isChecked()) {
+                    showTermsDialog(chkTerms);
+                }
+            }
+            // Reset flags
+            isLinkClicked = false;
+            isProgrammaticCheck = false;
         });
 
         btnRegister.setOnClickListener(v -> handleRegister(
@@ -197,15 +237,34 @@ public class FarmerInfo extends Fragment {
     }
 
     private void showTermsDialog(CheckBox chkTerms) {
+        // Prevent showing multiple dialogs
+        if (currentTermsDialog != null && currentTermsDialog.isShowing()) {
+            return;
+        }
+        
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_terms_conditions, null, false);
         ScrollView scrollView = dialogView.findViewById(R.id.scrollTerms);
         Button btnAgree = dialogView.findViewById(R.id.btnAgree);
         Button btnDecline = dialogView.findViewById(R.id.btnDecline);
+        TextView tvTitle = dialogView.findViewById(R.id.tvTitle);
+
+        tvTitle.setText("Mga Tuntunin at Kundisyon at Patakaran sa Privacy");
 
         androidx.appcompat.widget.AppCompatTextView tv = dialogView.findViewById(R.id.tvTerms);
+        
+        // Just set text directly (no HTML parsing needed since we removed <b> tags)
         tv.setText(getString(R.string.terms_conditions_tl));
+        
+        // Apply justification after view is laid out
+        tv.post(() -> {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                tv.setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_INTER_WORD);
+            }
+        });
 
+        btnAgree.setText("OKAY");
         btnAgree.setEnabled(false);
+        btnDecline.setVisibility(View.GONE);
 
         scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
             if (isScrollAtBottom(scrollView)) {
@@ -213,26 +272,30 @@ public class FarmerInfo extends Fragment {
             }
         });
 
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+        currentTermsDialog = new AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setCancelable(false)
                 .create();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        if (currentTermsDialog.getWindow() != null) {
+            currentTermsDialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
 
         btnAgree.setOnClickListener(v -> {
+            // Mark as programmatic check to prevent onClick from firing
+            isProgrammaticCheck = true;
             chkTerms.setChecked(true);
-            dialog.dismiss();
-        });
-        btnDecline.setOnClickListener(v -> {
-            chkTerms.setChecked(false);
-            dialog.dismiss();
+            currentTermsDialog.dismiss();
+            currentTermsDialog = null;
         });
 
-        dialog.show();
+        currentTermsDialog.setOnDismissListener(dialog -> {
+            currentTermsDialog = null;
+        });
+
+        currentTermsDialog.show();
     }
+
 
     private boolean isScrollAtBottom(ScrollView scrollView) {
         View child = scrollView.getChildAt(0);

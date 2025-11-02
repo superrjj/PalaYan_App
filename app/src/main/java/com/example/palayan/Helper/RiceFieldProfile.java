@@ -8,10 +8,12 @@ import java.util.List;
 public class RiceFieldProfile implements Serializable {
     private String id;
     private String name;
+    private String imageUrl;
+    private String province;
+    private String city;
+    private String barangay;
     private double sizeHectares;
     private String soilType;
-    private String riceVariety;
-    private String plantingDate;
     private Date createdAt;
     private List<HistoryEntry> history;
 
@@ -20,12 +22,14 @@ public class RiceFieldProfile implements Serializable {
         this.createdAt = new Date();
     }
 
-    public RiceFieldProfile(String name, double sizeHectares, String soilType, String riceVariety, String plantingDate) {
+    public RiceFieldProfile(String name, String imageUrl, String province, String city, String barangay, double sizeHectares, String soilType) {
         this.name = name;
+        this.imageUrl = imageUrl;
+        this.province = province;
+        this.city = city;
+        this.barangay = barangay;
         this.sizeHectares = sizeHectares;
         this.soilType = soilType;
-        this.riceVariety = riceVariety;
-        this.plantingDate = plantingDate;
         this.history = new ArrayList<>();
         this.createdAt = new Date();
         this.id = String.valueOf(System.currentTimeMillis());
@@ -56,28 +60,44 @@ public class RiceFieldProfile implements Serializable {
         this.sizeHectares = sizeHectares;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getBarangay() {
+        return barangay;
+    }
+
+    public void setBarangay(String barangay) {
+        this.barangay = barangay;
+    }
+
     public String getSoilType() {
         return soilType;
     }
 
     public void setSoilType(String soilType) {
         this.soilType = soilType;
-    }
-
-    public String getRiceVariety() {
-        return riceVariety;
-    }
-
-    public void setRiceVariety(String riceVariety) {
-        this.riceVariety = riceVariety;
-    }
-
-    public String getPlantingDate() {
-        return plantingDate;
-    }
-
-    public void setPlantingDate(String plantingDate) {
-        this.plantingDate = plantingDate;
     }
 
     public Date getCreatedAt() {

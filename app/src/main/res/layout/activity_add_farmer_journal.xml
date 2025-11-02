@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,20 +28,13 @@
             android:layout_gravity="center"
             app:tint="@color/green"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_gravity="center"
-            android:textColor="@color/green"
-            android:text="Bumalik"
-            android:fontFamily="@font/poppins__regular"/>
+
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Magdagdag ng Palayan"
+            android:text="Aking palayan"
             android:textSize="18sp"
             android:textColor="@color/green"
             android:fontFamily="@font/poppins__semibold"
@@ -108,6 +102,242 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Picture ng Palayan"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins__regular"
+                android:layout_marginTop="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="*"
+                android:textColor="@color/dark_red"
+                android:textSize="15sp"
+                android:paddingStart="5dp"
+                android:fontFamily="@font/poppins__regular"
+                android:layout_marginTop="-20dp"
+                android:layout_gravity="end"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="5dp"
+                card_view:cardCornerRadius="8dp"
+                card_view:cardElevation="2dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/ivRiceFieldImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@color/light_gray"
+                        android:contentDescription="Rice field image"/>
+
+                    <LinearLayout
+                        android:id="@+id/ivTapToUpload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+"
+                            android:textSize="48sp"
+                            android:textColor="@color/green"
+                            android:fontFamily="@font/poppins_bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I-tap para mag-upload ng picture"
+                            android:textColor="@color/gray"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/poppins__regular"
+                            android:layout_marginTop="5dp"/>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/ivRemoveImage"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="10dp"
+                        android:text="×"
+                        android:textSize="24sp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/button_solid"
+                        android:padding="0dp"
+                        android:visibility="gone"
+                        android:contentDescription="Remove image"/>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lokasyon ng Palayan"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins__regular"
+                android:layout_marginTop="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Probinsya"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pumili ng probinsya"
+                app:boxStrokeColor="@color/green"
+                app:endIconMode="dropdown_menu"
+                android:layout_marginTop="5dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actProvince"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins__medium"
+                    android:inputType="none"
+                    android:padding="12dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Lungsod/Munisipalidad"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pumili ng lungsod/munisipalidad"
+                app:boxStrokeColor="@color/green"
+                app:endIconMode="dropdown_menu"
+                android:layout_marginTop="5dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins__medium"
+                    android:inputType="none"
+                    android:padding="12dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Barangay"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutBarangay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pumili ng barangay"
+                app:boxStrokeColor="@color/green"
+                app:endIconMode="dropdown_menu"
+                android:layout_marginTop="5dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actBarangay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins__medium"
+                    android:inputType="none"
+                    android:padding="12dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Sukat ng Palayan (Hektarya)"
                 android:textColor="@color/black"
                 android:textSize="15sp"
@@ -150,7 +380,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Uri ng Lupa"
+                android:text="Klase ng Lupa"
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:fontFamily="@font/poppins__regular"
@@ -171,7 +401,7 @@
                 android:id="@+id/layoutSoilType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Pumili ng uri ng lupa"
+                android:hint="Pumili ng klase ng lupa"
                 app:boxStrokeColor="@color/green"
                 app:hintTextColor="@color/green"
                 android:layout_marginTop="5dp"
@@ -182,90 +412,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:fontFamily="@font/poppins__regular"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Uri ng Palay na Itinanim"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="15dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="*"
-                android:textColor="@color/dark_red"
-                android:textSize="15sp"
-                android:paddingStart="5dp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="-20dp"
-                android:layout_gravity="end"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutRiceVariety"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Halimbawa: NSIC Rc 222"
-                app:boxStrokeColor="@color/green"
-                app:hintTextColor="@color/green"
-                app:endIconMode="clear_text"
-                app:endIconTint="@color/green"
-                android:layout_marginTop="5dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etRiceVariety"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:fontFamily="@font/poppins__regular"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Petsa ng Pagtatanim"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="15dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="*"
-                android:textColor="@color/dark_red"
-                android:textSize="15sp"
-                android:paddingStart="5dp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="-20dp"
-                android:layout_gravity="end"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutPlantingDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Pumili ng petsa"
-                app:boxStrokeColor="@color/green"
-                app:hintTextColor="@color/green"
-                android:layout_marginTop="5dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPlantingDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="date"
-                    android:focusable="false"
-                    android:clickable="true"
                     android:fontFamily="@font/poppins__regular"
                     android:textColor="@color/black"
                     android:textSize="14sp"/>

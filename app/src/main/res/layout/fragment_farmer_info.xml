@@ -472,11 +472,11 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:layout_marginTop="30dp"
-                  android:text="Sumasang-ayon ako sa mga tuntunin ng app at sa paggamit ng aking datos para sa layuning pang-agrikultura."
+                  android:text="Nabasa ko at sumasang-ayon ako sa mga tuntunin at kondisyon ng PalaYan app."
                   android:textColor="@color/black"
                   android:justificationMode="inter_word"
                   android:fontFamily="@font/poppins__medium"
-                  android:textSize="14sp"/>
+                  android:textSize="15sp"/>
 
               <Button
                    android:id="@+id/btnRegister"

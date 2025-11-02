@@ -21,10 +21,12 @@ public class JournalStorageHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("id", riceField.getId());
         data.put("name", riceField.getName());
+        data.put("imageUrl", riceField.getImageUrl() != null ? riceField.getImageUrl() : "");
+        data.put("province", riceField.getProvince() != null ? riceField.getProvince() : "");
+        data.put("city", riceField.getCity() != null ? riceField.getCity() : "");
+        data.put("barangay", riceField.getBarangay() != null ? riceField.getBarangay() : "");
         data.put("sizeHectares", riceField.getSizeHectares());
         data.put("soilType", riceField.getSoilType());
-        data.put("riceVariety", riceField.getRiceVariety());
-        data.put("plantingDate", riceField.getPlantingDate());
         data.put("createdAt", FieldValue.serverTimestamp());
         data.put("deviceId", deviceId);
         

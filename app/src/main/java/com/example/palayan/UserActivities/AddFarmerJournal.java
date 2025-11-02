@@ -1,14 +1,26 @@
 package com.example.palayan.UserActivities;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -16,34 +28,95 @@ import androidx.core.content.res.ResourcesCompat;
 import com.example.palayan.Helper.JournalStorageHelper;
 import com.example.palayan.Helper.RiceFieldProfile;
 import com.example.palayan.R;
+import com.example.palayan.UserActivities.LoadingDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.UUID;
 
 public class AddFarmerJournal extends AppCompatActivity {
 
-    private TextInputEditText etName, etSize, etRiceVariety, etPlantingDate;
-    private TextInputLayout layoutName, layoutSize, layoutSoilType, layoutRiceVariety, layoutPlantingDate;
-    private AutoCompleteTextView actvSoilType;
+    private static final String[] PROVINCES = new String[] { "Tarlac" };
+    private static final String[] TARLAC_MUNICIPALITIES = new String[] {
+            "Anao", "Bamban", "Camiling", "Capas", "Concepcion", "Gerona", "La Paz",
+            "Mayantoc", "Moncada", "Paniqui", "Pura", "Ramos", "San Clemente", "San Jose",
+            "San Manuel", "Santa Ignacia", "Tarlac City", "Victoria"
+    };
+
+    private TextInputEditText etName, etSize;
+    private TextInputLayout layoutName, layoutSize, layoutSoilType, layoutBarangay;
+    private AutoCompleteTextView actvSoilType, actProvince, actCity, actBarangay;
     private Button btnSave;
-    private ImageView ivBack;
+    private ImageView ivBack, ivRiceFieldImage;
+    private View ivTapToUpload;
+    private Button ivRemoveImage;
     
-    private Calendar calendar;
-    private SimpleDateFormat dateFormatter;
+    private Bitmap selectedBitmap;
+    private Uri selectedImageUri;
+    private FirebaseStorage storage;
+    private LoadingDialog loadingDialog;
+    private String deviceId;
     private String[] soilTypes;
+
+    private final ActivityResultLauncher<String> requestCameraPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) openCamera();
+                else Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            });
+
+    private final ActivityResultLauncher<String> requestReadImagesPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) openGallery();
+                else Toast.makeText(this, "Photos permission denied", Toast.LENGTH_SHORT).show();
+            });
+
+    private final ActivityResultLauncher<Intent> cameraLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Bitmap bmp = (Bitmap) result.getData().getExtras().get("data");
+                    if (bmp != null) {
+                        selectedBitmap = bmp;
+                        selectedImageUri = null;
+                        ivRiceFieldImage.setImageBitmap(bmp);
+                        ivTapToUpload.setVisibility(View.GONE);
+                        ivRemoveImage.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> galleryLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        selectedImageUri = uri;
+                        selectedBitmap = null;
+                        ivRiceFieldImage.setImageURI(uri);
+                        ivTapToUpload.setVisibility(View.GONE);
+                        ivRemoveImage.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_farmer_journal);
 
+        storage = FirebaseStorage.getInstance();
+        loadingDialog = new LoadingDialog(this);
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         initViews();
+        setupLocationDropdowns();
         setupSoilTypeDropdown();
-        setupDatePicker();
+        setupImagePicker();
         setupListeners();
     }
 
@@ -52,21 +125,111 @@ public class AddFarmerJournal extends AppCompatActivity {
         etName = findViewById(R.id.etName);
         etSize = findViewById(R.id.etSize);
         actvSoilType = findViewById(R.id.actvSoilType);
-        etRiceVariety = findViewById(R.id.etRiceVariety);
-        etPlantingDate = findViewById(R.id.etPlantingDate);
+        actProvince = findViewById(R.id.actProvince);
+        actCity = findViewById(R.id.actCity);
+        actBarangay = findViewById(R.id.actBarangay);
         
         layoutName = findViewById(R.id.layoutName);
         layoutSize = findViewById(R.id.layoutSize);
         layoutSoilType = findViewById(R.id.layoutSoilType);
-        layoutRiceVariety = findViewById(R.id.layoutRiceVariety);
-        layoutPlantingDate = findViewById(R.id.layoutPlantingDate);
+        layoutBarangay = findViewById(R.id.layoutBarangay);
+        
+        ivRiceFieldImage = findViewById(R.id.ivRiceFieldImage);
+        ivTapToUpload = findViewById(R.id.ivTapToUpload);
+        ivRemoveImage = findViewById(R.id.ivRemoveImage);
         
         btnSave = findViewById(R.id.btnSave);
         
-        calendar = Calendar.getInstance();
-        dateFormatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-        
         soilTypes = getResources().getStringArray(R.array.environment_array);
+    }
+
+    private void setupLocationDropdowns() {
+        // Province adapter (Tarlac only)
+        ArrayAdapter<String> provinceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PROVINCES);
+        actProvince.setAdapter(provinceAdapter);
+        actProvince.setOnItemClickListener((parent, v, position, id) -> {
+            actCity.setText("");
+            actBarangay.setText("");
+            setupMunicipalities();
+        });
+
+        // Initialize municipalities
+        setupMunicipalities();
+    }
+
+    private void setupMunicipalities() {
+        ArrayAdapter<String> municipalitiesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, TARLAC_MUNICIPALITIES);
+        actCity.setAdapter(municipalitiesAdapter);
+        actCity.setOnItemClickListener((parent, v, position, id) -> {
+            String selectedMunicipality = TARLAC_MUNICIPALITIES[position];
+            actBarangay.setText("");
+            setupBarangays(selectedMunicipality);
+        });
+    }
+
+    private void setupBarangays(String municipality) {
+        String[] barangays;
+        switch (municipality) {
+            case "Tarlac City":
+                barangays = getResources().getStringArray(R.array.tarlac_city_barangays);
+                break;
+            case "Gerona":
+                barangays = getResources().getStringArray(R.array.gerona_barangays);
+                break;
+            case "Concepcion":
+                barangays = getResources().getStringArray(R.array.concepcion_barangays);
+                break;
+            case "La Paz":
+                barangays = getResources().getStringArray(R.array.la_paz_barangays);
+                break;
+            case "San Jose":
+                barangays = getResources().getStringArray(R.array.san_jose_barangays);
+                break;
+            case "Victoria":
+                barangays = getResources().getStringArray(R.array.victoria_barangays);
+                break;
+            case "Santa Ignacia":
+                barangays = getResources().getStringArray(R.array.santa_ignacia_barangays);
+                break;
+            case "Mayantoc":
+                barangays = getResources().getStringArray(R.array.mayantoc_barangays);
+                break;
+            case "Camiling":
+                barangays = getResources().getStringArray(R.array.camiling_barangays);
+                break;
+            case "San Clemente":
+                barangays = getResources().getStringArray(R.array.san_clemente_barangays);
+                break;
+            case "San Manuel":
+                barangays = getResources().getStringArray(R.array.san_manuel_barangays);
+                break;
+            case "Moncada":
+                barangays = getResources().getStringArray(R.array.moncada_barangays);
+                break;
+            case "Paniqui":
+                barangays = getResources().getStringArray(R.array.paniqui_barangays);
+                break;
+            case "Pura":
+                barangays = getResources().getStringArray(R.array.pura_barangays);
+                break;
+            case "Anao":
+                barangays = getResources().getStringArray(R.array.anao_barangays);
+                break;
+            case "Ramos":
+                barangays = getResources().getStringArray(R.array.ramos_barangays);
+                break;
+            case "Capas":
+                barangays = getResources().getStringArray(R.array.capas_barangays);
+                break;
+            case "Bamban":
+                barangays = getResources().getStringArray(R.array.bamban_barangays);
+                break;
+            default:
+                barangays = new String[] { };
+        }
+
+        ArrayAdapter<String> barangayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, barangays);
+        actBarangay.setAdapter(barangayAdapter);
     }
 
     private void setupSoilTypeDropdown() {
@@ -75,32 +238,68 @@ public class AddFarmerJournal extends AppCompatActivity {
         actvSoilType.setAdapter(adapter);
     }
 
-    private void setupDatePicker() {
-        etPlantingDate.setOnClickListener(v -> showDatePicker());
+    private void setupImagePicker() {
+        ivRiceFieldImage.setOnClickListener(v -> showImagePickerDialog());
+        ivTapToUpload.setOnClickListener(v -> showImagePickerDialog());
+        ivRemoveImage.setOnClickListener(v -> clearSelectedImage());
     }
 
-    private void showDatePicker() {
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+    private void showImagePickerDialog() {
+        String[] options = new String[]{"Kumuha ng Larawan", "Pumili mula sa Gallery"};
+        new AlertDialog.Builder(this)
+                .setTitle("Pumili ng Larawan")
+                .setItems(options, (d, which) -> {
+                    if (which == 0) ensureCameraAndOpen();
+                    else ensureGalleryAndOpen();
+                })
+                .show();
+    }
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-            this,
-            (view, selectedYear, selectedMonth, selectedDay) -> {
-                calendar.set(selectedYear, selectedMonth, selectedDay);
-                etPlantingDate.setText(dateFormatter.format(calendar.getTime()));
-                layoutPlantingDate.setError(null);
-            },
-            year, month, day
-        );
-        
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
+    private void ensureCameraAndOpen() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestCameraPermission.launch(Manifest.permission.CAMERA);
+        } else {
+            openCamera();
+        }
+    }
+
+    private void ensureGalleryAndOpen() {
+        String readPerm = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? Manifest.permission.READ_MEDIA_IMAGES
+                : Manifest.permission.READ_EXTERNAL_STORAGE;
+
+        if (ContextCompat.checkSelfPermission(this, readPerm)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestReadImagesPermission.launch(readPerm);
+        } else {
+            openGallery();
+        }
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraLauncher.launch(intent);
+    }
+
+    private void openGallery() {
+        Intent pick = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pick.setType("image/*");
+        galleryLauncher.launch(pick);
+    }
+
+    private void clearSelectedImage() {
+        selectedBitmap = null;
+        selectedImageUri = null;
+        ivRiceFieldImage.setImageBitmap(null);
+        ivRiceFieldImage.setImageURI(null);
+        ivRiceFieldImage.setBackgroundColor(Color.parseColor("#F5F5F5"));
+        ivTapToUpload.setVisibility(View.VISIBLE);
+        ivRemoveImage.setVisibility(View.GONE);
     }
 
     private void setupListeners() {
         ivBack.setOnClickListener(v -> finish());
-        
         btnSave.setOnClickListener(v -> saveRiceField());
     }
 
@@ -109,21 +308,41 @@ public class AddFarmerJournal extends AppCompatActivity {
         layoutName.setError(null);
         layoutSize.setError(null);
         layoutSoilType.setError(null);
-        layoutRiceVariety.setError(null);
-        layoutPlantingDate.setError(null);
+        layoutBarangay.setError(null);
 
         // Get values
         String name = etName.getText() != null ? etName.getText().toString().trim() : "";
         String sizeStr = etSize.getText() != null ? etSize.getText().toString().trim() : "";
         String soilType = actvSoilType.getText() != null ? actvSoilType.getText().toString().trim() : "";
-        String riceVariety = etRiceVariety.getText() != null ? etRiceVariety.getText().toString().trim() : "";
-        String plantingDate = etPlantingDate.getText() != null ? etPlantingDate.getText().toString().trim() : "";
+        String province = actProvince.getText() != null ? actProvince.getText().toString().trim() : "";
+        String city = actCity.getText() != null ? actCity.getText().toString().trim() : "";
+        String barangay = actBarangay.getText() != null ? actBarangay.getText().toString().trim() : "";
 
         // Validate
         boolean isValid = true;
 
         if (name.isEmpty()) {
             layoutName.setError("Kailangan ang pangalan ng palayan");
+            isValid = false;
+        }
+
+        if (selectedBitmap == null && selectedImageUri == null) {
+            Toast.makeText(this, "Kailangan ang picture ng palayan", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        if (province.isEmpty()) {
+            Toast.makeText(this, "Kailangan ang probinsya", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        if (city.isEmpty()) {
+            Toast.makeText(this, "Kailangan ang lungsod/munisipalidad", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        if (barangay.isEmpty()) {
+            layoutBarangay.setError("Kailangan ang barangay");
             isValid = false;
         }
 
@@ -144,17 +363,7 @@ public class AddFarmerJournal extends AppCompatActivity {
         }
 
         if (soilType.isEmpty()) {
-            layoutSoilType.setError("Kailangan ang uri ng lupa");
-            isValid = false;
-        }
-
-        if (riceVariety.isEmpty()) {
-            layoutRiceVariety.setError("Kailangan ang uri ng palay");
-            isValid = false;
-        }
-
-        if (plantingDate.isEmpty()) {
-            layoutPlantingDate.setError("Kailangan ang petsa ng pagtatanim");
+            layoutSoilType.setError("Kailangan ang klase ng lupa");
             isValid = false;
         }
 
@@ -162,13 +371,64 @@ public class AddFarmerJournal extends AppCompatActivity {
             return;
         }
 
-        // Create and save rice field profile
-        double size = Double.parseDouble(sizeStr);
-        RiceFieldProfile riceField = new RiceFieldProfile(name, size, soilType, riceVariety, plantingDate);
+        // Upload image first, then save
+        loadingDialog.show("Ini-upload ang larawan...");
+        uploadImageThenSave(name, province, city, barangay, Double.parseDouble(sizeStr), soilType);
+    }
+
+    private void uploadImageThenSave(String name, String province, String city, String barangay, double size, String soilType) {
+        try {
+            byte[] bytes;
+
+            if (selectedBitmap != null) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                bytes = baos.toByteArray();
+            } else {
+                try (InputStream is = getContentResolver().openInputStream(selectedImageUri)) {
+                    if (is == null) throw new IllegalStateException("Cannot open selected image.");
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[8192];
+                    int read;
+                    while ((read = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, read);
+                    }
+                    bytes = baos.toByteArray();
+                }
+            }
+
+            String filename = "rice_field_" + deviceId + "_" + UUID.randomUUID() + ".jpg";
+            String path = "rice_fields/" + deviceId + "/" + filename;
+
+            StorageReference ref = storage.getReference().child(path);
+            UploadTask task = ref.putBytes(bytes);
+            task.addOnSuccessListener(snap ->
+                    ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String imageUrl = uri.toString();
+                        loadingDialog.setMessage("Ini-save ang palayan...");
+                        saveRiceFieldToFirestore(name, imageUrl, province, city, barangay, size, soilType);
+                    }).addOnFailureListener(e -> {
+                        loadingDialog.dismiss();
+                        Toast.makeText(this, "Hindi ma-upload ang larawan: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    })
+            ).addOnFailureListener(e -> {
+                loadingDialog.dismiss();
+                Toast.makeText(this, "Hindi ma-upload ang larawan: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            });
+
+        } catch (Exception e) {
+            loadingDialog.dismiss();
+            Toast.makeText(this, "Error sa larawan: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void saveRiceFieldToFirestore(String name, String imageUrl, String province, String city, String barangay, double size, String soilType) {
+        RiceFieldProfile riceField = new RiceFieldProfile(name, imageUrl, province, city, barangay, size, soilType);
         
         JournalStorageHelper.saveRiceField(this, riceField, new JournalStorageHelper.OnSaveListener() {
             @Override
             public void onSuccess() {
+                loadingDialog.dismiss();
                 // Show success message
                 Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), 
                     "Matagumpay na na-save ang palayan!", Snackbar.LENGTH_SHORT);
@@ -194,6 +454,7 @@ public class AddFarmerJournal extends AppCompatActivity {
 
             @Override
             public void onFailure(String error) {
+                loadingDialog.dismiss();
                 Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), 
                     "Hindi na-save: " + error, Snackbar.LENGTH_LONG);
                 View snackbarView = snackbar.getView();
@@ -206,4 +467,3 @@ public class AddFarmerJournal extends AppCompatActivity {
         });
     }
 }
-
