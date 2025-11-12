@@ -145,8 +145,11 @@ public class FarmerJournal extends AppCompatActivity implements RiceFieldAdapter
 
     @Override
     public void onRiceFieldClick(RiceFieldProfile riceField) {
-        // Show delete option dialog
-        showDeleteDialog(riceField);
+        // Navigate to RiceFieldJournal with rice field data
+        Intent intent = new Intent(FarmerJournal.this, RiceFieldJournal.class);
+        intent.putExtra("riceFieldName", riceField.getName());
+        intent.putExtra("riceFieldId", riceField.getId());
+        startActivity(intent);
     }
     
     private void showDeleteDialog(RiceFieldProfile riceField) {

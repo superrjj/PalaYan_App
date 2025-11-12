@@ -47,14 +47,65 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ilagay ang detalye ng inyong Palayan."
+                android:textColor="@color/dark_gray"
+                android:justificationMode="inter_word"
+                android:fontFamily="@font/poppins__regular"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pindutin ang"
+                    android:textColor="@color/dark_gray"
+                    android:justificationMode="inter_word"
+                    android:fontFamily="@font/poppins__regular"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Magdadag ng Palayan"
+                    android:textColor="@color/black"
+                    android:justificationMode="inter_word"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:textSize="16sp" />
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/btnAddJournal"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/btn_outline_blue"
             app:backgroundTint="@null"
-            android:text="Magdagdag ng palayan"
-            android:fontFamily="@font/poppins__regular"
+            android:textSize="15sp"
+            android:text="MAGDAGDAG NG PALAYAN"
+            android:fontFamily="@font/poppins__medium"
             android:textColor="@color/white"
             android:layout_marginBottom="10dp"/>
 

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/semi_white"
+    tools:context=".UserActivities.RiceFieldJournal">
+
+    <LinearLayout
+        android:id="@+id/layoutBack"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_back_final"
+            android:padding="10dp"
+            android:layout_gravity="center"
+            app:tint="@color/green"/>
+
+        <TextView
+            android:id="@+id/tvRiceFieldName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textColor="@color/green"
+            android:text="Rice Field"
+            android:fontFamily="@font/poppins_bold"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="12dp">
+
+        <Button
+            android:id="@+id/btnAddPlanting"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="BAGONG TANIMAN"
+            android:textColor="@color/white"
+            android:background="@drawable/btn_outline_blue"
+            app:backgroundTint="@null"
+            android:fontFamily="@font/poppins__medium"
+            android:textSize="15sp"
+            android:layout_marginBottom="10dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPlantings"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/semi_white"/>
+
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wala pang nakatalang taniman."
+            android:fontFamily="@font/poppins__regular"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:padding="20dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</LinearLayout>

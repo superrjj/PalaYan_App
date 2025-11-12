@@ -5,9 +5,12 @@ import android.content.Context;
 import com.example.palayan.Helper.AppHelper.DeviceUtils;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JournalStorageHelper {
@@ -143,6 +146,110 @@ public class JournalStorageHelper {
 
     public interface OnDeleteListener {
         void onSuccess();
+        void onFailure(String error);
+    }
+
+    // Rice Planting methods
+    public static void saveRicePlanting(Context context, String riceFieldId, RicePlanting planting, OnSaveListener listener) {
+        String deviceId = DeviceUtils.getDeviceId(context);
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("id", planting.getId());
+        data.put("riceFieldId", planting.getRiceFieldId());
+        data.put("riceVarietyId", planting.getRiceVarietyId());
+        data.put("riceVarietyName", planting.getRiceVarietyName());
+        data.put("plantingDate", planting.getPlantingDate() != null ? planting.getPlantingDate() : "");
+        data.put("notes", planting.getNotes() != null ? planting.getNotes() : "");
+        data.put("plantingMethod", planting.getPlantingMethod() != null ? planting.getPlantingMethod() : "");
+        data.put("seedWeight", planting.getSeedWeight() != null ? planting.getSeedWeight() : "");
+        data.put("fertilizerUsed", planting.getFertilizerUsed() != null ? planting.getFertilizerUsed() : "");
+        data.put("fertilizerAmount", planting.getFertilizerAmount() != null ? planting.getFertilizerAmount() : "");
+        data.put("createdAt", FieldValue.serverTimestamp());
+        data.put("deviceId", deviceId);
+
+        firestore.collection("users")
+                .document(deviceId)
+                .collection("rice_fields")
+                .document(riceFieldId)
+                .collection("plantings")
+                .document(planting.getId())
+                .set(data)
+                .addOnSuccessListener(aVoid -> {
+                    if (listener != null) {
+                        listener.onSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure(e.getMessage());
+                    }
+                });
+    }
+
+    public static void loadRicePlantings(Context context, String riceFieldId, OnPlantingsLoadedListener listener) {
+        String deviceId = DeviceUtils.getDeviceId(context);
+        
+        firestore.collection("users")
+                .document(deviceId)
+                .collection("rice_fields")
+                .document(riceFieldId)
+                .collection("plantings")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<RicePlanting> plantings = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        try {
+                            RicePlanting planting = new RicePlanting();
+                            planting.setId(document.getString("id"));
+                            planting.setRiceFieldId(document.getString("riceFieldId"));
+                            planting.setRiceVarietyId(document.getString("riceVarietyId"));
+                            planting.setRiceVarietyName(document.getString("riceVarietyName"));
+                            planting.setPlantingDate(document.getString("plantingDate"));
+                            planting.setNotes(document.getString("notes"));
+                            planting.setPlantingMethod(document.getString("plantingMethod"));
+                            planting.setSeedWeight(document.getString("seedWeight"));
+                            planting.setFertilizerUsed(document.getString("fertilizerUsed"));
+                            planting.setFertilizerAmount(document.getString("fertilizerAmount"));
+                            plantings.add(planting);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (listener != null) {
+                        listener.onSuccess(plantings);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure(e.getMessage());
+                    }
+                });
+    }
+
+    public static void deleteRicePlanting(Context context, String riceFieldId, String plantingId, OnDeleteListener listener) {
+        String deviceId = DeviceUtils.getDeviceId(context);
+        
+        firestore.collection("users")
+                .document(deviceId)
+                .collection("rice_fields")
+                .document(riceFieldId)
+                .collection("plantings")
+                .document(plantingId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    if (listener != null) {
+                        listener.onSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure(e.getMessage());
+                    }
+                });
+    }
+
+    public interface OnPlantingsLoadedListener {
+        void onSuccess(List<RicePlanting> plantings);
         void onFailure(String error);
     }
 }

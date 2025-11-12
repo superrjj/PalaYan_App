@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name"></string>
+    <string name="add_planting_for_field">Para sa: %1$s</string>
     <string name="open_nav"></string>
     <string name="close_nav"></string>
 
@@ -43,6 +44,15 @@
         <item>Saline-prone Area</item>
         <item>Cool Elevated Areas</item>
         <item>Deepwater</item>
+    </string-array>
+
+    <string-array name="sample_variety_array">
+        <item>NSIC Rc 222</item>
+        <item>NSIC Rc 160</item>
+        <item>NSIC Rc 216</item>
+        <item>RC 480 (Tubigan 28)</item>
+        <item>RC 518</item>
+        <item>RC 300</item>
     </string-array>
 
     <string-array name="planting_methods_array">

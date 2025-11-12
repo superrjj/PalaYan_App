@@ -383,7 +383,7 @@
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:textColor="@color/black"
-                       android:text="Munisipalidad/Syudad"
+                       android:text="Munisipalidad/Lungsod"
                        android:textSize="15sp"
                        android:fontFamily="@font/poppins__regular"/>
 
@@ -402,7 +402,7 @@
 
                    android:layout_width="match_parent"
                    android:layout_height="match_parent"
-                   android:hint="Pumili ng munisipalidad/syudad"
+                   android:hint="Pumili ng munisipalidad/lungsod"
                    app:boxStrokeColor="@color/green"
                    app:endIconMode="dropdown_menu">
 

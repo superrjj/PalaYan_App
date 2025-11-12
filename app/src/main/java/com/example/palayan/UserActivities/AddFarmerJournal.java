@@ -326,11 +326,6 @@ public class AddFarmerJournal extends AppCompatActivity {
             isValid = false;
         }
 
-        if (selectedBitmap == null && selectedImageUri == null) {
-            Toast.makeText(this, "Kailangan ang picture ng palayan", Toast.LENGTH_SHORT).show();
-            isValid = false;
-        }
-
         if (province.isEmpty()) {
             Toast.makeText(this, "Kailangan ang probinsya", Toast.LENGTH_SHORT).show();
             isValid = false;
@@ -371,9 +366,16 @@ public class AddFarmerJournal extends AppCompatActivity {
             return;
         }
 
-        // Upload image first, then save
-        loadingDialog.show("Ini-upload ang larawan...");
-        uploadImageThenSave(name, province, city, barangay, Double.parseDouble(sizeStr), soilType);
+        // Check if image is selected, if not, save directly without uploading
+        if (selectedBitmap == null && selectedImageUri == null) {
+            // No image selected, save directly with empty imageUrl
+            loadingDialog.show("Ini-save ang palayan...");
+            saveRiceFieldToFirestore(name, "", province, city, barangay, Double.parseDouble(sizeStr), soilType);
+        } else {
+            // Upload image first, then save
+            loadingDialog.show("Ini-upload ang larawan...");
+            uploadImageThenSave(name, province, city, barangay, Double.parseDouble(sizeStr), soilType);
+        }
     }
 
     private void uploadImageThenSave(String name, String province, String city, String barangay, double size, String soilType) {

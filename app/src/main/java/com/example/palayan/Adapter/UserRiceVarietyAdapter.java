@@ -32,6 +32,11 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
     private boolean isFavoritesPage;
     private Set<String> favoriteIds;
     private Map<String, String> documentIdMap; // Map variety name to document ID
+    private OnItemSelectedListener onItemSelectedListener; // For selection mode
+
+    public interface OnItemSelectedListener {
+        void onItemSelected(RiceVariety variety, String documentId);
+    }
 
     public UserRiceVarietyAdapter(List<RiceVariety> list, Context context, Set<String> favoriteIds, boolean isFavoritesPage) {
         this.list = list;
@@ -39,6 +44,10 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
         this.favoriteIds = favoriteIds;
         this.isFavoritesPage = isFavoritesPage;
         this.documentIdMap = new HashMap<>();
+    }
+
+    public void setOnItemSelectedListener(OnItemSelectedListener listener) {
+        this.onItemSelectedListener = listener;
     }
 
     // Add method to set document ID mapping
@@ -106,18 +115,22 @@ public class UserRiceVarietyAdapter extends RecyclerView.Adapter<UserRiceVariety
                     });
         });
 
-        // Go to RiceVarietyInformation Activity on item click
+        // Go to RiceVarietyInformation Activity on item click, or call selection listener
         holder.cvRiceDetails.setOnClickListener(v -> {
-            Intent intent = new Intent(context, RiceVarietyInformation.class);
-
             // Use variety name as key to get document ID
             String documentId = documentIdMap.get(varietyName);
 
-
             if (documentId != null) {
-                intent.putExtra("document_id", documentId);
-                intent.putExtra("rice_seed_id", varietyName);
-                context.startActivity(intent);
+                // If selection listener is set, use it instead of navigating
+                if (onItemSelectedListener != null) {
+                    onItemSelectedListener.onItemSelected(variety, documentId);
+                } else {
+                    // Default behavior: navigate to RiceVarietyInformation
+                    Intent intent = new Intent(context, RiceVarietyInformation.class);
+                    intent.putExtra("document_id", documentId);
+                    intent.putExtra("rice_seed_id", varietyName);
+                    context.startActivity(intent);
+                }
             } else {
                 Toast.makeText(context, "Error: No document ID found", Toast.LENGTH_SHORT).show();
             }

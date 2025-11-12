@@ -57,9 +57,11 @@ public class RiceFieldAdapter extends RecyclerView.Adapter<RiceFieldAdapter.Rice
     static class RiceFieldViewHolder extends RecyclerView.ViewHolder {
         private ImageView ivRiceFieldImage;
         private TextView tvName, tvLocation, tvSoilType, tvSize;
+        private com.google.android.material.card.MaterialCardView cvRiceField;
 
         public RiceFieldViewHolder(@NonNull View itemView) {
             super(itemView);
+            cvRiceField = itemView.findViewById(R.id.cvRiceField);
             ivRiceFieldImage = itemView.findViewById(R.id.ivRiceFieldImage);
             tvName = itemView.findViewById(R.id.tvName);
             tvLocation = itemView.findViewById(R.id.tvLocation);
@@ -92,18 +94,28 @@ public class RiceFieldAdapter extends RecyclerView.Adapter<RiceFieldAdapter.Rice
             if (riceField.getImageUrl() != null && !riceField.getImageUrl().isEmpty()) {
                 Glide.with(itemView.getContext())
                         .load(riceField.getImageUrl())
-                        .placeholder(R.color.light_gray)
-                        .error(R.color.light_gray)
+                        .placeholder(R.drawable.ic_rice_field_default)
+                        .error(R.drawable.ic_rice_field_default)
                         .into(ivRiceFieldImage);
             } else {
-                ivRiceFieldImage.setImageResource(android.R.color.transparent);
+                ivRiceFieldImage.setImageResource(R.drawable.ic_rice_field_default);
             }
 
-            itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onRiceFieldClick(riceField);
-                }
-            });
+            // Set click listener on the card view
+            if (cvRiceField != null) {
+                cvRiceField.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onRiceFieldClick(riceField);
+                    }
+                });
+            } else {
+                // Fallback to itemView if card view not found
+                itemView.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onRiceFieldClick(riceField);
+                    }
+                });
+            }
         }
     }
 }
