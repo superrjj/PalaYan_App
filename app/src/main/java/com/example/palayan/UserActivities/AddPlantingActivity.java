@@ -1,7 +1,9 @@
 package com.example.palayan.UserActivities;
 
 import android.app.DatePickerDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -11,15 +13,18 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.example.palayan.Helper.RicePlanting;
 import com.example.palayan.Helper.JournalStorageHelper;
 import com.example.palayan.R;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
@@ -61,7 +66,7 @@ public class AddPlantingActivity extends AppCompatActivity {
         existingFertilizerAmount = getIntent().getStringExtra("fertilizerAmount");
 
         if (riceFieldId == null || riceFieldId.isEmpty()) {
-            Toast.makeText(this, "Invalid rice field.", Toast.LENGTH_SHORT).show();
+            showSnackBar("Invalid rice field.", false, null);
             finish();
             return;
         }
@@ -108,7 +113,6 @@ public class AddPlantingActivity extends AppCompatActivity {
 
         layoutPlantingDate.setOnClickListener(v -> showDatePicker());
         btnSave.setOnClickListener(v -> savePlanting());
-        
         tvRemove.setOnClickListener(v -> {
             if (plantingId != null && !plantingId.isEmpty()) {
                 showDeleteConfirmationDialog();
@@ -116,33 +120,21 @@ public class AddPlantingActivity extends AppCompatActivity {
         });
     }
     
-    private void showDeleteConfirmationDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Tanggalin ang Taniman")
-                .setMessage("Sigurado ka bang gusto mong tanggalin ang taniman na ito?")
-                .setPositiveButton("Tanggalin", (dialog, which) -> {
-                    deletePlanting();
-                })
-                .setNegativeButton("Kanselahin", null)
-                .show();
-    }
-    
     private void deletePlanting() {
         if (plantingId == null || plantingId.isEmpty() || riceFieldId == null || riceFieldId.isEmpty()) {
-            Toast.makeText(this, "Hindi ma-tanggal ang taniman.", Toast.LENGTH_SHORT).show();
+            showSnackBar("Hindi ma-tanggal ang taniman.", false, null);
             return;
         }
         
         JournalStorageHelper.deleteRicePlanting(this, riceFieldId, plantingId, new JournalStorageHelper.OnDeleteListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(AddPlantingActivity.this, "Matagumpay na natanggal ang taniman!", Toast.LENGTH_SHORT).show();
-                finish();
+                showSnackBar("Matagumpay na natanggal ang taniman!", true, AddPlantingActivity.this::finish);
             }
 
             @Override
             public void onFailure(String error) {
-                Toast.makeText(AddPlantingActivity.this, "Hindi natanggal: " + error, Toast.LENGTH_SHORT).show();
+                showSnackBar("Hindi natanggal: " + error, false, null);
             }
         });
     }
@@ -170,19 +162,19 @@ public class AddPlantingActivity extends AppCompatActivity {
         String fertilizerAmount = etFertilizerAmount.getText() != null ? etFertilizerAmount.getText().toString().trim() : "";
 
         if (variety.isEmpty()) {
-            Toast.makeText(this, "Ilalagay ang barayti ng palay.", Toast.LENGTH_SHORT).show();
+            showSnackBar("Ilalagay ang barayti ng palay.", false, null);
             return;
         }
         if (!rbSabogTanim.isChecked() && !rbLipatTanim.isChecked()) {
-            Toast.makeText(this, "Piliin ang paraan ng pagtatanim.", Toast.LENGTH_SHORT).show();
+            showSnackBar("Piliin ang paraan ng pagtatanim.", false, null);
             return;
         }
         if (plantingDate == null || plantingDate.isEmpty() || plantingDate.equals("Piliin ang petsa")) {
-            Toast.makeText(this, "Piliin ang petsa ng pagtatanim.", Toast.LENGTH_SHORT).show();
+            showSnackBar("Piliin ang petsa ng pagtatanim.", false, null);
             return;
         }
         if (seedWeight.isEmpty()) {
-            Toast.makeText(this, "Ilalagay ang kabuuang timbang ng binhi.", Toast.LENGTH_SHORT).show();
+            showSnackBar("Ilalagay ang kabuuang timbang ng binhi.", false, null);
             return;
         }
 
@@ -202,13 +194,12 @@ public class AddPlantingActivity extends AppCompatActivity {
         JournalStorageHelper.saveRicePlanting(this, riceFieldId, planting, new JournalStorageHelper.OnSaveListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(AddPlantingActivity.this, "Matagumpay na na-save ang taniman!", Toast.LENGTH_SHORT).show();
-                finish();
+                showSnackBar("Matagumpay na na-save ang taniman!", true, AddPlantingActivity.this::finish);
             }
 
             @Override
             public void onFailure(String error) {
-                Toast.makeText(AddPlantingActivity.this, "Hindi na-save: " + error, Toast.LENGTH_SHORT).show();
+                showSnackBar("Hindi na-save: " + error, false, null);
             }
         });
     }
@@ -256,6 +247,58 @@ public class AddPlantingActivity extends AppCompatActivity {
         if (existingFertilizerAmount != null && !existingFertilizerAmount.isEmpty()) {
             etFertilizerAmount.setText(existingFertilizerAmount);
         }
+    }
+
+    private void showDeleteConfirmationDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_confirmation, null);
+        TextView tvDialogTitle = dialogView.findViewById(R.id.tvDialogTitle);
+        TextView tvDialogMessage = dialogView.findViewById(R.id.tvDialogMessage);
+        MaterialButton btnDialogCancel = dialogView.findViewById(R.id.btnDialogCancel);
+        MaterialButton btnDialogConfirm = dialogView.findViewById(R.id.btnDialogConfirm);
+
+        tvDialogTitle.setText("Tanggalin ang Taniman");
+        tvDialogMessage.setText("Sigurado ka bang gusto mong tanggalin ang taniman na ito?");
+        btnDialogConfirm.setText("Tanggalin");
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+
+        btnDialogCancel.setOnClickListener(v -> dialog.dismiss());
+        btnDialogConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            deletePlanting();
+        });
+
+        dialog.show();
+    }
+
+    private void showSnackBar(String message, boolean isSuccess, @Nullable Runnable onDismiss) {
+        View root = findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar.make(root, message, Snackbar.LENGTH_LONG);
+        int backgroundColor = ContextCompat.getColor(this, isSuccess ? R.color.green : R.color.dark_red);
+        snackbar.setBackgroundTint(backgroundColor);
+        snackbar.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+
+        TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        if (textView != null) {
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            textView.setTypeface(ResourcesCompat.getFont(this, R.font.poppins__regular));
+        }
+
+        if (onDismiss != null) {
+            snackbar.addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    onDismiss.run();
+                }
+            });
+        }
+
+        snackbar.show();
     }
 }
 

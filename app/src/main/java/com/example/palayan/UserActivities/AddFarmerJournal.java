@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -30,6 +33,7 @@ import com.example.palayan.Helper.JournalStorageHelper;
 import com.example.palayan.Helper.RiceFieldProfile;
 import com.example.palayan.R;
 import com.example.palayan.UserActivities.LoadingDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -70,13 +74,13 @@ public class AddFarmerJournal extends AppCompatActivity {
     private final ActivityResultLauncher<String> requestCameraPermission =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) openCamera();
-                else Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+                else showSnackBar("Camera permission denied", false);
             });
 
     private final ActivityResultLauncher<String> requestReadImagesPermission =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) openGallery();
-                else Toast.makeText(this, "Photos permission denied", Toast.LENGTH_SHORT).show();
+                else showSnackBar("Photos permission denied", false);
             });
 
     private final ActivityResultLauncher<Intent> cameraLauncher =
@@ -262,14 +266,35 @@ public class AddFarmerJournal extends AppCompatActivity {
     }
 
     private void showImagePickerDialog() {
-        String[] options = new String[]{"Kumuha ng Larawan", "Pumili mula sa Gallery"};
-        new AlertDialog.Builder(this)
-                .setTitle("Pumili ng Larawan")
-                .setItems(options, (d, which) -> {
-                    if (which == 0) ensureCameraAndOpen();
-                    else ensureGalleryAndOpen();
-                })
-                .show();
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_confirmation, null);
+        TextView tvDialogTitle = dialogView.findViewById(R.id.tvDialogTitle);
+        TextView tvDialogMessage = dialogView.findViewById(R.id.tvDialogMessage);
+        MaterialButton btnDialogCancel = dialogView.findViewById(R.id.btnDialogCancel);
+        MaterialButton btnDialogConfirm = dialogView.findViewById(R.id.btnDialogConfirm);
+
+        tvDialogTitle.setText("Pumili ng Larawan");
+        tvDialogMessage.setText("Pumili kung gagamit ng camera o gallery para sa larawan.");
+        btnDialogCancel.setText("Camera");
+        btnDialogConfirm.setText("Gallery");
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+
+        btnDialogCancel.setOnClickListener(v -> {
+            dialog.dismiss();
+            ensureCameraAndOpen();
+        });
+        btnDialogConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            ensureGalleryAndOpen();
+        });
+
+        dialog.show();
     }
 
     private void ensureCameraAndOpen() {
@@ -327,14 +352,31 @@ public class AddFarmerJournal extends AppCompatActivity {
     }
     
     private void showDeleteConfirmationDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Tanggalin ang Palayan")
-                .setMessage("Sigurado ka bang gusto mong tanggalin ang palayan na ito?")
-                .setPositiveButton("Tanggalin", (dialog, which) -> {
-                    deleteRiceField();
-                })
-                .setNegativeButton("Kanselahin", null)
-                .show();
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_confirmation, null);
+        TextView tvDialogTitle = dialogView.findViewById(R.id.tvDialogTitle);
+        TextView tvDialogMessage = dialogView.findViewById(R.id.tvDialogMessage);
+        MaterialButton btnDialogCancel = dialogView.findViewById(R.id.btnDialogCancel);
+        MaterialButton btnDialogConfirm = dialogView.findViewById(R.id.btnDialogConfirm);
+
+        tvDialogTitle.setText("Tanggalin ang Palayan");
+        tvDialogMessage.setText("Sigurado ka bang gusto mong tanggalin ang palayan na ito?");
+        btnDialogConfirm.setText("Tanggalin");
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+
+        btnDialogCancel.setOnClickListener(v -> dialog.dismiss());
+        btnDialogConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            deleteRiceField();
+        });
+
+        dialog.show();
     }
     
     private void deleteRiceField() {
@@ -343,14 +385,13 @@ public class AddFarmerJournal extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 loadingDialog.dismiss();
-                Toast.makeText(AddFarmerJournal.this, "Matagumpay na natanggal ang palayan!", Toast.LENGTH_SHORT).show();
-                finish();
+                showSnackBar("Matagumpay na natanggal ang palayan!", true, AddFarmerJournal.this::finish);
             }
 
             @Override
             public void onFailure(String error) {
                 loadingDialog.dismiss();
-                Toast.makeText(AddFarmerJournal.this, "Hindi natanggal: " + error, Toast.LENGTH_SHORT).show();
+                showSnackBar("Hindi natanggal: " + error, false, null);
             }
         });
     }
@@ -379,12 +420,12 @@ public class AddFarmerJournal extends AppCompatActivity {
         }
 
         if (province.isEmpty()) {
-            Toast.makeText(this, "Kailangan ang probinsya", Toast.LENGTH_SHORT).show();
+            showSnackBar("Kailangan ang probinsya", false, null);
             isValid = false;
         }
 
         if (city.isEmpty()) {
-            Toast.makeText(this, "Kailangan ang lungsod/munisipalidad", Toast.LENGTH_SHORT).show();
+            showSnackBar("Kailangan ang lungsod/munisipalidad", false, null);
             isValid = false;
         }
 
@@ -463,16 +504,16 @@ public class AddFarmerJournal extends AppCompatActivity {
                         saveRiceFieldToFirestore(name, imageUrl, province, city, barangay, size, soilType);
                     }).addOnFailureListener(e -> {
                         loadingDialog.dismiss();
-                        Toast.makeText(this, "Hindi ma-upload ang larawan: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        showSnackBar("Hindi ma-upload ang larawan: " + e.getMessage(), false);
                     })
             ).addOnFailureListener(e -> {
                 loadingDialog.dismiss();
-                Toast.makeText(this, "Hindi ma-upload ang larawan: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                showSnackBar("Hindi ma-upload ang larawan: " + e.getMessage(), false);
             });
 
         } catch (Exception e) {
             loadingDialog.dismiss();
-            Toast.makeText(this, "Error sa larawan: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            showSnackBar("Error sa larawan: " + e.getMessage(), false);
         }
     }
 
@@ -519,5 +560,34 @@ public class AddFarmerJournal extends AppCompatActivity {
                 snackbar.show();
             }
         });
+    }
+
+    private void showSnackBar(String message, boolean isSuccess) {
+        showSnackBar(message, isSuccess, null);
+    }
+
+    private void showSnackBar(String message, boolean isSuccess, @Nullable Runnable onDismiss) {
+        View root = findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar.make(root, message, Snackbar.LENGTH_LONG);
+        int backgroundColor = ContextCompat.getColor(this, isSuccess ? R.color.green : R.color.dark_red);
+        snackbar.setBackgroundTint(backgroundColor);
+        snackbar.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+
+        android.widget.TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        if (textView != null) {
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            textView.setTypeface(ResourcesCompat.getFont(this, R.font.poppins__regular));
+        }
+
+        if (onDismiss != null) {
+            snackbar.addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    onDismiss.run();
+                }
+            });
+        }
+
+        snackbar.show();
     }
 }
