@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.palayan.Helper.RicePlanting;
 import com.example.palayan.R;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
@@ -53,12 +54,14 @@ public class RicePlantingAdapter extends RecyclerView.Adapter<RicePlantingAdapte
 
     static class PlantingViewHolder extends RecyclerView.ViewHolder {
         private TextView tvVarietyName, tvPlantingDate, tvPlantingDetails;
+        private MaterialCardView cvRicePlant;
 
         public PlantingViewHolder(@NonNull View itemView) {
             super(itemView);
             tvVarietyName = itemView.findViewById(R.id.tvVarietyName);
             tvPlantingDate = itemView.findViewById(R.id.tvPlantingDate);
             tvPlantingDetails = itemView.findViewById(R.id.tvPlantingDetails);
+            cvRicePlant = itemView.findViewById(R.id.cvRicePlant);
         }
 
         public void bind(RicePlanting planting, OnPlantingClickListener listener) {
@@ -87,7 +90,8 @@ public class RicePlantingAdapter extends RecyclerView.Adapter<RicePlantingAdapte
 
             tvPlantingDetails.setText("Paraan: " + method + " | Binhi: " + seedWeight + " | Abono: " + fertilizerInfo);
 
-            itemView.setOnClickListener(v -> {
+            View clickableView = cvRicePlant != null ? cvRicePlant : itemView;
+            clickableView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onPlantingClick(planting);
                 }

@@ -2,6 +2,7 @@ package com.example.palayan.UserActivities;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.palayan.Helper.RicePlanting;
@@ -24,7 +26,7 @@ import java.util.Calendar;
 
 public class AddPlantingActivity extends AppCompatActivity {
 
-    private TextView tvTitle, tvRiceFieldInfo, tvPlantingDate;
+    private TextView tvTitle, tvRiceFieldInfo, tvPlantingDate, tvRemove;
     private ImageView ivBack;
     private LinearLayout layoutBack, layoutPlantingDate;
     private AutoCompleteTextView etRiceVariety;
@@ -35,6 +37,13 @@ public class AddPlantingActivity extends AppCompatActivity {
 
     private String riceFieldId;
     private String riceFieldName;
+    private String plantingId; // For editing/deleting existing planting
+    private String existingVariety;
+    private String existingMethod;
+    private String existingDate;
+    private String existingSeedWeight;
+    private String existingFertilizerUsed;
+    private String existingFertilizerAmount;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +52,13 @@ public class AddPlantingActivity extends AppCompatActivity {
 
         riceFieldId = getIntent().getStringExtra("riceFieldId");
         riceFieldName = getIntent().getStringExtra("riceFieldName");
+        plantingId = getIntent().getStringExtra("plantingId");
+        existingVariety = getIntent().getStringExtra("plantingVariety");
+        existingMethod = getIntent().getStringExtra("plantingMethod");
+        existingDate = getIntent().getStringExtra("plantingDate");
+        existingSeedWeight = getIntent().getStringExtra("seedWeight");
+        existingFertilizerUsed = getIntent().getStringExtra("fertilizerUsed");
+        existingFertilizerAmount = getIntent().getStringExtra("fertilizerAmount");
 
         if (riceFieldId == null || riceFieldId.isEmpty()) {
             Toast.makeText(this, "Invalid rice field.", Toast.LENGTH_SHORT).show();
@@ -69,6 +85,7 @@ public class AddPlantingActivity extends AppCompatActivity {
         rbSabogTanim = findViewById(R.id.rbSabogTanim);
         rbLipatTanim = findViewById(R.id.rbLipatTanim);
         btnSave = findViewById(R.id.btnSave);
+        tvRemove = findViewById(R.id.tvRemove);
 
         if (riceFieldName != null && !riceFieldName.isEmpty()) {
             tvRiceFieldInfo.setText(getString(R.string.add_planting_for_field, riceFieldName));
@@ -81,6 +98,8 @@ public class AddPlantingActivity extends AppCompatActivity {
         );
         etRiceVariety.setAdapter(varietyAdapter);
         etRiceVariety.setThreshold(1);
+
+        populateExistingPlanting();
     }
 
     private void setupListeners() {
@@ -89,6 +108,43 @@ public class AddPlantingActivity extends AppCompatActivity {
 
         layoutPlantingDate.setOnClickListener(v -> showDatePicker());
         btnSave.setOnClickListener(v -> savePlanting());
+        
+        tvRemove.setOnClickListener(v -> {
+            if (plantingId != null && !plantingId.isEmpty()) {
+                showDeleteConfirmationDialog();
+            }
+        });
+    }
+    
+    private void showDeleteConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Tanggalin ang Taniman")
+                .setMessage("Sigurado ka bang gusto mong tanggalin ang taniman na ito?")
+                .setPositiveButton("Tanggalin", (dialog, which) -> {
+                    deletePlanting();
+                })
+                .setNegativeButton("Kanselahin", null)
+                .show();
+    }
+    
+    private void deletePlanting() {
+        if (plantingId == null || plantingId.isEmpty() || riceFieldId == null || riceFieldId.isEmpty()) {
+            Toast.makeText(this, "Hindi ma-tanggal ang taniman.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        JournalStorageHelper.deleteRicePlanting(this, riceFieldId, plantingId, new JournalStorageHelper.OnDeleteListener() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(AddPlantingActivity.this, "Matagumpay na natanggal ang taniman!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Toast.makeText(AddPlantingActivity.this, "Hindi natanggal: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showDatePicker() {
@@ -139,6 +195,9 @@ public class AddPlantingActivity extends AppCompatActivity {
         planting.setFertilizerUsed(fertilizer);
         planting.setFertilizerAmount(fertilizerAmount);
         planting.setNotes(buildNotes(fertilizer, fertilizerAmount));
+        if (plantingId != null && !plantingId.isEmpty()) {
+            planting.setId(plantingId);
+        }
 
         JournalStorageHelper.saveRicePlanting(this, riceFieldId, planting, new JournalStorageHelper.OnSaveListener() {
             @Override
@@ -162,6 +221,41 @@ public class AddPlantingActivity extends AppCompatActivity {
             return fertilizer + " - " + amount + " kg";
         }
         return !fertilizer.isEmpty() ? fertilizer : amount;
+    }
+
+    private void populateExistingPlanting() {
+        boolean isEditing = plantingId != null && !plantingId.isEmpty();
+        tvRemove.setVisibility(isEditing ? View.VISIBLE : View.GONE);
+
+        if (!isEditing) {
+            return;
+        }
+
+        tvTitle.setText("I-EDIT ANG TANIMAN");
+        btnSave.setText("I-UPDATE ANG TANIMAN");
+
+        if (existingVariety != null && !existingVariety.isEmpty()) {
+            etRiceVariety.setText(existingVariety, false);
+        }
+        if (existingMethod != null && !existingMethod.isEmpty()) {
+            if ("Sabog-tanim".equalsIgnoreCase(existingMethod)) {
+                rbSabogTanim.setChecked(true);
+            } else if ("Lipat-tanim".equalsIgnoreCase(existingMethod)) {
+                rbLipatTanim.setChecked(true);
+            }
+        }
+        if (existingDate != null && !existingDate.isEmpty()) {
+            tvPlantingDate.setText(existingDate);
+        }
+        if (existingSeedWeight != null && !existingSeedWeight.isEmpty()) {
+            etSeedWeight.setText(existingSeedWeight);
+        }
+        if (existingFertilizerUsed != null && !existingFertilizerUsed.isEmpty()) {
+            etFertilizerUsed.setText(existingFertilizerUsed);
+        }
+        if (existingFertilizerAmount != null && !existingFertilizerAmount.isEmpty()) {
+            etFertilizerAmount.setText(existingFertilizerAmount);
+        }
     }
 }
 

@@ -63,9 +63,7 @@ public class RiceFieldJournal extends AppCompatActivity {
         rvPlantings = findViewById(R.id.rvPlantings);
 
         plantingList = new ArrayList<>();
-        plantingAdapter = new RicePlantingAdapter(plantingList, planting -> {
-            // TODO: open details or edit screen
-        });
+        plantingAdapter = new RicePlantingAdapter(plantingList, this::openPlantingEditor);
         rvPlantings.setLayoutManager(new LinearLayoutManager(this));
         rvPlantings.setAdapter(plantingAdapter);
         rvPlantings.setVisibility(View.GONE);
@@ -196,5 +194,22 @@ public class RiceFieldJournal extends AppCompatActivity {
                 Toast.makeText(RiceFieldJournal.this, "Error loading plantings: " + error, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void openPlantingEditor(RicePlanting planting) {
+        if (planting == null) {
+            return;
+        }
+        Intent intent = new Intent(RiceFieldJournal.this, AddPlantingActivity.class);
+        intent.putExtra("riceFieldId", riceFieldId);
+        intent.putExtra("riceFieldName", tvRiceFieldName.getText().toString());
+        intent.putExtra("plantingId", planting.getId());
+        intent.putExtra("plantingVariety", planting.getRiceVarietyName());
+        intent.putExtra("plantingMethod", planting.getPlantingMethod());
+        intent.putExtra("plantingDate", planting.getPlantingDate());
+        intent.putExtra("seedWeight", planting.getSeedWeight());
+        intent.putExtra("fertilizerUsed", planting.getFertilizerUsed());
+        intent.putExtra("fertilizerAmount", planting.getFertilizerAmount());
+        startActivity(intent);
     }
 }

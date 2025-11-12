@@ -440,10 +440,25 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/button_solid"
-            android:text="I-save"
+            android:text="I-SAVE ANG PALAYAN"
             android:fontFamily="@font/poppins__regular"
             android:textColor="@color/white"
             android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvRemove"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alisin ang palayan"
+            android:fontFamily="@font/poppins__semibold"
+            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:gravity="center"
+            android:textColor="@color/dark_red"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp"/>
 
     </LinearLayout>
 

@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -56,6 +57,7 @@ public class AddFarmerJournal extends AppCompatActivity {
     private ImageView ivBack, ivRiceFieldImage;
     private View ivTapToUpload;
     private Button ivRemoveImage;
+    private TextView tvRemove;
     
     private Bitmap selectedBitmap;
     private Uri selectedImageUri;
@@ -63,6 +65,7 @@ public class AddFarmerJournal extends AppCompatActivity {
     private LoadingDialog loadingDialog;
     private String deviceId;
     private String[] soilTypes;
+    private String riceFieldId; // For editing/deleting existing rice field
 
     private final ActivityResultLauncher<String> requestCameraPermission =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -112,6 +115,12 @@ public class AddFarmerJournal extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         loadingDialog = new LoadingDialog(this);
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        
+        // Check if editing existing rice field
+        Intent intent = getIntent();
+        if (intent != null) {
+            riceFieldId = intent.getStringExtra("riceFieldId");
+        }
 
         initViews();
         setupLocationDropdowns();
@@ -139,8 +148,16 @@ public class AddFarmerJournal extends AppCompatActivity {
         ivRemoveImage = findViewById(R.id.ivRemoveImage);
         
         btnSave = findViewById(R.id.btnSave);
+        tvRemove = findViewById(R.id.tvRemove);
         
         soilTypes = getResources().getStringArray(R.array.environment_array);
+        
+        // Show/hide delete button based on whether editing or adding new
+        if (riceFieldId != null && !riceFieldId.isEmpty()) {
+            tvRemove.setVisibility(View.VISIBLE);
+        } else {
+            tvRemove.setVisibility(View.GONE);
+        }
     }
 
     private void setupLocationDropdowns() {
@@ -301,6 +318,41 @@ public class AddFarmerJournal extends AppCompatActivity {
     private void setupListeners() {
         ivBack.setOnClickListener(v -> finish());
         btnSave.setOnClickListener(v -> saveRiceField());
+        
+        tvRemove.setOnClickListener(v -> {
+            if (riceFieldId != null && !riceFieldId.isEmpty()) {
+                showDeleteConfirmationDialog();
+            }
+        });
+    }
+    
+    private void showDeleteConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Tanggalin ang Palayan")
+                .setMessage("Sigurado ka bang gusto mong tanggalin ang palayan na ito?")
+                .setPositiveButton("Tanggalin", (dialog, which) -> {
+                    deleteRiceField();
+                })
+                .setNegativeButton("Kanselahin", null)
+                .show();
+    }
+    
+    private void deleteRiceField() {
+        loadingDialog.show("Ini-tanggal ang palayan...");
+        JournalStorageHelper.deleteRiceField(this, riceFieldId, new JournalStorageHelper.OnDeleteListener() {
+            @Override
+            public void onSuccess() {
+                loadingDialog.dismiss();
+                Toast.makeText(AddFarmerJournal.this, "Matagumpay na natanggal ang palayan!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                loadingDialog.dismiss();
+                Toast.makeText(AddFarmerJournal.this, "Hindi natanggal: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void saveRiceField() {
