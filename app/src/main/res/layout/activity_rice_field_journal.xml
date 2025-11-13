@@ -16,7 +16,6 @@
         android:background="@color/white"
         android:elevation="4dp"
         android:gravity="center_vertical"
-        android:paddingStart="10dp"
         android:paddingEnd="10dp">
 
         <ImageView
@@ -114,7 +113,7 @@
             android:id="@+id/rvPlantings"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/semi_white"
+            android:background="@color/white"
             android:layout_weight="1"
             android:visibility="gone"/>
 

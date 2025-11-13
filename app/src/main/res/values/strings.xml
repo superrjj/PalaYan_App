@@ -38,12 +38,11 @@
     </string-array>
 
     <string-array name="environment_array">
-        <item>Irrigated Lowland</item>
-        <item>Rainfed Lowland</item>
-        <item>Rainfed Upland</item>
-        <item>Saline-prone Area</item>
-        <item>Cool Elevated Areas</item>
-        <item>Deepwater</item>
+        <item>Clay Loam</item>
+        <item>Fine Sandy Loam</item>
+        <item>Sand</item>
+        <item>Sandy Clay Loam</item>
+        <item>Sandy Loam</item>
     </string-array>
 
     <string-array name="sample_variety_array">
