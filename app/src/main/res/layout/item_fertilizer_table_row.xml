@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:minHeight="56dp">
+
+    <TextView
+        android:id="@+id/tvFertilizer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="73-146 kg 14-14-14"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:fontFamily="@font/poppins__regular"
+        android:gravity="start|center_vertical"/>
+
+    <TextView
+        android:id="@+id/tvTiming"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10-14 DAS"
+        android:textColor="@color/dark_gray"
+        android:textSize="14sp"
+        android:fontFamily="@font/poppins__regular"
+        android:layout_marginStart="16dp"
+        android:gravity="end|center_vertical"
+        android:minWidth="80dp"/>
+
+</LinearLayout>
+

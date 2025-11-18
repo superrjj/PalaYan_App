@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:padding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@drawable/dialog_rounded_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvDialogTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Magdagdag ng gawain sa iyong crop calendar"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:fontFamily="@font/poppins__semibold" />
+
+            <ImageView
+                android:id="@+id/ivCloseDialog"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_close"
+                android:contentDescription="@string/close" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvDialogSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Maglagay ng mga detalye sa iyong gawain."
+            android:textColor="@color/dark_gray"
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins__regular" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutTaskCategory"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="@color/teal"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:hintEnabled="true">
+
+            <AutoCompleteTextView
+                android:id="@+id/actTaskCategory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="none"
+                android:hint="Kategorya ng gawain"
+                android:padding="12dp"
+                android:fontFamily="@font/poppins__regular"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnKeycheck"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/teal"
+            android:fontFamily="@font/poppins__semibold"
+            android:paddingVertical="12dp"
+            android:text="BASAHIN ANG KEYCHECK SA PAGTATANIM"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            app:icon="@drawable/ic_info"
+            app:iconGravity="textStart"
+            app:iconPadding="12dp"
+            app:iconTint="@color/white" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutTaskName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="@color/teal"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:hintEnabled="true">
+
+            <AutoCompleteTextView
+                android:id="@+id/actTaskName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pumili ng gawain"
+                android:padding="12dp"
+                android:inputType="none"
+                android:fontFamily="@font/poppins__regular"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutTaskDetails"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="@color/teal"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="240"
+            app:hintEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTaskDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:hint="Iba pang detalye"
+                android:minLines="3"
+                android:maxLines="5"
+                android:fontFamily="@font/poppins__regular"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutTaskDate"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:endIconMode="custom"
+            app:boxStrokeColor="@color/teal"
+            app:endIconDrawable="@drawable/ic_date"
+            app:endIconTint="@color/green"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTaskDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:cursorVisible="false"
+                android:hint="Petsa ng gawain"
+                android:inputType="none"
+                android:fontFamily="@font/poppins__regular"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveTask"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/green"
+            android:background="@drawable/button_solid"
+            android:fontFamily="@font/poppins__semibold"
+            android:text="SAVE"
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+</ScrollView>
+

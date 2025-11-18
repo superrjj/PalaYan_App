@@ -23,13 +23,13 @@ import java.util.Locale;
 public class CropCalendarAdapter extends RecyclerView.Adapter<CropCalendarAdapter.WeekViewHolder> {
 
     private List<List<CropCalendarTask>> weeksList; // Tasks grouped by week
-    private OnTaskCheckedListener listener;
+    private OnTaskCheckListener listener;
 
-    public interface OnTaskCheckedListener {
-        void onTaskChecked(CropCalendarTask task, boolean isChecked);
+    public interface OnTaskCheckListener {
+        void onTaskCheckRequested(CropCalendarTask task, boolean targetState);
     }
 
-    public CropCalendarAdapter(OnTaskCheckedListener listener) {
+    public CropCalendarAdapter(OnTaskCheckListener listener) {
         this.listener = listener;
         this.weeksList = new ArrayList<>();
     }
@@ -69,10 +69,13 @@ public class CropCalendarAdapter extends RecyclerView.Adapter<CropCalendarAdapte
             cbTask.setChecked(task.isCompleted());
             tvTaskName.setText("➤ " + task.getTaskName());
 
-            cbTask.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                task.setCompleted(isChecked);
+            cbTask.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onTaskChecked(task, isChecked);
+                    boolean targetState = !task.isCompleted();
+                    cbTask.setChecked(task.isCompleted());
+                    listener.onTaskCheckRequested(task, targetState);
+                } else {
+                    cbTask.setChecked(task.isCompleted());
                 }
             });
 

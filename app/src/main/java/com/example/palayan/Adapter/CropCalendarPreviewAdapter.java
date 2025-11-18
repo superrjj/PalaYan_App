@@ -1,5 +1,6 @@
 package com.example.palayan.Adapter;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,10 @@ import java.util.List;
 
 public class CropCalendarPreviewAdapter extends RecyclerView.Adapter<CropCalendarPreviewAdapter.WeekViewHolder> {
 
-    private List<CropCalendarTask> tasks;
+    private List<List<CropCalendarTask>> weeksList;
 
     public CropCalendarPreviewAdapter() {
-        this.tasks = new ArrayList<>();
+        this.weeksList = new ArrayList<>();
     }
 
     @NonNull
@@ -31,67 +32,100 @@ public class CropCalendarPreviewAdapter extends RecyclerView.Adapter<CropCalenda
 
     @Override
     public void onBindViewHolder(@NonNull WeekViewHolder holder, int position) {
-        CropCalendarTask task = tasks.get(position);
-        if (task == null) {
+        if (weeksList == null || position < 0 || position >= weeksList.size()) {
             return;
         }
 
-        // Format: "Oct 1 - Oct 7" (remove year, use dash)
-        String weekRange = task.getWeekRange();
-        // Convert "Nov 18–24, 2025" to "Nov 18 - Nov 24" format
-        if (weekRange.contains("–")) {
-            // Split by en-dash
-            String[] parts = weekRange.split("–");
-            if (parts.length == 2) {
-                String startPart = parts[0].trim();
-                String endPart = parts[1].trim();
-                // Remove year from end part
-                if (endPart.contains(",")) {
-                    endPart = endPart.substring(0, endPart.lastIndexOf(",")).trim();
-                }
-                // Extract month and day from start
-                String[] startWords = startPart.split(" ");
-                if (startWords.length >= 2) {
-                    String month = startWords[0];
-                    String day = startWords[1];
-                    // Extract day from end part
-                    String[] endWords = endPart.split(" ");
-                    if (endWords.length >= 1) {
-                        String endDay = endWords[endWords.length - 1];
-                        weekRange = month + " " + day + " - " + month + " " + endDay;
-                    }
-                }
-            }
-        } else if (weekRange.contains("-")) {
-            // Already in correct format, just remove year
-            if (weekRange.contains(",")) {
-                weekRange = weekRange.substring(0, weekRange.lastIndexOf(",")).trim();
-            }
+        List<CropCalendarTask> weekTasks = weeksList.get(position);
+        if (weekTasks == null || weekTasks.isEmpty()) {
+            return;
         }
-        holder.tvWeekRange.setText(weekRange);
-        holder.tvTaskName.setText(task.getTaskName());
+
+        CropCalendarTask firstTask = weekTasks.get(0);
+        holder.tvWeekRange.setText(formatWeekRange(firstTask.getWeekRange()));
+
+        List<String> taskNames = new ArrayList<>();
+        for (CropCalendarTask task : weekTasks) {
+            taskNames.add(task.getTaskName());
+        }
+        holder.tvTasks.setText(TextUtils.join("\n", taskNames));
     }
 
     @Override
     public int getItemCount() {
-        return tasks != null ? tasks.size() : 0;
+        return weeksList != null ? weeksList.size() : 0;
     }
 
     public void updateTasks(List<CropCalendarTask> tasks) {
-        this.tasks = tasks != null ? new ArrayList<>(tasks) : new ArrayList<>();
-        android.util.Log.d("CropCalendarPreview", "Adapter updated with " + this.tasks.size() + " tasks");
+        weeksList.clear();
+
+        if (tasks == null || tasks.isEmpty()) {
+            android.util.Log.d("CropCalendarPreview", "No tasks to display");
+            notifyDataSetChanged();
+            return;
+        }
+
+        int currentWeekNum = -1;
+        List<CropCalendarTask> currentWeekTasks = new ArrayList<>();
+
+        for (CropCalendarTask task : tasks) {
+            int taskWeekNum = task.getWeekNumber();
+            if (taskWeekNum != currentWeekNum) {
+                if (!currentWeekTasks.isEmpty()) {
+                    weeksList.add(new ArrayList<>(currentWeekTasks));
+                }
+                currentWeekTasks.clear();
+                currentWeekNum = taskWeekNum;
+            }
+            currentWeekTasks.add(task);
+        }
+
+        if (!currentWeekTasks.isEmpty()) {
+            weeksList.add(currentWeekTasks);
+        }
+
+        android.util.Log.d("CropCalendarPreview", "Adapter grouped into " + weeksList.size() + " weeks");
         notifyDataSetChanged();
     }
 
     static class WeekViewHolder extends RecyclerView.ViewHolder {
         TextView tvWeekRange;
-        TextView tvTaskName;
+        TextView tvTasks;
 
         public WeekViewHolder(@NonNull View itemView) {
             super(itemView);
             tvWeekRange = itemView.findViewById(R.id.tvWeekRange);
-            tvTaskName = itemView.findViewById(R.id.tvTaskName);
+            tvTasks = itemView.findViewById(R.id.tvTasks);
         }
+    }
+
+    private String formatWeekRange(String originalRange) {
+        if (originalRange == null || originalRange.isEmpty()) {
+            return "";
+        }
+
+        String weekRange = originalRange;
+        if (weekRange.contains("–")) {
+            String[] parts = weekRange.split("–");
+            if (parts.length == 2) {
+                String startPart = parts[0].trim();
+                String endPart = parts[1].trim();
+                String year = "";
+                if (endPart.contains(",")) {
+                    year = endPart.substring(endPart.lastIndexOf(",") + 1).trim();
+                    endPart = endPart.substring(0, endPart.lastIndexOf(",")).trim();
+                }
+                if (startPart.contains(",")) {
+                    startPart = startPart.substring(0, startPart.lastIndexOf(",")).trim();
+                }
+                weekRange = startPart + " - " + endPart;
+                if (!year.isEmpty()) {
+                    weekRange = weekRange + ", " + year;
+                }
+                return weekRange;
+            }
+        }
+        return weekRange;
     }
 }
 

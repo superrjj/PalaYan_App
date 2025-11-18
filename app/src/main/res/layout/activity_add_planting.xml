@@ -374,7 +374,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginStart="32dp">
+                    android:layout_marginStart="32dp"
+                    android:visibility="gone">
 
                     <RadioButton
                         android:id="@+id/rbCombo1"
@@ -384,13 +385,34 @@
                         android:textColor="@color/black"
                         android:fontFamily="@font/poppins__regular"/>
 
+                    <!-- Combo 1 Schedule Table -->
+                    <include
+                        android:id="@+id/layoutFertilizerScheduleTableCombo1"
+                        layout="@layout/layout_fertilizer_schedule_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"/>
+
                     <RadioButton
                         android:id="@+id/rbCombo2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Combo 2 (5-6 tons)"
                         android:textColor="@color/black"
-                        android:fontFamily="@font/poppins__regular"/>
+                        android:fontFamily="@font/poppins__regular"
+                        android:layout_marginTop="8dp"/>
+
+                    <!-- Combo 2 Schedule Table -->
+                    <include
+                        android:id="@+id/layoutFertilizerScheduleTableCombo2"
+                        layout="@layout/layout_fertilizer_schedule_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"/>
 
                     <RadioButton
                         android:id="@+id/rbCombo3"
@@ -398,7 +420,18 @@
                         android:layout_height="wrap_content"
                         android:text="Combo 3 (7-8 tons)"
                         android:textColor="@color/black"
-                        android:fontFamily="@font/poppins__regular"/>
+                        android:fontFamily="@font/poppins__regular"
+                        android:layout_marginTop="8dp"/>
+
+                    <!-- Combo 3 Schedule Table -->
+                    <include
+                        android:id="@+id/layoutFertilizerScheduleTableCombo3"
+                        layout="@layout/layout_fertilizer_schedule_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"/>
 
                     <RadioButton
                         android:id="@+id/rbCombo4"
@@ -406,7 +439,18 @@
                         android:layout_height="wrap_content"
                         android:text="Combo 4 + Biofertilizer (6-7 tons)"
                         android:textColor="@color/black"
-                        android:fontFamily="@font/poppins__regular"/>
+                        android:fontFamily="@font/poppins__regular"
+                        android:layout_marginTop="8dp"/>
+
+                    <!-- Combo 4 Schedule Table -->
+                    <include
+                        android:id="@+id/layoutFertilizerScheduleTableCombo4"
+                        layout="@layout/layout_fertilizer_schedule_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"/>
                 </RadioGroup>
 
                 <RadioButton
@@ -418,6 +462,16 @@
                     android:fontFamily="@font/poppins__regular"
                     android:textSize="16sp"
                     android:layout_marginTop="16dp"/>
+
+                <!-- Sariling Diskarte Schedule Table -->
+                <include
+                    android:id="@+id/layoutFertilizerScheduleTableSarilingDiskarte"
+                    layout="@layout/layout_fertilizer_schedule_table"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"/>
 
             </RadioGroup>
 
@@ -469,7 +523,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sundin ang crop calendar na ito batay sa Sistemang PalayCheck."
+                android:text="Sundin ang crop calendar na ito batay sa Sistemang PalaYan."
                 android:textColor="@color/dark_gray"
                 android:textSize="14sp"
                 android:fontFamily="@font/poppins__regular"
@@ -513,6 +567,7 @@
             android:layout_height="50dp"
             android:background="@drawable/button_outline"
             android:text="BUMALIK"
+            app:backgroundTint="@color/orange"
             android:fontFamily="@font/poppins__regular"
             android:textColor="@color/white"
             android:textSize="16sp"

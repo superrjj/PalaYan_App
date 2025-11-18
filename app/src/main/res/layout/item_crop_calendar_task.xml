@@ -26,7 +26,7 @@
             android:textSize="16sp"
             android:textAlignment="center"
             android:fontFamily="@font/poppins__semibold"
-            android:background="@color/black"
+            android:background="@color/teal"
             android:padding="16dp"
             android:layout_marginBottom="12dp"/>
 

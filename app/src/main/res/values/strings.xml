@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name"></string>
     <string name="add_planting_for_field">Para sa: %1$s</string>
+    <string name="close">Isara</string>
     <string name="open_nav"></string>
     <string name="close_nav"></string>
 
