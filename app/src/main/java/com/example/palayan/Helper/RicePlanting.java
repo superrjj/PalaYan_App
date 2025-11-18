@@ -1,7 +1,9 @@
 package com.example.palayan.Helper;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class RicePlanting implements Serializable {
     private String id;
@@ -15,6 +17,9 @@ public class RicePlanting implements Serializable {
     private String seedWeight;
     private String fertilizerUsed;
     private String fertilizerAmount;
+    private String fertilizerStrategy; // "Abonong Swak" or "Sariling diskarte"
+    private String fertilizerCombo; // "Combo 1", "Combo 2", "Combo 3", "Combo 4"
+    private List<CropCalendarTask> cropCalendarTasks; // List of tasks for crop calendar
 
     public RicePlanting() {
         this.createdAt = new Date();
@@ -117,6 +122,33 @@ public class RicePlanting implements Serializable {
 
     public void setFertilizerAmount(String fertilizerAmount) {
         this.fertilizerAmount = fertilizerAmount;
+    }
+
+    public String getFertilizerStrategy() {
+        return fertilizerStrategy;
+    }
+
+    public void setFertilizerStrategy(String fertilizerStrategy) {
+        this.fertilizerStrategy = fertilizerStrategy;
+    }
+
+    public String getFertilizerCombo() {
+        return fertilizerCombo;
+    }
+
+    public void setFertilizerCombo(String fertilizerCombo) {
+        this.fertilizerCombo = fertilizerCombo;
+    }
+
+    public List<CropCalendarTask> getCropCalendarTasks() {
+        if (cropCalendarTasks == null) {
+            cropCalendarTasks = new ArrayList<>();
+        }
+        return cropCalendarTasks;
+    }
+
+    public void setCropCalendarTasks(List<CropCalendarTask> cropCalendarTasks) {
+        this.cropCalendarTasks = cropCalendarTasks;
     }
 }
 

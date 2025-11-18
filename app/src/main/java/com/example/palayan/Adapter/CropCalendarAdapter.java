@@ -1,0 +1,150 @@
+package com.example.palayan.Adapter;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.palayan.Helper.CropCalendarTask;
+import com.example.palayan.R;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+public class CropCalendarAdapter extends RecyclerView.Adapter<CropCalendarAdapter.WeekViewHolder> {
+
+    private List<List<CropCalendarTask>> weeksList; // Tasks grouped by week
+    private OnTaskCheckedListener listener;
+
+    public interface OnTaskCheckedListener {
+        void onTaskChecked(CropCalendarTask task, boolean isChecked);
+    }
+
+    public CropCalendarAdapter(OnTaskCheckedListener listener) {
+        this.listener = listener;
+        this.weeksList = new ArrayList<>();
+    }
+
+    @NonNull
+    @Override
+    public WeekViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_crop_calendar_task, parent, false);
+        return new WeekViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull WeekViewHolder holder, int position) {
+        android.util.Log.d("CropCalendarAdapter", "onBindViewHolder called for position: " + position + " (total weeks: " + weeksList.size() + ")");
+        List<CropCalendarTask> weekTasks = weeksList.get(position);
+        if (weekTasks == null || weekTasks.isEmpty()) {
+            android.util.Log.d("CropCalendarAdapter", "Week tasks is null or empty for position: " + position);
+            return;
+        }
+
+        // Set week range with week number (use first task's week range)
+        CropCalendarTask firstTask = weekTasks.get(0);
+        String weekText = "Week " + firstTask.getWeekNumber() + " — " + firstTask.getWeekRange();
+        holder.tvWeekRange.setText(weekText);
+
+        // Clear existing task items
+        holder.layoutTasks.removeAllViews();
+
+        // Add tasks for this week
+        for (CropCalendarTask task : weekTasks) {
+            View taskView = LayoutInflater.from(holder.itemView.getContext())
+                    .inflate(R.layout.item_crop_calendar_task_item, holder.layoutTasks, false);
+            
+            CheckBox cbTask = taskView.findViewById(R.id.cbTaskCompleted);
+            TextView tvTaskName = taskView.findViewById(R.id.tvTaskName);
+
+            cbTask.setChecked(task.isCompleted());
+            tvTaskName.setText("➤ " + task.getTaskName());
+
+            cbTask.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                task.setCompleted(isChecked);
+                if (listener != null) {
+                    listener.onTaskChecked(task, isChecked);
+                }
+            });
+
+            holder.layoutTasks.addView(taskView);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        int count = weeksList != null ? weeksList.size() : 0;
+        android.util.Log.d("CropCalendarAdapter", "getItemCount() called, returning: " + count);
+        return count;
+    }
+
+    public void updateTasks(List<CropCalendarTask> tasks) {
+        weeksList.clear();
+        
+        if (tasks == null || tasks.isEmpty()) {
+            android.util.Log.d("CropCalendarAdapter", "No tasks to display");
+            notifyDataSetChanged();
+            return;
+        }
+
+        android.util.Log.d("CropCalendarAdapter", "updateTasks called with " + tasks.size() + " tasks");
+
+        // Group tasks by week number
+        int currentWeekNum = -1;
+        List<CropCalendarTask> currentWeekTasks = new ArrayList<>();
+
+        for (CropCalendarTask task : tasks) {
+            int taskWeekNum = task.getWeekNumber();
+            if (taskWeekNum != currentWeekNum) {
+                if (!currentWeekTasks.isEmpty()) {
+                    weeksList.add(new ArrayList<>(currentWeekTasks));
+                }
+                currentWeekTasks.clear();
+                currentWeekNum = taskWeekNum;
+            }
+            currentWeekTasks.add(task);
+        }
+
+        if (!currentWeekTasks.isEmpty()) {
+            weeksList.add(currentWeekTasks);
+        }
+
+        android.util.Log.d("CropCalendarAdapter", "Grouped into " + weeksList.size() + " weeks. getItemCount() will return: " + weeksList.size());
+        notifyDataSetChanged();
+    }
+
+    private String formatDateShort(String dateStr) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat outputFormat = new SimpleDateFormat("MMM dd", Locale.getDefault());
+            Date date = inputFormat.parse(dateStr);
+            if (date != null) {
+                return outputFormat.format(date);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dateStr;
+    }
+
+    static class WeekViewHolder extends RecyclerView.ViewHolder {
+        TextView tvWeekRange;
+        LinearLayout layoutTasks;
+
+        public WeekViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvWeekRange = itemView.findViewById(R.id.tvWeekRange);
+            layoutTasks = itemView.findViewById(R.id.layoutTasks);
+        }
+    }
+}
+

@@ -14,16 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.palayan.Adapter.RicePlantingAdapter;
-import com.example.palayan.Helper.AppHelper.DeviceUtils;
 import com.example.palayan.Helper.RiceFieldProfile;
 import com.example.palayan.Helper.RicePlanting;
 import com.example.palayan.R;
 import com.example.palayan.Helper.JournalStorageHelper;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -33,8 +28,6 @@ public class RiceFieldJournal extends AppCompatActivity {
     private TextView tvEmpty;
     private ImageView ivBack;
     private LinearLayout layoutBack;
-    private FirebaseFirestore firestore;
-    private String deviceId;
     private String riceFieldId;
     private Button btnAddPlanting;
     private RecyclerView rvPlantings;
@@ -46,8 +39,7 @@ public class RiceFieldJournal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rice_field_journal);
 
-        firestore = FirebaseFirestore.getInstance();
-        deviceId = DeviceUtils.getDeviceId(this);
+        // Removed Firestore - using local storage now
         
         initViews();
         setupListeners();
@@ -95,53 +87,35 @@ public class RiceFieldJournal extends AppCompatActivity {
         if (intent != null) {
             riceFieldId = intent.getStringExtra("riceFieldId");
             if (riceFieldId != null && !riceFieldId.isEmpty()) {
-                // Load rice field from Firestore
-                firestore.collection("users")
-                        .document(deviceId)
-                        .collection("rice_fields")
-                        .document(riceFieldId)
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                try {
-                                    Gson gson = new Gson();
-                                    RiceFieldProfile riceField = new RiceFieldProfile();
-                                    riceField.setId(documentSnapshot.getString("id"));
-                                    riceField.setName(documentSnapshot.getString("name"));
-                                    riceField.setImageUrl(documentSnapshot.getString("imageUrl"));
-                                    riceField.setProvince(documentSnapshot.getString("province"));
-                                    riceField.setCity(documentSnapshot.getString("city"));
-                                    riceField.setBarangay(documentSnapshot.getString("barangay"));
-                                    riceField.setSizeHectares(documentSnapshot.getDouble("sizeHectares") != null ? 
-                                            documentSnapshot.getDouble("sizeHectares") : 0.0);
-                                    riceField.setSoilType(documentSnapshot.getString("soilType"));
-                                    
-                                    // Parse history from JSON string
-                                    String historyJson = documentSnapshot.getString("history");
-                                    if (historyJson != null && !historyJson.isEmpty()) {
-                                        Type listType = new TypeToken<List<RiceFieldProfile.HistoryEntry>>(){}.getType();
-                                        List<RiceFieldProfile.HistoryEntry> historyList = gson.fromJson(historyJson, listType);
-                                        if (historyList != null) {
-                                            riceField.setHistory(historyList);
-                                        }
-                                    }
-                                    
-                                    // Display the rice field name
-                                    if (riceField.getName() != null && !riceField.getName().isEmpty()) {
-                                        tvRiceFieldName.setText(riceField.getName());
-                                    }
-                                    loadPlantings();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(this, "Error loading rice field data", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(this, "Rice field not found", Toast.LENGTH_SHORT).show();
+                // Load rice field from local storage
+                JournalStorageHelper.loadRiceFields(this, new JournalStorageHelper.OnFieldsLoadedListener() {
+                    @Override
+                    public void onSuccess(List<RiceFieldProfile> fields) {
+                        // Find the specific rice field
+                        RiceFieldProfile riceField = null;
+                        for (RiceFieldProfile field : fields) {
+                            if (field.getId().equals(riceFieldId)) {
+                                riceField = field;
+                                break;
                             }
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(this, "Error loading rice field: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        });
+                        }
+                        
+                        if (riceField != null) {
+                            // Display the rice field name
+                            if (riceField.getName() != null && !riceField.getName().isEmpty()) {
+                                tvRiceFieldName.setText(riceField.getName());
+                            }
+                            loadPlantings();
+                        } else {
+                            Toast.makeText(RiceFieldJournal.this, "Rice field not found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        Toast.makeText(RiceFieldJournal.this, "Error loading rice field: " + error, Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
                 Toast.makeText(this, "Invalid rice field ID", Toast.LENGTH_SHORT).show();
             }
@@ -210,6 +184,8 @@ public class RiceFieldJournal extends AppCompatActivity {
         intent.putExtra("seedWeight", planting.getSeedWeight());
         intent.putExtra("fertilizerUsed", planting.getFertilizerUsed());
         intent.putExtra("fertilizerAmount", planting.getFertilizerAmount());
+        intent.putExtra("notes", planting.getNotes() != null ? planting.getNotes() : "");
+        intent.putExtra("showCropCalendar", true); // Flag to show crop calendar directly
         startActivity(intent);
     }
 }

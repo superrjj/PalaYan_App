@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/white"
+    app:strokeColor="@color/light_gray"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvStage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Punlaan"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins__semibold"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvFertilizer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zinc sulfate at 14-14-14"
+                android:textColor="@color/dark_gray"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins__regular"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/tvTiming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7-10 DAS"
+                android:textColor="@color/green"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins__semibold"/>
+
+            <TextView
+                android:id="@+id/tvTimingDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Days After Sowing"
+                android:textColor="@color/dark_gray"
+                android:textSize="12sp"
+                android:fontFamily="@font/poppins__regular"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

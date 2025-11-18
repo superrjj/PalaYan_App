@@ -381,31 +381,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="15dp"
-                android:visibility="gone"
-                android:id="@+id/llImagesContainer">
-
-                <ImageView
-                    android:id="@+id/ivSoilType"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Soil type image"
-                    android:layout_marginEnd="10dp"/>
-
-                <ImageView
-                    android:id="@+id/ivMunicipalMap"
-                    android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Municipal map image"/>
-
-            </LinearLayout>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

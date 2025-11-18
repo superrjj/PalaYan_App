@@ -22,12 +22,7 @@ import com.example.palayan.Helper.JournalStorageHelper;
 import com.example.palayan.Helper.RiceFieldProfile;
 import com.example.palayan.R;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +35,6 @@ public class FarmerJournal extends AppCompatActivity implements RiceFieldAdapter
     private LinearLayout layoutBack;
     private RiceFieldAdapter adapter;
     private List<RiceFieldProfile> riceFields;
-    private FirebaseFirestore firestore;
-    private String deviceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +54,7 @@ public class FarmerJournal extends AppCompatActivity implements RiceFieldAdapter
         layoutBack = findViewById(R.id.layoutBack);
         tvEmpty = findViewById(R.id.tvEmpty);
         
-        firestore = FirebaseFirestore.getInstance();
-        deviceId = DeviceUtils.getDeviceId(this);
+        // Removed Firestore - using local storage now
     }
 
     private void setupRecyclerView() {
@@ -72,59 +64,29 @@ public class FarmerJournal extends AppCompatActivity implements RiceFieldAdapter
     }
 
     private void loadRiceFields() {
-        firestore.collection("users")
-                .document(deviceId)
-                .collection("rice_fields")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    riceFields = new ArrayList<>();
-                    Gson gson = new Gson();
-                    
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        try {
-                            RiceFieldProfile riceField = new RiceFieldProfile();
-                            riceField.setId(document.getString("id"));
-                            riceField.setName(document.getString("name"));
-                               riceField.setImageUrl(document.getString("imageUrl"));
-                               riceField.setProvince(document.getString("province"));
-                               riceField.setCity(document.getString("city"));
-                               riceField.setBarangay(document.getString("barangay"));
-                               riceField.setSizeHectares(document.getDouble("sizeHectares") != null ? 
-                                       document.getDouble("sizeHectares") : 0.0);
-                               riceField.setSoilType(document.getString("soilType"));
-                            
-                            // Parse history from JSON string
-                            String historyJson = document.getString("history");
-                            if (historyJson != null && !historyJson.isEmpty()) {
-                                Type listType = new TypeToken<List<RiceFieldProfile.HistoryEntry>>(){}.getType();
-                                List<RiceFieldProfile.HistoryEntry> historyList = gson.fromJson(historyJson, listType);
-                                if (historyList != null) {
-                                    riceField.setHistory(historyList);
-                                }
-                            }
-                            
-                            riceFields.add(riceField);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    
-                    adapter.updateList(riceFields);
-                    
-                    // Show/hide empty state
-                    if (riceFields.isEmpty()) {
-                        tvEmpty.setVisibility(View.VISIBLE);
-                        rvRiceFields.setVisibility(View.GONE);
-                    } else {
-                        tvEmpty.setVisibility(View.GONE);
-                        rvRiceFields.setVisibility(View.VISIBLE);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error loading rice fields: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        JournalStorageHelper.loadRiceFields(this, new JournalStorageHelper.OnFieldsLoadedListener() {
+            @Override
+            public void onSuccess(List<RiceFieldProfile> fields) {
+                riceFields = fields != null ? fields : new ArrayList<>();
+                adapter.updateList(riceFields);
+                
+                // Show/hide empty state
+                if (riceFields.isEmpty()) {
                     tvEmpty.setVisibility(View.VISIBLE);
                     rvRiceFields.setVisibility(View.GONE);
-                });
+                } else {
+                    tvEmpty.setVisibility(View.GONE);
+                    rvRiceFields.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Toast.makeText(FarmerJournal.this, "Error loading rice fields: " + error, Toast.LENGTH_SHORT).show();
+                tvEmpty.setVisibility(View.VISIBLE);
+                rvRiceFields.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void setupListeners() {

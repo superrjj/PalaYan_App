@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="12dp">
+
+    <!-- Week Range and Task in one block -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/teal"
+        android:padding="16dp">
+        
+        <TextView
+            android:id="@+id/tvWeekRange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Oct 1 - Oct 7"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins__semibold"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tvTaskName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pag-aararo"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins__regular"/>
+    </LinearLayout>
+
+</LinearLayout>
+

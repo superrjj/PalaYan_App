@@ -6,6 +6,7 @@
     <color name="green">#008200</color>
     <color name="dark_green">#4DAE50</color>
     <color name="light_green">#E9F4E8</color>
+    <color name="orange">#FE9900</color>
     <color name="dark_orange">#FE9900</color>
     <color name="light_orange">#FFF3E0</color>
     <color name="dark_red">#F54236</color>
@@ -31,6 +32,7 @@
     <color name="dark_purple">#A733EA</color>
     <color name="light_navy">#EFF3FF</color>
     <color name="dark_navy">#4E46E8</color>
+    <color name="teal">#2D7A7A</color>
 
 </resources>
 

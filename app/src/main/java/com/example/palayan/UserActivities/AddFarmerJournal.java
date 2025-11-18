@@ -58,8 +58,8 @@ public class AddFarmerJournal extends AppCompatActivity {
     private TextInputLayout layoutName, layoutSize, layoutSoilType, layoutBarangay;
     private AutoCompleteTextView actvSoilType, actProvince, actCity, actBarangay;
     private Button btnSave;
-    private ImageView ivBack, ivRiceFieldImage, ivSoilType, ivMunicipalMap;
-    private View ivTapToUpload, llImagesContainer;
+    private ImageView ivBack, ivRiceFieldImage;
+    private View ivTapToUpload;
     private Button ivRemoveImage;
     private TextView tvRemove;
     
@@ -150,15 +150,9 @@ public class AddFarmerJournal extends AppCompatActivity {
         ivRiceFieldImage = findViewById(R.id.ivRiceFieldImage);
         ivTapToUpload = findViewById(R.id.ivTapToUpload);
         ivRemoveImage = findViewById(R.id.ivRemoveImage);
-        ivSoilType = findViewById(R.id.ivSoilType);
-        ivMunicipalMap = findViewById(R.id.ivMunicipalMap);
-        llImagesContainer = findViewById(R.id.llImagesContainer);
         
         btnSave = findViewById(R.id.btnSave);
         tvRemove = findViewById(R.id.tvRemove);
-        
-        // Set static soil type image
-        ivSoilType.setImageResource(R.drawable.soil_type);
         
         soilTypes = getResources().getStringArray(R.array.environment_array);
         
@@ -178,7 +172,6 @@ public class AddFarmerJournal extends AppCompatActivity {
             actCity.setText("");
             actBarangay.setText("");
             setupMunicipalities();
-            updateImagesVisibility();
         });
 
         // Initialize municipalities
@@ -192,8 +185,6 @@ public class AddFarmerJournal extends AppCompatActivity {
             String selectedMunicipality = TARLAC_MUNICIPALITIES[position];
             actBarangay.setText("");
             setupBarangays(selectedMunicipality);
-            updateImagesVisibility();
-            updateMunicipalMapImage(selectedMunicipality);
         });
     }
 
@@ -598,33 +589,5 @@ public class AddFarmerJournal extends AppCompatActivity {
         }
 
         snackbar.show();
-    }
-
-    private void updateImagesVisibility() {
-        String province = actProvince.getText() != null ? actProvince.getText().toString().trim() : "";
-        String city = actCity.getText() != null ? actCity.getText().toString().trim() : "";
-        
-        if (!province.isEmpty() && !city.isEmpty()) {
-            llImagesContainer.setVisibility(View.VISIBLE);
-        } else {
-            llImagesContainer.setVisibility(View.GONE);
-        }
-    }
-
-    private void updateMunicipalMapImage(String municipality) {
-        int drawableResId;
-        switch (municipality) {
-            case "Tarlac City":
-                drawableResId = R.drawable.ic_tarlac_city;
-                break;
-            case "Victoria":
-                drawableResId = R.drawable.ic_victoria;
-                break;
-            default:
-                // For other municipalities, you can add more cases or use a default image
-                drawableResId = R.drawable.ic_tarlac_city; // Default fallback
-                break;
-        }
-        ivMunicipalMap.setImageResource(drawableResId);
     }
 }

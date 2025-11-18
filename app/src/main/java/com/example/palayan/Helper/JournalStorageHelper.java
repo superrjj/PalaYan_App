@@ -1,144 +1,293 @@
 package com.example.palayan.Helper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.example.palayan.Helper.AppHelper.DeviceUtils;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class JournalStorageHelper {
-    private static final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private static final String PREFS_NAME = "JournalStorage";
+    private static final String KEY_RICE_FIELDS = "rice_fields";
+    private static final String KEY_PLANTINGS_PREFIX = "plantings_";
     private static final Gson gson = new Gson();
 
+    // Rice Field methods
     public static void saveRiceField(Context context, RiceFieldProfile riceField, OnSaveListener listener) {
-        String deviceId = DeviceUtils.getDeviceId(context);
-        
-        // Convert RiceFieldProfile to Map for Firestore
-        Map<String, Object> data = new HashMap<>();
-        data.put("id", riceField.getId());
-        data.put("name", riceField.getName());
-        data.put("imageUrl", riceField.getImageUrl() != null ? riceField.getImageUrl() : "");
-        data.put("province", riceField.getProvince() != null ? riceField.getProvince() : "");
-        data.put("city", riceField.getCity() != null ? riceField.getCity() : "");
-        data.put("barangay", riceField.getBarangay() != null ? riceField.getBarangay() : "");
-        data.put("sizeHectares", riceField.getSizeHectares());
-        data.put("soilType", riceField.getSoilType());
-        data.put("createdAt", FieldValue.serverTimestamp());
-        data.put("deviceId", deviceId);
-        
-        // Convert history list to JSON string (Firestore doesn't support nested serializable objects directly)
-        if (riceField.getHistory() != null && !riceField.getHistory().isEmpty()) {
-            data.put("history", gson.toJson(riceField.getHistory()));
-        } else {
-            data.put("history", "[]");
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String fieldsJson = prefs.getString(KEY_RICE_FIELDS, "[]");
+            
+            Type listType = new TypeToken<List<RiceFieldProfile>>(){}.getType();
+            List<RiceFieldProfile> fieldsList = gson.fromJson(fieldsJson, listType);
+            if (fieldsList == null) {
+                fieldsList = new ArrayList<>();
+            }
+            
+            // Check if updating existing field
+            boolean found = false;
+            for (int i = 0; i < fieldsList.size(); i++) {
+                if (fieldsList.get(i).getId().equals(riceField.getId())) {
+                    fieldsList.set(i, riceField);
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                fieldsList.add(riceField);
+            }
+            
+            // Save back to SharedPreferences
+            prefs.edit()
+                    .putString(KEY_RICE_FIELDS, gson.toJson(fieldsList))
+                    .apply();
+            
+            if (listener != null) {
+                listener.onSuccess();
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onFailure(e.getMessage());
+            }
         }
+    }
 
-        firestore.collection("users")
-                .document(deviceId)
-                .collection("rice_fields")
-                .document(riceField.getId())
-                .set(data)
-                .addOnSuccessListener(aVoid -> {
-                    if (listener != null) {
-                        listener.onSuccess();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(e.getMessage());
-                    }
-                });
+    public static void loadRiceFields(Context context, OnFieldsLoadedListener listener) {
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String fieldsJson = prefs.getString(KEY_RICE_FIELDS, "[]");
+            
+            Type listType = new TypeToken<List<RiceFieldProfile>>(){}.getType();
+            List<RiceFieldProfile> fieldsList = gson.fromJson(fieldsJson, listType);
+            
+            if (fieldsList == null) {
+                fieldsList = new ArrayList<>();
+            }
+            
+            if (listener != null) {
+                listener.onSuccess(fieldsList);
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onFailure(e.getMessage());
+            }
+        }
     }
 
     public static void deleteRiceField(Context context, String riceFieldId, OnDeleteListener listener) {
-        String deviceId = DeviceUtils.getDeviceId(context);
-        
-        firestore.collection("users")
-                .document(deviceId)
-                .collection("rice_fields")
-                .document(riceFieldId)
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    if (listener != null) {
-                        listener.onSuccess();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(e.getMessage());
-                    }
-                });
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String fieldsJson = prefs.getString(KEY_RICE_FIELDS, "[]");
+            
+            Type listType = new TypeToken<List<RiceFieldProfile>>(){}.getType();
+            List<RiceFieldProfile> fieldsList = gson.fromJson(fieldsJson, listType);
+            
+            if (fieldsList == null) {
+                fieldsList = new ArrayList<>();
+            }
+            
+            // Remove the field
+            fieldsList.removeIf(field -> field.getId().equals(riceFieldId));
+            
+            // Save back
+            prefs.edit()
+                    .putString(KEY_RICE_FIELDS, gson.toJson(fieldsList))
+                    .apply();
+            
+            // Also delete all plantings for this rice field
+            String plantingsKey = KEY_PLANTINGS_PREFIX + riceFieldId;
+            prefs.edit().remove(plantingsKey).apply();
+            
+            if (listener != null) {
+                listener.onSuccess();
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onFailure(e.getMessage());
+            }
+        }
     }
 
     public static void addHistoryEntry(Context context, String riceFieldId, RiceFieldProfile.HistoryEntry entry, OnSaveListener listener) {
-        String deviceId = DeviceUtils.getDeviceId(context);
-        
-        // Get the rice field first
-        firestore.collection("users")
-                .document(deviceId)
-                .collection("rice_fields")
-                .document(riceFieldId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        // Get existing history
-                        String historyJson = documentSnapshot.getString("history");
-                        if (historyJson == null || historyJson.isEmpty()) {
-                            historyJson = "[]";
-                        }
-                        
-                        // Parse, add new entry, and save back
-                        try {
-                            java.lang.reflect.Type listType = new com.google.gson.reflect.TypeToken<java.util.List<RiceFieldProfile.HistoryEntry>>(){}.getType();
-                            java.util.List<RiceFieldProfile.HistoryEntry> historyList = gson.fromJson(historyJson, listType);
-                            if (historyList == null) {
-                                historyList = new java.util.ArrayList<>();
-                            }
-                            historyList.add(entry);
-                            
-                            Map<String, Object> updateData = new HashMap<>();
-                            updateData.put("history", gson.toJson(historyList));
-                            
-                            firestore.collection("users")
-                                    .document(deviceId)
-                                    .collection("rice_fields")
-                                    .document(riceFieldId)
-                                    .update(updateData)
-                                    .addOnSuccessListener(aVoid -> {
-                                        if (listener != null) {
-                                            listener.onSuccess();
-                                        }
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        if (listener != null) {
-                                            listener.onFailure(e.getMessage());
-                                        }
-                                    });
-                        } catch (Exception e) {
-                            if (listener != null) {
-                                listener.onFailure("Error parsing history: " + e.getMessage());
-                            }
-                        }
-                    } else {
-                        if (listener != null) {
-                            listener.onFailure("Rice field not found");
-                        }
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String fieldsJson = prefs.getString(KEY_RICE_FIELDS, "[]");
+            
+            Type listType = new TypeToken<List<RiceFieldProfile>>(){}.getType();
+            List<RiceFieldProfile> fieldsList = gson.fromJson(fieldsJson, listType);
+            
+            if (fieldsList == null) {
+                fieldsList = new ArrayList<>();
+            }
+            
+            // Find the rice field and update its history
+            RiceFieldProfile targetField = null;
+            for (RiceFieldProfile field : fieldsList) {
+                if (field.getId().equals(riceFieldId)) {
+                    targetField = field;
+                    break;
+                }
+            }
+            
+            if (targetField == null) {
+                if (listener != null) {
+                    listener.onFailure("Rice field not found");
+                }
+                return;
+            }
+            
+            // Get or initialize history
+            List<RiceFieldProfile.HistoryEntry> historyList = targetField.getHistory();
+            if (historyList == null) {
+                historyList = new ArrayList<>();
+            }
+            
+            // Check if updating existing entry
+            boolean found = false;
+            if (entry.getId() != null && !entry.getId().isEmpty()) {
+                for (int i = 0; i < historyList.size(); i++) {
+                    if (historyList.get(i).getId().equals(entry.getId())) {
+                        historyList.set(i, entry);
+                        found = true;
+                        break;
                     }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(e.getMessage());
-                    }
-                });
+                }
+            }
+            
+            if (!found) {
+                historyList.add(entry);
+            }
+            
+            targetField.setHistory(historyList);
+            
+            // Save back
+            prefs.edit()
+                    .putString(KEY_RICE_FIELDS, gson.toJson(fieldsList))
+                    .apply();
+            
+            if (listener != null) {
+                listener.onSuccess();
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onFailure("Error: " + e.getMessage());
+            }
+        }
     }
 
+    // Rice Planting methods
+    public static void saveRicePlanting(Context context, String riceFieldId, RicePlanting planting, OnSaveListener listener) {
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String plantingsKey = KEY_PLANTINGS_PREFIX + riceFieldId;
+            String plantingsJson = prefs.getString(plantingsKey, "[]");
+            
+            Type listType = new TypeToken<List<RicePlanting>>(){}.getType();
+            List<RicePlanting> plantingsList = gson.fromJson(plantingsJson, listType);
+            
+            if (plantingsList == null) {
+                plantingsList = new ArrayList<>();
+            }
+            
+            // Check if updating existing planting
+            boolean found = false;
+            for (int i = 0; i < plantingsList.size(); i++) {
+                if (plantingsList.get(i).getId().equals(planting.getId())) {
+                    plantingsList.set(i, planting);
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                plantingsList.add(planting);
+            }
+            
+            // Save back
+            prefs.edit()
+                    .putString(plantingsKey, gson.toJson(plantingsList))
+                    .apply();
+            
+            if (listener != null) {
+                listener.onSuccess();
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onFailure(e.getMessage());
+            }
+        }
+    }
+
+    public static void loadRicePlantings(Context context, String riceFieldId, OnPlantingsLoadedListener listener) {
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String plantingsKey = KEY_PLANTINGS_PREFIX + riceFieldId;
+            String plantingsJson = prefs.getString(plantingsKey, "[]");
+            
+            Type listType = new TypeToken<List<RicePlanting>>(){}.getType();
+            List<RicePlanting> plantingsList = gson.fromJson(plantingsJson, listType);
+            
+            if (plantingsList == null) {
+                plantingsList = new ArrayList<>();
+            }
+            
+            // Filter by riceFieldId to ensure data integrity
+            List<RicePlanting> filteredList = new ArrayList<>();
+            for (RicePlanting planting : plantingsList) {
+                if (planting.getRiceFieldId() != null && planting.getRiceFieldId().equals(riceFieldId)) {
+                    filteredList.add(planting);
+                }
+            }
+            
+            if (listener != null) {
+                listener.onSuccess(filteredList);
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onFailure(e.getMessage());
+            }
+        }
+    }
+
+    public static void deleteRicePlanting(Context context, String riceFieldId, String plantingId, OnDeleteListener listener) {
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String plantingsKey = KEY_PLANTINGS_PREFIX + riceFieldId;
+            String plantingsJson = prefs.getString(plantingsKey, "[]");
+            
+            Type listType = new TypeToken<List<RicePlanting>>(){}.getType();
+            List<RicePlanting> plantingsList = gson.fromJson(plantingsJson, listType);
+            
+            if (plantingsList == null) {
+                plantingsList = new ArrayList<>();
+            }
+            
+            // Remove the planting
+            plantingsList.removeIf(planting -> planting.getId().equals(plantingId));
+            
+            // Save back
+            prefs.edit()
+                    .putString(plantingsKey, gson.toJson(plantingsList))
+                    .apply();
+            
+            if (listener != null) {
+                listener.onSuccess();
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onFailure(e.getMessage());
+            }
+        }
+    }
+
+    // Interfaces
     public interface OnSaveListener {
         void onSuccess();
         void onFailure(String error);
@@ -149,103 +298,9 @@ public class JournalStorageHelper {
         void onFailure(String error);
     }
 
-    // Rice Planting methods
-    public static void saveRicePlanting(Context context, String riceFieldId, RicePlanting planting, OnSaveListener listener) {
-        String deviceId = DeviceUtils.getDeviceId(context);
-        
-        Map<String, Object> data = new HashMap<>();
-        data.put("id", planting.getId());
-        data.put("riceFieldId", planting.getRiceFieldId());
-        data.put("riceVarietyId", planting.getRiceVarietyId());
-        data.put("riceVarietyName", planting.getRiceVarietyName());
-        data.put("plantingDate", planting.getPlantingDate() != null ? planting.getPlantingDate() : "");
-        data.put("notes", planting.getNotes() != null ? planting.getNotes() : "");
-        data.put("plantingMethod", planting.getPlantingMethod() != null ? planting.getPlantingMethod() : "");
-        data.put("seedWeight", planting.getSeedWeight() != null ? planting.getSeedWeight() : "");
-        data.put("fertilizerUsed", planting.getFertilizerUsed() != null ? planting.getFertilizerUsed() : "");
-        data.put("fertilizerAmount", planting.getFertilizerAmount() != null ? planting.getFertilizerAmount() : "");
-        data.put("createdAt", FieldValue.serverTimestamp());
-        data.put("deviceId", deviceId);
-
-        firestore.collection("users")
-                .document(deviceId)
-                .collection("rice_fields")
-                .document(riceFieldId)
-                .collection("plantings")
-                .document(planting.getId())
-                .set(data)
-                .addOnSuccessListener(aVoid -> {
-                    if (listener != null) {
-                        listener.onSuccess();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(e.getMessage());
-                    }
-                });
-    }
-
-    public static void loadRicePlantings(Context context, String riceFieldId, OnPlantingsLoadedListener listener) {
-        String deviceId = DeviceUtils.getDeviceId(context);
-        
-        firestore.collection("users")
-                .document(deviceId)
-                .collection("rice_fields")
-                .document(riceFieldId)
-                .collection("plantings")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<RicePlanting> plantings = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        try {
-                            RicePlanting planting = new RicePlanting();
-                            planting.setId(document.getString("id"));
-                            planting.setRiceFieldId(document.getString("riceFieldId"));
-                            planting.setRiceVarietyId(document.getString("riceVarietyId"));
-                            planting.setRiceVarietyName(document.getString("riceVarietyName"));
-                            planting.setPlantingDate(document.getString("plantingDate"));
-                            planting.setNotes(document.getString("notes"));
-                            planting.setPlantingMethod(document.getString("plantingMethod"));
-                            planting.setSeedWeight(document.getString("seedWeight"));
-                            planting.setFertilizerUsed(document.getString("fertilizerUsed"));
-                            planting.setFertilizerAmount(document.getString("fertilizerAmount"));
-                            plantings.add(planting);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (listener != null) {
-                        listener.onSuccess(plantings);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(e.getMessage());
-                    }
-                });
-    }
-
-    public static void deleteRicePlanting(Context context, String riceFieldId, String plantingId, OnDeleteListener listener) {
-        String deviceId = DeviceUtils.getDeviceId(context);
-        
-        firestore.collection("users")
-                .document(deviceId)
-                .collection("rice_fields")
-                .document(riceFieldId)
-                .collection("plantings")
-                .document(plantingId)
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    if (listener != null) {
-                        listener.onSuccess();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(e.getMessage());
-                    }
-                });
+    public interface OnFieldsLoadedListener {
+        void onSuccess(List<RiceFieldProfile> fields);
+        void onFailure(String error);
     }
 
     public interface OnPlantingsLoadedListener {
@@ -253,4 +308,3 @@ public class JournalStorageHelper {
         void onFailure(String error);
     }
 }
-
