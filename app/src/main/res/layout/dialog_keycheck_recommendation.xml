@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_rounded_background"
+    android:padding="0dp"
+    android:minHeight="400dp">
+
+    <TextView
+        android:id="@+id/tvKeycheckTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rekomendasyon"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:fontFamily="@font/poppins_bold"
+        android:padding="24dp"
+        android:paddingBottom="16dp"
+        android:gravity="center_vertical" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:fillViewport="false"
+        android:scrollbars="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="8dp"
+        android:overScrollMode="always">
+
+        <TextView
+            android:id="@+id/tvKeycheckContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:fontFamily="@font/poppins__regular"
+            android:lineSpacingExtra="4dp"
+            android:paddingBottom="8dp" />
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnKeycheckOkay"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/orange"
+        android:background="@drawable/button_solid"
+        android:fontFamily="@font/poppins__semibold"
+        android:text="OKAY"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:visibility="visible" />
+
+</LinearLayout>
+

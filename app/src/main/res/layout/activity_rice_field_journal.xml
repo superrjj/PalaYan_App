@@ -130,6 +130,23 @@
             android:layout_gravity="center"
             android:visibility="visible"/>
 
+        <!-- Delete Rice Field Button -->
+        <TextView
+            android:id="@+id/tvDeleteRiceField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ALISIN ANG PALAYAN"
+            android:textColor="@color/dark_red"
+            android:textSize="18sp"
+            android:fontFamily="@font/poppins__medium"
+            android:textAllCaps="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginTop="16dp"/>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -14,29 +14,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="0dp">
 
-        <!-- Week Range Header -->
+        <!-- Week Range Header - Only colored part -->
         <TextView
             android:id="@+id/tvWeekRange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Week 1 — Nov 18–24, 2025"
+            android:text="Nov 18–24, 2025"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textAlignment="center"
             android:fontFamily="@font/poppins__semibold"
             android:background="@color/teal"
-            android:padding="16dp"
-            android:layout_marginBottom="12dp"/>
+            android:padding="16dp"/>
 
-        <!-- Task List -->
+        <!-- Task List - White background -->
         <LinearLayout
             android:id="@+id/layoutTasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
             <LinearLayout
                 android:id="@+id/layoutTaskItem"

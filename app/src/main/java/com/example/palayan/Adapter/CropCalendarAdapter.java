@@ -50,10 +50,9 @@ public class CropCalendarAdapter extends RecyclerView.Adapter<CropCalendarAdapte
             return;
         }
 
-        // Set week range with week number (use first task's week range)
+        // Set week range without week number (use first task's week range)
         CropCalendarTask firstTask = weekTasks.get(0);
-        String weekText = "Week " + firstTask.getWeekNumber() + " — " + firstTask.getWeekRange();
-        holder.tvWeekRange.setText(weekText);
+        holder.tvWeekRange.setText(firstTask.getWeekRange());
 
         // Clear existing task items
         holder.layoutTasks.removeAllViews();
@@ -71,9 +70,16 @@ public class CropCalendarAdapter extends RecyclerView.Adapter<CropCalendarAdapte
 
             cbTask.setOnClickListener(v -> {
                 if (listener != null) {
-                    boolean targetState = !task.isCompleted();
-                    cbTask.setChecked(task.isCompleted());
-                    listener.onTaskCheckRequested(task, targetState);
+                    if (task.isCompleted()) {
+                        // If already completed, just show the dialog with details (don't allow unchecking)
+                        cbTask.setChecked(true); // Keep it checked
+                        listener.onTaskCheckRequested(task, true);
+                    } else {
+                        // If not completed, allow checking
+                        boolean targetState = true;
+                        cbTask.setChecked(task.isCompleted()); // Revert temporarily
+                        listener.onTaskCheckRequested(task, targetState);
+                    }
                 } else {
                     cbTask.setChecked(task.isCompleted());
                 }

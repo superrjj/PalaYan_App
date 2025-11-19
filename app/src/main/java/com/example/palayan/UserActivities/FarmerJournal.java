@@ -113,46 +113,4 @@ public class FarmerJournal extends AppCompatActivity implements RiceFieldAdapter
         intent.putExtra("riceFieldId", riceField.getId());
         startActivity(intent);
     }
-    
-    private void showDeleteDialog(RiceFieldProfile riceField) {
-        new AlertDialog.Builder(this)
-                .setTitle("Tanggalin ang Palayan")
-                .setMessage("Sigurado ka bang gusto mong tanggalin ang \"" + riceField.getName() + "\"?")
-                .setPositiveButton("Tanggalin", (dialog, which) -> {
-                    deleteRiceField(riceField);
-                })
-                .setNegativeButton("Kanselahin", null)
-                .show();
-    }
-    
-    private void deleteRiceField(RiceFieldProfile riceField) {
-        JournalStorageHelper.deleteRiceField(this, riceField.getId(), new JournalStorageHelper.OnDeleteListener() {
-            @Override
-            public void onSuccess() {
-                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), 
-                    "Matagumpay na natanggal ang palayan!", Snackbar.LENGTH_SHORT);
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(ContextCompat.getColor(FarmerJournal.this, R.color.green));
-                TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
-                textView.setTypeface(ResourcesCompat.getFont(FarmerJournal.this, R.font.poppins__regular));
-                textView.setTextColor(ContextCompat.getColor(FarmerJournal.this, R.color.white));
-                snackbar.show();
-                
-                // Reload list
-                loadRiceFields();
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), 
-                    "Hindi natanggal: " + error, Snackbar.LENGTH_LONG);
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(ContextCompat.getColor(FarmerJournal.this, R.color.dark_red));
-                TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
-                textView.setTypeface(ResourcesCompat.getFont(FarmerJournal.this, R.font.poppins__regular));
-                textView.setTextColor(ContextCompat.getColor(FarmerJournal.this, R.color.white));
-                snackbar.show();
-            }
-        });
-    }
 }

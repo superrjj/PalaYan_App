@@ -52,7 +52,7 @@ import java.util.Map;
 
 public class AddPlantingActivity extends AppCompatActivity {
 
-    private static final int TOTAL_CALENDAR_WEEKS = 20;
+    private static final int TOTAL_CALENDAR_WEEKS = 17;
 
     private TextView tvTitle, tvRiceFieldInfo, tvPlantingDate, tvRemove;
     private TextView tabSeedSelection, tabFertilizer, tabCropCalendar;
@@ -102,6 +102,9 @@ public class AddPlantingActivity extends AppCompatActivity {
     private String existingFertilizerAmount;
     private String existingNotes;
     private boolean showCropCalendar = false;
+    private String initialFertilizerStrategy;
+    private String initialFertilizerCombo;
+    private List<CropCalendarTask> initialCropCalendarTasks = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -239,6 +242,9 @@ public class AddPlantingActivity extends AppCompatActivity {
                                 cropCalendarTasks = p.getCropCalendarTasks();
                                 android.util.Log.d("CropCalendar", "Loaded " + cropCalendarTasks.size() + " tasks from card click");
                                 
+                                // Fix weekRange format for all tasks (in case they have old format)
+                                fixWeekRangeForAllTasks(p.getPlantingDate());
+                                
                                 // Check if we have all weeks, if not, regenerate
                                 if (!hasCompleteCalendar(cropCalendarTasks) && p.getPlantingDate() != null && !p.getPlantingDate().isEmpty()) {
                                     android.util.Log.d("CropCalendar", "Incomplete tasks found (" + cropCalendarTasks.size() + "), regenerating full schedule");
@@ -285,68 +291,91 @@ public class AddPlantingActivity extends AppCompatActivity {
 
     private List<WeekTaskTemplate> buildWeekTaskTemplates() {
         List<WeekTaskTemplate> templates = new ArrayList<>();
+        // Week 1: Pag aararo, Pag-aayos ng kanal at pilapil, Pagbabad ng lupa, Paghahanda ng lupang pagpupunlaan
         templates.add(new WeekTaskTemplate(
                 new TaskTemplate("Pag-aararo", "preparation"),
-                new TaskTemplate("Pag-aayos ng kanal at pilapil", "preparation")
-        ));
-        templates.add(new WeekTaskTemplate(
-                new TaskTemplate("Pagbabababad ng lupa", "preparation"),
+                new TaskTemplate("Pag-aayos ng kanal at pilapil", "preparation"),
+                new TaskTemplate("Pagbabad ng lupa", "preparation"),
                 new TaskTemplate("Paghahanda ng lupang pagpupunlaan", "preparation")
         ));
-        templates.add(new WeekTaskTemplate(
-                new TaskTemplate("Pagbabababad ng binhi", "seed"),
+        // Week 2: Pagbababad ng binhi, paggawa ng kamang-punlaan, pagkulob ng binhi, pagpupunla (SEEDLING WEEK)
+        templates.add(new WeekTaskTemplate(true,
+                new TaskTemplate("Pagbababad ng binhi", "seed"),
                 new TaskTemplate("Paggawa ng kamang-punlaan", "seed"),
-                new TaskTemplate("Pagkukolob ng binhi", "seed"),
-                new TaskTemplate("Pagpupunla", "seed"),
+                new TaskTemplate("Pagkulob ng binhi", "seed"),
+                new TaskTemplate("Pagpupunla", "seed")
+        ));
+        // Week 3: Ika-1 pagsusuyod, pagpapatubig sa punlaan, pagpapataba sa punlaan
+        templates.add(new WeekTaskTemplate(
                 new TaskTemplate("Ika-1 pagsusuyod", "weed_control"),
                 new TaskTemplate("Pagpapatubig sa punlaan", "irrigation"),
-                new TaskTemplate("Pagpapataba sa punlaan", "fertilizer"),
+                new TaskTemplate("Pagpapataba sa punlaan", "fertilizer")
+        ));
+        // Week 4: Ika-2 pagsusuyod
+        templates.add(new WeekTaskTemplate(
                 new TaskTemplate("Ika-2 pagsusuyod", "weed_control")
         ));
-        templates.add(new WeekTaskTemplate(true,
-                new TaskTemplate("Paglilinang/Pagpapatag", "land_preparation"),
+        // Week 5: Pagpapatag, pagbubunot ng punla, pagkakalat ng punla, paglilipat tanim, pamamahala sa damo, pamamahala sa kuhol, paghuhulip, pagpapatubig
+        templates.add(new WeekTaskTemplate(
+                new TaskTemplate("Pagpapatag", "land_preparation"),
                 new TaskTemplate("Pagbubunot ng punla", "planting"),
                 new TaskTemplate("Pagkakalat ng punla", "planting"),
-                new TaskTemplate("Paglilipat-tanim", "planting")
-        ));
-        templates.add(new WeekTaskTemplate(
+                new TaskTemplate("Paglilipat tanim", "planting"),
                 new TaskTemplate("Pamamahala sa damo", "weed_control"),
                 new TaskTemplate("Pamamahala sa kuhol", "pest_control"),
-                new TaskTemplate("Pamamahala sa daga", "pest_control"),
                 new TaskTemplate("Paghuhulip", "pest_control"),
                 new TaskTemplate("Pagpapatubig", "irrigation")
         ));
+        // Week 6: Ika-1 pagpapataba, pagpapatubig
         templates.add(new WeekTaskTemplate(
-                new TaskTemplate("Ika-1 pagpapataba", "fertilizer")
+                new TaskTemplate("Ika-1 pagpapataba", "fertilizer"),
+                new TaskTemplate("Pagpapatubig", "irrigation")
         ));
+        // Week 7: pagpapatubig, pamamahala sa damo
         templates.add(new WeekTaskTemplate(
                 new TaskTemplate("Pagpapatubig", "irrigation"),
-                new TaskTemplate("Pamamahala sa damo", "weed_control"),
-                new TaskTemplate("Paglalagay ng observation well (AWD)", "irrigation")
+                new TaskTemplate("Pamamahala sa damo", "weed_control")
         ));
+        // Week 8: paglalagay ng observation well (awd), ikaw-2 pagpapataba, pagpapatubig
         templates.add(new WeekTaskTemplate(
+                new TaskTemplate("Paglalagay ng observation well (awd)", "irrigation"),
                 new TaskTemplate("Ika-2 pagpapataba", "fertilizer"),
                 new TaskTemplate("Pagpapatubig", "irrigation")
         ));
+        // Week 9: pagpapatubig
         templates.add(new WeekTaskTemplate(
                 new TaskTemplate("Pagpapatubig", "irrigation")
         ));
+        // Week 10: pagpapatubig, ika-3 pagpapataba
         templates.add(new WeekTaskTemplate(
                 new TaskTemplate("Pagpapatubig", "irrigation"),
                 new TaskTemplate("Ika-3 pagpapataba", "fertilizer")
         ));
-        templates.add(new WeekTaskTemplate(new TaskTemplate("Pagpapatubig", "irrigation")));
-        templates.add(new WeekTaskTemplate(new TaskTemplate("Pagpapatubig", "irrigation")));
-        templates.add(new WeekTaskTemplate(new TaskTemplate("Pagpapatubig", "irrigation")));
-        templates.add(new WeekTaskTemplate(new TaskTemplate("Pagpapatubig", "irrigation")));
-        templates.add(new WeekTaskTemplate(new TaskTemplate("Pagpapatubig", "irrigation")));
-        templates.add(new WeekTaskTemplate(new TaskTemplate("Pagpapatubig", "irrigation")));
-        templates.add(new WeekTaskTemplate(new TaskTemplate("Pagpapatubig", "irrigation")));
-        templates.add(new WeekTaskTemplate(new TaskTemplate("Pagpapatubig", "irrigation")));
+        // Week 11: pagpapatubig
         templates.add(new WeekTaskTemplate(
-                new TaskTemplate("Pagpapatubig", "irrigation"),
+                new TaskTemplate("Pagpapatubig", "irrigation")
+        ));
+        // Week 12: pagpapatubig
+        templates.add(new WeekTaskTemplate(
+                new TaskTemplate("Pagpapatubig", "irrigation")
+        ));
+        // Week 13: pagpapatubig
+        templates.add(new WeekTaskTemplate(
+                new TaskTemplate("Pagpapatubig", "irrigation")
+        ));
+        // Week 14: pagpapatubig
+        templates.add(new WeekTaskTemplate(
+                new TaskTemplate("Pagpapatubig", "irrigation")
+        ));
+        // Week 15: pagpapatubig
+        templates.add(new WeekTaskTemplate(
+                new TaskTemplate("Pagpapatubig", "irrigation")
+        ));
+        // Week 16: pagpapatuyo ng palayan
+        templates.add(new WeekTaskTemplate(
                 new TaskTemplate("Pagpapatuyo ng palayan", "harvest_prep")
         ));
+        // Week 17: pag-aani
         templates.add(new WeekTaskTemplate(
                 new TaskTemplate("Pag-aani", "harvest")
         ));
@@ -445,12 +474,30 @@ public class AddPlantingActivity extends AppCompatActivity {
                 rgFertilizerCombo.setVisibility(View.GONE);
                 hideAllScheduleTables();
             }
+            checkForChanges();
         });
 
         // Combo selection change
         rgFertilizerCombo.setOnCheckedChangeListener((group, checkedId) -> {
             updateFertilizerScheduleTable();
+            checkForChanges();
         });
+        
+        // Track changes in text fields
+        etRiceVariety.setOnItemClickListener((parent, view, position, id) -> checkForChanges());
+        etSeedWeight.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                checkForChanges();
+            }
+        });
+        
+        // Track planting method changes
+        rgPlantingMethod.setOnCheckedChangeListener((group, checkedId) -> checkForChanges());
 
         // Initialize fertilizer UI state
         if (rbAbonongSwak.isChecked()) {
@@ -548,7 +595,7 @@ public class AddPlantingActivity extends AppCompatActivity {
             return false;
         }
         if (plantingDate == null || plantingDate.isEmpty() || plantingDate.equals("Piliin ang petsa")) {
-            showSnackBar("Piliin ang petsa ng pagtatanim.", false, null);
+            showSnackBar("Piliin ang petsa ng pagpupunla.", false, null);
             return false;
         }
         if (seedWeight.isEmpty()) {
@@ -598,6 +645,7 @@ public class AddPlantingActivity extends AppCompatActivity {
                     if (currentStep == 2) {
                         generateCropCalendarTasks();
                     }
+                    checkForChanges();
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -625,19 +673,15 @@ public class AddPlantingActivity extends AppCompatActivity {
 
             cropCalendarTasks.clear();
             List<WeekTaskTemplate> weekTemplates = buildWeekTaskTemplates();
-            int plantingWeekIndex = 1;
-            for (int i = 0; i < weekTemplates.size(); i++) {
-                if (weekTemplates.get(i).isPlantingWeek()) {
-                    plantingWeekIndex = i + 1;
-                    break;
-                }
-            }
+            int seedlingWeekIndex = 2; // Week 2 is the seedling week
             
-            // Anchor the planting week to the selected planting date (adjusted to Monday)
+            // Anchor Week 2 (seedling week) to the selected date (adjusted to Monday)
             Calendar anchorWeekStart = (Calendar) plantingCal.clone();
             int dayOfWeek = anchorWeekStart.get(Calendar.DAY_OF_WEEK);
             int daysFromMonday = (dayOfWeek == Calendar.SUNDAY) ? 6 : dayOfWeek - Calendar.MONDAY;
             anchorWeekStart.add(Calendar.DAY_OF_YEAR, -daysFromMonday);
+            // Go back 1 week to get Week 1 start (since Week 2 is the selected date)
+            anchorWeekStart.add(Calendar.DAY_OF_YEAR, -7);
             
             // Ensure we're in preview mode when generating new tasks
             // This ensures all tasks are created as new, not updated
@@ -648,9 +692,9 @@ public class AddPlantingActivity extends AppCompatActivity {
             for (int weekIndex = 0; weekIndex < weekTemplates.size(); weekIndex++) {
                 WeekTaskTemplate template = weekTemplates.get(weekIndex);
                 int weekNumber = weekIndex + 1;
-                int offsetFromPlantingWeek = weekNumber - plantingWeekIndex;
+                int offsetFromSeedlingWeek = weekNumber - seedlingWeekIndex;
                 Calendar weekStart = (Calendar) anchorWeekStart.clone();
-                weekStart.add(Calendar.DAY_OF_YEAR, offsetFromPlantingWeek * 7);
+                weekStart.add(Calendar.DAY_OF_YEAR, offsetFromSeedlingWeek * 7);
                 List<TaskTemplate> tasksForWeek = template.getTasks();
                 for (int taskIndex = 0; taskIndex < tasksForWeek.size(); taskIndex++) {
                     TaskTemplate taskTemplate = tasksForWeek.get(taskIndex);
@@ -716,11 +760,27 @@ public class AddPlantingActivity extends AppCompatActivity {
         SimpleDateFormat dayFormat = new SimpleDateFormat("d", Locale.getDefault());
         SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
 
-        // Format: "Nov 18–24, 2025"
-        String weekRange = monthFormat.format(weekStart.getTime()) + " " + 
-                          dayFormat.format(weekStart.getTime()) + "–" + 
-                          dayFormat.format(weekEnd.getTime()) + ", " + 
-                          yearFormat.format(weekStart.getTime());
+        // Format: "Nov 18–24, 2025" or "Dec 29 - Jan 4, 2025" if spanning different months
+        String weekRange;
+        int startMonth = weekStart.get(Calendar.MONTH);
+        int endMonth = weekEnd.get(Calendar.MONTH);
+        int startYear = weekStart.get(Calendar.YEAR);
+        int endYear = weekEnd.get(Calendar.YEAR);
+        
+        if (startMonth != endMonth || startYear != endYear) {
+            // Different months or years - show both month names
+            weekRange = monthFormat.format(weekStart.getTime()) + " " + 
+                       dayFormat.format(weekStart.getTime()) + " - " + 
+                       monthFormat.format(weekEnd.getTime()) + " " + 
+                       dayFormat.format(weekEnd.getTime()) + ", " + 
+                       yearFormat.format(weekEnd.getTime());
+        } else {
+            // Same month - show single month name
+            weekRange = monthFormat.format(weekStart.getTime()) + " " + 
+                       dayFormat.format(weekStart.getTime()) + "–" + 
+                       dayFormat.format(weekEnd.getTime()) + ", " + 
+                       yearFormat.format(weekStart.getTime());
+        }
 
         // Use middle of week as scheduled date
         Calendar taskDate = (Calendar) weekStart.clone();
@@ -949,28 +1009,34 @@ public class AddPlantingActivity extends AppCompatActivity {
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            
-            // Set layout parameters to center the dialog
+        }
+        
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        ivCloseDialog.setOnClickListener(v -> dialog.dismiss());
+        
+        // Show dialog first to get window, then set layout parameters
+        dialog.show();
+        
+        if (window != null) {
+            // Set layout parameters to center the dialog (90% width, wider)
             DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
             int screenWidth = displayMetrics.widthPixels;
-            int dialogWidth = (int) (screenWidth * 0.9); // 90% of screen width
             
             WindowManager.LayoutParams layoutParams = window.getAttributes();
-            layoutParams.width = dialogWidth;
+            layoutParams.width = (int) (screenWidth * 0.90); // 90% of screen width (wider)
             layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
             layoutParams.gravity = android.view.Gravity.CENTER; // Center the dialog
-            layoutParams.verticalMargin = 0.05f; // 5% margin from top and bottom
+            layoutParams.x = 0; // Ensure centered horizontally
+            layoutParams.y = 0; // Ensure centered vertically
             window.setAttributes(layoutParams);
             
             // Dim the background
             window.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             window.setDimAmount(0.5f); // 50% dim
         }
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-
-        ivCloseDialog.setOnClickListener(v -> dialog.dismiss());
 
         btnSaveTask.setOnClickListener(v -> {
             String selectedCategory = actCategory.getText() != null ? actCategory.getText().toString().trim() : "";
@@ -1014,11 +1080,10 @@ public class AddPlantingActivity extends AppCompatActivity {
 
             displayCropCalendarTasks();
             updateCropCalendarTasks();
+            checkForChanges();
             Toast.makeText(this, "Na-save ang detalye ng gawain.", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
-
-        dialog.show();
     }
 
     private void handleTaskUncheck(CropCalendarTask task) {
@@ -1031,6 +1096,7 @@ public class AddPlantingActivity extends AppCompatActivity {
 
         displayCropCalendarTasks();
         updateCropCalendarTasks();
+        checkForChanges();
         Toast.makeText(this, "Tinanggal ang pagkaka-check ng gawain.", Toast.LENGTH_SHORT).show();
     }
 
@@ -1045,20 +1111,115 @@ public class AddPlantingActivity extends AppCompatActivity {
     }
 
     private void showKeycheckDialog(String category, String taskName) {
-        String safeCategory = TextUtils.isEmpty(category) ? "gawain" : category;
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("Mga susi at paalala para sa ");
-        messageBuilder.append(safeCategory);
-        if (!TextUtils.isEmpty(taskName)) {
-            messageBuilder.append("\n\nGawain: ").append(taskName);
-        }
-        messageBuilder.append("\n\nIlalagay dito ang kumpletong keycheck guide. Samantala, siguraduhing sundin ang mga rekomendasyon ng Sistemang PalaYan.");
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_keycheck_recommendation, null);
+        TextView tvTitle = dialogView.findViewById(R.id.tvKeycheckTitle);
+        TextView tvContent = dialogView.findViewById(R.id.tvKeycheckContent);
+        MaterialButton btnOkay = dialogView.findViewById(R.id.btnKeycheckOkay);
 
-        new AlertDialog.Builder(this)
-                .setTitle("Keycheck Guide")
-                .setMessage(messageBuilder.toString())
-                .setPositiveButton("Sige", (dialog, which) -> dialog.dismiss())
-                .show();
+        // Get Keycheck content based on category
+        String keycheckContent = getKeycheckContent(category);
+        tvContent.setText(keycheckContent);
+
+        // Ensure button is visible
+        btnOkay.setVisibility(View.VISIBLE);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+
+        // Set dialog width to 90% of screen (wider)
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+        
+        dialog.show(); // Show dialog first to get window
+        
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = (int) (screenWidth * 0.90); // 90% width (wider)
+        // Set fixed height to ensure all dialogs are the same size
+        int dialogHeight = (int) (displayMetrics.heightPixels * 0.65); // 65% of screen height
+        layoutParams.height = dialogHeight;
+        layoutParams.gravity = android.view.Gravity.CENTER;
+        layoutParams.x = 0; // Ensure centered horizontally
+        layoutParams.y = 0; // Ensure centered vertically
+        dialog.getWindow().setAttributes(layoutParams);
+        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.getWindow().setDimAmount(0.5f);
+
+        btnOkay.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    private String getKeycheckContent(String category) {
+        if (TextUtils.isEmpty(category)) {
+            return "Walang available na keycheck para sa kategoryang ito.";
+        }
+
+        // Normalize category name for comparison
+        String normalizedCategory = category.trim().toLowerCase(Locale.getDefault());
+
+        // Keycheck content for "Paghahanda ng lupa"
+        if (normalizedCategory.contains("paghahanda") && normalizedCategory.contains("lupa")) {
+            return "• Mag-araro 21-30 araw bago magtanim gamit ang tractor o rotovator.\n\n" +
+                   "• Ayusin ang mga pilapil at kanal bago pa magsimula ang taniman upang maipon ang tubig at gumawa ng mga kanal.\n\n" +
+                   "• Araruhin minsan at suyurin nang 3 beses (paayon, pahalang, at linang) ang bukid nang may tig-5 o 7 araw na pagitan. Patagin ang lupa na may 5 cm lalim ng tubig nang mapadali ang pagpapatag.";
+        }
+
+        // Keycheck content for "Pagtatanim"
+        if (normalizedCategory.contains("pagtatanim")) {
+            return "• Isagawa ang sabayang pagtatanim ayon sa dating ng patubig sa iyong lugar.\n\n" +
+                   "• Protektahan ang itinanim na binhi laban sa mga peste.\n\n" +
+                   "• Magsabog ng 1 kilong pinasibol na ekstrana.\n\n" +
+                   "• Para sa manu-manong lipat-tanim, maaaring isagawa ito 18-21 DAS.\n\n" +
+                   "• Magtanim ng 2-3 punla sa bawat tundos na may agwat na 20x20 cm sa tag-ulan at 20x15 cm naman sa tag-araw.";
+        }
+
+        // Keycheck content for "Pamamahala sa damo at peste" (combined)
+        if ((normalizedCategory.contains("pamamahala") && normalizedCategory.contains("peste")) ||
+            (normalizedCategory.contains("pamamahala") && normalizedCategory.contains("damo"))) {
+            return "• Gumamit ng barayting napatunayang matibay sa sakit at peste, at angkop sa inyong lugar.\n\n" +
+                   "• Huwag mag-spray ng pamatay insekto sa unang 30 araw pagkalipat-tanim o 40 araw pagkasabog-tanim. Ito ay upang maparami ang mga kaibigang insekto at kakamping organismo sa palayan na pumapatay sa mga peste.\n\n" +
+                   "• Agapan ang damo at kuhol sa unang 3 araw pagkasabog-tanim o lipat-tanim. Maglagay ng kaukulang pamuksa laban sa mga daga at ibon lalo na sa panahon ng pagbubuntis at pag-uusbong ng palay.\n\n" +
+                   "• Linisin ang mga kanal at pilapil upang hindi pamahayan ng mga mapanirang insekto o organismo.\n\n" +
+                   "• Palagiang bisitahin ang palayan upang maagang matukoy at maagapan ang mga potensiyal na problema dulot ng peste.\n\n" +
+                   "• Alamin ang mga mapanirang organismo sa bawat yugto ng palay at sugpuin bago makapaminsala.";
+        }
+
+        // Keycheck content for "Pagpapatubig"
+        if (normalizedCategory.contains("pagpapatubig")) {
+            return "• Sa unang pagpapatubig, maglagay ng 2-3cm babaw ng tubig bago ang unang pagpapataba (10-14 DAS/DAT).\n\n" +
+                   "• Panatilihin ang 2-3cm babaw ng tubig tuwing magpapataba.\n\n" +
+                   "• Panatilihin ang 5cm lalim ng tubig sa panahon ng pamumulaklak hanggang paghinog ng palay.\n\n" +
+                   "• Kung kulang sa tubig, isagawa ang controlled irrigation o Alternate Wetting and Drying (AWD) technology sa panahon ng vegetative stage.\n\n" +
+                   "• Alisan o ihinto ang pagpapatubig: (1) isang lingo bago mag-ani para sa mga galas na lupa o sa tag-araw; (2) 2 linggo bago mag-ani para sa lagkiting lupa o sa tag-ulan.";
+        }
+
+        // Keycheck content for "Pagpapataba"
+        if (normalizedCategory.contains("pagpapataba")) {
+            return "• Alamin ang tamang ELEMENT na kailangan ng palay.\n\n" +
+                   "• Alamin ang tamang AMOUNT o dami ng patabang ilalagay.\n\n" +
+                   "• Alamin ang tamang TIMING o tiyempo nang mapakinabangan ng palay ang sustansiyang ilalagay.";
+        }
+
+        // Keycheck content for "Pag-aani"
+        if (normalizedCategory.contains("pag-aani") || normalizedCategory.contains("pagsisinop")) {
+            return "• Patuyuan ang palayan 1-2 linggo bago ang inaasahang araw ng pag-aani.\n\n" +
+                   "• Anihin ang palay kapag 85-90% (ginapas) o 90-95% (combine harvester) ng butil ay hinog.\n\n" +
+                   "• Mag-ani sa tamang moisture content o porsyento ng halumigmig ng butil.\n\n" +
+                   "• Pagkapag-gapas, giikin ang palay nang hindi lalampas sa isang araw kapag tag-ulan; 2 araw kung tag-araw.\n\n" +
+                   "• Ikamada sa paleta ang nakasakong pinatuyong palay nang hindi mabasa o magpawis bago linisin.\n\n" +
+                   "• Linisin ang pinatuyong palay sa loob ng 2-3 araw.\n\n" +
+                   "• Kung hindi agad ibebenta, isalansan ang pinatuyong palay sa malinis na bodega o imbakan.\n\n" +
+                   "• Sa mga palay na gagamiting binhi, patuyuin sa loob ng 12-14 oras pagkatapos magiik bago ilagay sa sisidlan.";
+        }
+
+        // Add more categories here as needed
+        return "Walang available na keycheck para sa kategoryang ito.";
     }
 
     private void updateCropCalendarTasks() {
@@ -1289,11 +1450,37 @@ public class AddPlantingActivity extends AppCompatActivity {
                                 cropCalendarTasks = p.getCropCalendarTasks();
                                 android.util.Log.d("CropCalendar", "Loaded " + cropCalendarTasks.size() + " existing tasks from storage");
                                 
+                                // Fix weekRange format for all tasks (in case they have old format)
+                                fixWeekRangeForAllTasks(p.getPlantingDate());
+                                
+                                // Store initial state for change tracking
+                                initialCropCalendarTasks = new ArrayList<>();
+                                for (CropCalendarTask t : cropCalendarTasks) {
+                                    CropCalendarTask copy = new CropCalendarTask(t.getTaskName(), t.getTaskName(), 0, t.getTaskType());
+                                    copy.setCompleted(t.isCompleted());
+                                    copy.setActualCompletionDate(t.getActualCompletionDate());
+                                    copy.setAdditionalNotes(t.getAdditionalNotes());
+                                    copy.setTaskCategory(t.getTaskCategory());
+                                    copy.setWeekNumber(t.getWeekNumber());
+                                    initialCropCalendarTasks.add(copy);
+                                }
+                                
                                 // Check if we have all weeks, if not, regenerate
                                 if (!hasCompleteCalendar(cropCalendarTasks) && p.getPlantingDate() != null && !p.getPlantingDate().isEmpty()) {
                                     android.util.Log.d("CropCalendar", "Incomplete tasks found (" + cropCalendarTasks.size() + "), regenerating full schedule");
                                     tvPlantingDate.setText(p.getPlantingDate());
                                     generateCropCalendarTasks();
+                                    // Update initial state after regeneration
+                                    initialCropCalendarTasks = new ArrayList<>();
+                                    for (CropCalendarTask t : cropCalendarTasks) {
+                                        CropCalendarTask copy = new CropCalendarTask(t.getTaskName(), t.getTaskName(), 0, t.getTaskType());
+                                        copy.setCompleted(t.isCompleted());
+                                        copy.setActualCompletionDate(t.getActualCompletionDate());
+                                        copy.setAdditionalNotes(t.getAdditionalNotes());
+                                        copy.setTaskCategory(t.getTaskCategory());
+                                        copy.setWeekNumber(t.getWeekNumber());
+                                        initialCropCalendarTasks.add(copy);
+                                    }
                                 } else {
                                     // Switch to interactive mode
                                     isPreviewMode = false;
@@ -1305,7 +1492,16 @@ public class AddPlantingActivity extends AppCompatActivity {
                                 android.util.Log.d("CropCalendar", "No tasks found, generating new ones");
                                 tvPlantingDate.setText(p.getPlantingDate());
                                 generateCropCalendarTasks();
+                                // Store initial state (empty tasks)
+                                initialCropCalendarTasks = new ArrayList<>();
                             }
+                            
+                            // Store initial fertilizer state
+                            initialFertilizerStrategy = p.getFertilizerStrategy();
+                            initialFertilizerCombo = p.getFertilizerCombo();
+                            
+                            // Check for changes after loading
+                            checkForChanges();
                             break;
                         }
                     }
@@ -1316,6 +1512,199 @@ public class AddPlantingActivity extends AppCompatActivity {
                     // Ignore error for now
                 }
             });
+        }
+    }
+
+    private void fixWeekRangeForAllTasks(String plantingDate) {
+        if (plantingDate == null || plantingDate.isEmpty() || cropCalendarTasks == null || cropCalendarTasks.isEmpty()) {
+            return;
+        }
+        
+        try {
+            // Parse planting date
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date plantingDateObj = sdf.parse(plantingDate);
+            if (plantingDateObj == null) {
+                return;
+            }
+            
+            Calendar plantingCal = Calendar.getInstance();
+            plantingCal.setTime(plantingDateObj);
+            
+            // Find seedling week (week 2)
+            Calendar anchorWeekStart = (Calendar) plantingCal.clone();
+            int dayOfWeek = anchorWeekStart.get(Calendar.DAY_OF_WEEK);
+            int daysFromMonday = (dayOfWeek == Calendar.SUNDAY) ? 6 : dayOfWeek - Calendar.MONDAY;
+            anchorWeekStart.add(Calendar.DAY_OF_YEAR, -daysFromMonday);
+            // Go back 1 week to get Week 1 start (since Week 2 is the selected date)
+            anchorWeekStart.add(Calendar.DAY_OF_YEAR, -7);
+            
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
+            SimpleDateFormat dayFormat = new SimpleDateFormat("d", Locale.getDefault());
+            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
+            
+            // Fix weekRange for each task
+            for (CropCalendarTask task : cropCalendarTasks) {
+                int weekNumber = task.getWeekNumber();
+                if (weekNumber < 1) {
+                    continue;
+                }
+                
+                // Calculate week start based on week number
+                int offsetFromSeedlingWeek = weekNumber - 2; // Week 2 is seedling week
+                Calendar weekStart = (Calendar) anchorWeekStart.clone();
+                weekStart.add(Calendar.DAY_OF_YEAR, offsetFromSeedlingWeek * 7);
+                
+                Calendar weekEnd = (Calendar) weekStart.clone();
+                weekEnd.add(Calendar.DAY_OF_YEAR, 6);
+                
+                // Format weekRange with proper month/year handling
+                int startMonth = weekStart.get(Calendar.MONTH);
+                int endMonth = weekEnd.get(Calendar.MONTH);
+                int startYear = weekStart.get(Calendar.YEAR);
+                int endYear = weekEnd.get(Calendar.YEAR);
+                
+                String weekRange;
+                if (startMonth != endMonth || startYear != endYear) {
+                    // Different months or years - show both month names
+                    weekRange = monthFormat.format(weekStart.getTime()) + " " + 
+                               dayFormat.format(weekStart.getTime()) + " - " + 
+                               monthFormat.format(weekEnd.getTime()) + " " + 
+                               dayFormat.format(weekEnd.getTime()) + ", " + 
+                               yearFormat.format(weekEnd.getTime());
+                } else {
+                    // Same month - show single month name
+                    weekRange = monthFormat.format(weekStart.getTime()) + " " + 
+                               dayFormat.format(weekStart.getTime()) + "–" + 
+                               dayFormat.format(weekEnd.getTime()) + ", " + 
+                               yearFormat.format(weekStart.getTime());
+                }
+                
+                task.setWeekRange(weekRange);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkForChanges() {
+        // Only check for changes when editing
+        boolean isEditing = plantingId != null && !plantingId.isEmpty();
+        if (!isEditing) {
+            return;
+        }
+        
+        boolean hasChanges = false;
+        
+        // Check variety
+        String currentVariety = etRiceVariety.getText() != null ? etRiceVariety.getText().toString().trim() : "";
+        if (!currentVariety.equals(existingVariety != null ? existingVariety : "")) {
+            hasChanges = true;
+        }
+        
+        // Check planting method
+        String currentMethod = "";
+        if (rbSabogTanim.isChecked()) {
+            currentMethod = "Sabog-tanim";
+        } else if (rbLipatTanim.isChecked()) {
+            currentMethod = "Lipat-tanim";
+        }
+        if (!currentMethod.equals(existingMethod != null ? existingMethod : "")) {
+            hasChanges = true;
+        }
+        
+        // Check planting date
+        String currentDate = tvPlantingDate.getText().toString();
+        if (!currentDate.equals(existingDate != null ? existingDate : "")) {
+            hasChanges = true;
+        }
+        
+        // Check seed weight
+        String currentSeedWeight = etSeedWeight.getText() != null ? etSeedWeight.getText().toString().trim() : "";
+        if (!currentSeedWeight.equals(existingSeedWeight != null ? existingSeedWeight : "")) {
+            hasChanges = true;
+        }
+        
+        // Check fertilizer strategy
+        String currentFertilizerStrategy = "";
+        if (rbAbonongSwak.isChecked()) {
+            currentFertilizerStrategy = "Abonong Swak";
+        } else if (rbSarilingDiskarte.isChecked()) {
+            currentFertilizerStrategy = "Sariling diskarte";
+        }
+        String initialStrategy = initialFertilizerStrategy != null ? initialFertilizerStrategy : "";
+        if (!currentFertilizerStrategy.equals(initialStrategy)) {
+            hasChanges = true;
+        }
+        
+        // Check fertilizer combo
+        String currentFertilizerCombo = "";
+        if (rbCombo1.isChecked()) {
+            currentFertilizerCombo = "Combo 1 (3-4 tons)";
+        } else if (rbCombo2.isChecked()) {
+            currentFertilizerCombo = "Combo 2 (5-6 tons)";
+        } else if (rbCombo3.isChecked()) {
+            currentFertilizerCombo = "Combo 3 (7-8 tons)";
+        } else if (rbCombo4.isChecked()) {
+            currentFertilizerCombo = "Combo 4 + Biofertilizer (6-7 tons)";
+        }
+        String initialCombo = initialFertilizerCombo != null ? initialFertilizerCombo : "";
+        if (!currentFertilizerCombo.equals(initialCombo)) {
+            hasChanges = true;
+        }
+        
+        // Check crop calendar tasks completion status
+        if (initialCropCalendarTasks.size() != cropCalendarTasks.size()) {
+            hasChanges = true;
+        } else {
+            // Match tasks by week number and task name for accurate comparison
+            for (CropCalendarTask current : cropCalendarTasks) {
+                CropCalendarTask initial = null;
+                for (CropCalendarTask init : initialCropCalendarTasks) {
+                    if (init.getWeekNumber() == current.getWeekNumber() && 
+                        init.getTaskName().equals(current.getTaskName())) {
+                        initial = init;
+                        break;
+                    }
+                }
+                
+                if (initial == null) {
+                    hasChanges = true;
+                    break;
+                }
+                
+                // Compare completion status
+                if (current.isCompleted() != initial.isCompleted()) {
+                    hasChanges = true;
+                    break;
+                }
+                
+                // Compare completion details if completed
+                if (current.isCompleted()) {
+                    String currentTaskDate = current.getActualCompletionDate() != null ? current.getActualCompletionDate() : "";
+                    String initialTaskDate = initial.getActualCompletionDate() != null ? initial.getActualCompletionDate() : "";
+                    if (!currentTaskDate.equals(initialTaskDate)) {
+                        hasChanges = true;
+                        break;
+                    }
+                    
+                    String currentNotes = current.getAdditionalNotes() != null ? current.getAdditionalNotes() : "";
+                    String initialNotes = initial.getAdditionalNotes() != null ? initial.getAdditionalNotes() : "";
+                    if (!currentNotes.equals(initialNotes)) {
+                        hasChanges = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Update button state
+        if (hasChanges) {
+            btnSave.setEnabled(true);
+            btnSave.setAlpha(1.0f);
+        } else {
+            btnSave.setEnabled(false);
+            btnSave.setAlpha(0.5f);
         }
     }
 
