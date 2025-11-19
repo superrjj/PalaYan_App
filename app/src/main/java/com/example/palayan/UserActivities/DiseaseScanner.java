@@ -108,22 +108,31 @@ public class DiseaseScanner extends AppCompatActivity {
 // Flashlight button
         btnFlashlight.setOnClickListener(v -> toggleFlashlight());
 
-// Gallery button (single select, with runtime permission)
+// Gallery button - For Android 13+, GetContent doesn't need runtime permission
         btnGallery.setOnClickListener(v -> {
-            String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                    ? Manifest.permission.READ_MEDIA_IMAGES
-                    : Manifest.permission.READ_EXTERNAL_STORAGE;
-
-            if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
-// Permission already granted, launch gallery
+            // Android 13+ (API 33+) doesn't require runtime permission for GetContent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // Directly launch gallery - system handles permission
                 pickImageLauncher.launch("image/*");
             } else {
-// Request permission first
-                ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
+                // For older Android versions, check and request permission
+                String perm = Manifest.permission.READ_EXTERNAL_STORAGE;
+                if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
+                    pickImageLauncher.launch("image/*");
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
+                }
             }
         });
 
         root.ivBack.setOnClickListener(v -> onBackPressed());
+
+        // Check if image path was passed from CameraScanner
+        String imagePath = getIntent().getStringExtra("imagePath");
+        if (imagePath != null && !imagePath.isEmpty()) {
+            // Automatically analyze the image passed from CameraScanner
+            analyzeDiseaseFromImage(imagePath);
+        }
     }
 
     // Flashlight toggle functionality

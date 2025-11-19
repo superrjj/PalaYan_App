@@ -141,18 +141,20 @@ public class CameraScanner extends AppCompatActivity {
         // Flashlight button
         btnFlashlight.setOnClickListener(v -> toggleFlashlight());
 
-// Gallery button - Fixed permission handling
+// Gallery button - For Android 13+, GetContent doesn't need runtime permission
         btnGallery.setOnClickListener(v -> {
-            String perm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                    ? Manifest.permission.READ_MEDIA_IMAGES
-                    : Manifest.permission.READ_EXTERNAL_STORAGE;
-
-            if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
-// Permission already granted, launch gallery
+            // Android 13+ (API 33+) doesn't require runtime permission for GetContent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // Directly launch gallery - system handles permission
                 pickImageLauncher.launch("image/*");
             } else {
-// Request permission first
-                ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
+                // For older Android versions, check and request permission
+                String perm = Manifest.permission.READ_EXTERNAL_STORAGE;
+                if (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED) {
+                    pickImageLauncher.launch("image/*");
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{perm}, REQ_GALLERY_PERM);
+                }
             }
         });
     }
@@ -276,10 +278,15 @@ public class CameraScanner extends AppCompatActivity {
 // Run improved detection with try-catch to prevent crash
                 final boolean[] isRicePlant = {false};
                 try {
-                    isRicePlant[0] = stage1Manager.detectRicePlant(imagePath);
-// Get detailed prediction for debugging
+                    // Get detailed prediction first for debugging
                     String detailedPrediction = stage1Manager.getDetailedPrediction(imagePath);
-                    Log.d("CameraScanner", "Detailed prediction: " + detailedPrediction);
+                    Log.d("CameraScanner", "=== DETAILED PREDICTION ===");
+                    Log.d("CameraScanner", detailedPrediction);
+                    
+                    // Run detection
+                    isRicePlant[0] = stage1Manager.detectRicePlant(imagePath);
+                    Log.d("CameraScanner", "Detection result: " + (isRicePlant[0] ? "RICE PLANT" : "NOT RICE PLANT"));
+                    
                 } catch (Exception e) {
                     Log.e("CameraScanner", "Stage 1 detection failed: " + e.getMessage());
                     e.printStackTrace();
@@ -296,6 +303,7 @@ public class CameraScanner extends AppCompatActivity {
 // Rice plant detected - go to DiseaseScanner for disease analysis
                         Log.d("CameraScanner", "Rice plant detected - proceeding to DiseaseScanner...");
                         Intent intent = new Intent(CameraScanner.this, DiseaseScanner.class);
+                        intent.putExtra("imagePath", imagePath); // Pass image path to DiseaseScanner
                         startActivity(intent);
                         finish();
                     } else {
