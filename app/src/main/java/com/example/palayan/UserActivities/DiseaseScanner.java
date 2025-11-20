@@ -127,11 +127,14 @@ public class DiseaseScanner extends AppCompatActivity {
 
         root.ivBack.setOnClickListener(v -> onBackPressed());
 
-        // Check if image path was passed from CameraScanner
+        // Store image path from CameraScanner but don't analyze automatically
+        // User must press capture/gallery button to analyze
         String imagePath = getIntent().getStringExtra("imagePath");
         if (imagePath != null && !imagePath.isEmpty()) {
-            // Automatically analyze the image passed from CameraScanner
-            analyzeDiseaseFromImage(imagePath);
+            // Store the image path for later use when user presses button
+            // Don't analyze automatically - let user decide when to analyze
+            Log.d("DiseaseScanner", "Image path received from CameraScanner: " + imagePath);
+            Log.d("DiseaseScanner", "Waiting for user to press capture/gallery button to analyze");
         }
     }
 
@@ -210,26 +213,30 @@ public class DiseaseScanner extends AppCompatActivity {
     }
 
     private void analyzeDiseaseFromImage(String imagePath) {
-// Show simple toast instead of loading dialog
+        // Show simple toast instead of loading dialog
         Toast.makeText(this, "Analyzing disease...", Toast.LENGTH_SHORT).show();
 
-        // Run analysis immediately without waiting
+        // Run analysis in background thread
         new Thread(() -> {
-            // Just check if ready, don't wait
-            if (!stage2Manager.isModelReady()) {
-
+            // Wait for model to be ready (max 30 seconds)
+            int attempts = 0;
+            while (!stage2Manager.isModelReady() && attempts < 30) {
+                try {
+                    Thread.sleep(1000);
+                    attempts++;
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
 
-            if (stage2Manager.isModelReady()) {
-                performDiseaseAnalysis(imagePath);
-            } else {
+            if (!stage2Manager.isModelReady()) {
                 runOnUiThread(() -> {
                     Toast.makeText(this, "Model not ready. Please try again.", Toast.LENGTH_SHORT).show();
                 });
-                Log.w("DiseaseScanner", "Model not ready yet, but proceeding anyway...");
+                return;
             }
 
-            // Always proceed with analysis
+            // Proceed with analysis
             performDiseaseAnalysis(imagePath);
         }).start();
     }

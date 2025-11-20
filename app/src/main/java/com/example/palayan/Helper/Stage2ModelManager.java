@@ -267,26 +267,40 @@ public class Stage2ModelManager {
     private float[] applyBiasCorrection(float[] predictions) {
         float[] corrected = new float[predictions.length];
         
-        // Strategy 1: Reduce Bacterial Leaf Blight bias
-        corrected[0] = predictions[0] * 0.7f; // Reduce Bacterial Leaf Blight by 30%
+        // Strategy 1: Strongly reduce Bacterial Leaf Blight bias (more aggressive)
+        corrected[0] = predictions[0] * 0.5f; // Reduce Bacterial Leaf Blight by 50%
         
-        // Strategy 2: Boost Brown Spot and Healthy
-        corrected[1] = predictions[1] * 1.3f; // Boost Brown Spot by 30%
-        corrected[2] = predictions[2] * 1.2f; // Boost Healthy by 20%
+        // Strategy 2: Boost Brown Spot and Healthy more aggressively
+        corrected[1] = predictions[1] * 1.4f; // Boost Brown Spot by 40%
+        corrected[2] = predictions[2] * 1.5f; // Boost Healthy by 50% (most important)
         
-        // Strategy 3: If Brown Spot is close to Bacterial Leaf Blight, favor Brown Spot
+        // Strategy 3: If Healthy has decent confidence (>0.25), strongly favor it
+        if (predictions[2] > 0.25f) {
+            corrected[2] = predictions[2] * 1.8f; // Extra strong boost for Healthy
+            corrected[0] = predictions[0] * 0.4f; // Extra reduction for Bacterial Leaf Blight
+        }
+        
+        // Strategy 4: If Brown Spot is close to Bacterial Leaf Blight, favor Brown Spot
         if (predictions[1] > 0.3f && Math.abs(predictions[1] - predictions[0]) < 0.2f) {
-            corrected[1] = predictions[1] * 1.5f; // Extra boost for Brown Spot
-            corrected[0] = predictions[0] * 0.5f; // Extra reduction for Bacterial Leaf Blight
+            corrected[1] = predictions[1] * 1.6f; // Extra boost for Brown Spot
+            corrected[0] = predictions[0] * 0.4f; // Extra reduction for Bacterial Leaf Blight
         }
         
-        // Strategy 4: If Healthy is close to Bacterial Leaf Blight, favor Healthy
-        if (predictions[2] > 0.3f && Math.abs(predictions[2] - predictions[0]) < 0.2f) {
-            corrected[2] = predictions[2] * 1.4f; // Extra boost for Healthy
-            corrected[0] = predictions[0] * 0.6f; // Extra reduction for Bacterial Leaf Blight
+        // Strategy 5: If Healthy is close to Bacterial Leaf Blight, strongly favor Healthy
+        if (predictions[2] > 0.25f && Math.abs(predictions[2] - predictions[0]) < 0.25f) {
+            corrected[2] = predictions[2] * 2.0f; // Very strong boost for Healthy
+            corrected[0] = predictions[0] * 0.3f; // Very strong reduction for Bacterial Leaf Blight
         }
         
-        // Strategy 5: Normalize to ensure probabilities sum to 1
+        // Strategy 6: If all predictions are low confidence, favor Healthy (default to healthy)
+        float maxRaw = Math.max(Math.max(predictions[0], predictions[1]), predictions[2]);
+        if (maxRaw < 0.4f) {
+            corrected[2] = predictions[2] * 2.2f; // Very strong boost for Healthy when uncertain
+            corrected[0] = predictions[0] * 0.3f;
+            corrected[1] = predictions[1] * 0.8f;
+        }
+        
+        // Strategy 7: Normalize to ensure probabilities sum to 1
         float sum = corrected[0] + corrected[1] + corrected[2];
         if (sum > 0) {
             corrected[0] /= sum;
@@ -415,12 +429,6 @@ public class Stage2ModelManager {
             Log.d("Stage2Model", "Corrected predictions: [" + correctedPredictions[0] + ", " + correctedPredictions[1] + ", " + correctedPredictions[2] + "]");
             Log.d("Stage2Model", "Max index: " + maxIndex + ", Confidence: " + maxConfidence);
             
-            // Get disease info
-            DiseaseInfo diseaseInfo = getDiseaseInfo(diseaseName);
-            
-            Log.d("Stage2Model", "=== FINAL DISEASE RESULT ===");
-            Log.d("Stage2Model", "Detected disease: " + diseaseName + " (confidence: " + maxConfidence + ")");
-            
             // If confidence is low, try a rotated pass (90°) for angle robustness
             if (maxConfidence < 0.5f) {
                 Bitmap rotated = rotateBitmap(cropped, 90);
@@ -436,9 +444,23 @@ public class Stage2ModelManager {
                 if (maxConfRot > maxConfidence) {
                     maxConfidence = maxConfRot;
                     diseaseName = (stage2Labels != null && stage2Labels.size() > maxIdxRot) ? stage2Labels.get(maxIdxRot) : mapIndexToDiseaseName(maxIdxRot);
-                    diseaseInfo = getDiseaseInfo(diseaseName);
                 }
             }
+            
+            // IMPORTANT: If confidence is still very low after correction, default to Healthy
+            // This prevents false positives for diseases when the model is uncertain
+            if (maxConfidence < CONFIDENCE_THRESHOLD && maxIndex != 2) {
+                Log.w("Stage2Model", "Low confidence (" + maxConfidence + ") for disease prediction. Defaulting to Healthy.");
+                maxIndex = 2; // Healthy index
+                diseaseName = (stage2Labels != null && stage2Labels.size() > 2) ? stage2Labels.get(2) : "Healthy";
+                maxConfidence = correctedPredictions[2]; // Use Healthy confidence
+            }
+            
+            // Get disease info
+            DiseaseInfo diseaseInfo = getDiseaseInfo(diseaseName);
+            
+            Log.d("Stage2Model", "=== FINAL DISEASE RESULT ===");
+            Log.d("Stage2Model", "Detected disease: " + diseaseName + " (confidence: " + maxConfidence + ")");
 
             return new DiseaseResult(true, diseaseName, maxConfidence, null, diseaseInfo);
 
@@ -495,4 +517,5 @@ public class Stage2ModelManager {
             tfliteInterpreter.close();
         }
     }
+}
 }

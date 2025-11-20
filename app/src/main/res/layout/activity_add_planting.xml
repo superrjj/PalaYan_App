@@ -176,14 +176,29 @@
                 android:fontFamily="@font/poppins__regular"
                 android:layout_marginBottom="20dp"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Barayti ng Palay"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__semibold"
-                android:layout_marginBottom="8dp"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Barayti ng palay"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutRiceVariety"
@@ -206,14 +221,29 @@
                     android:textSize="15sp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Paraan ng Pagtatanim"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__semibold"
-                android:layout_marginBottom="8dp"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Paraan ng pagtatanim"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
 
             <RadioGroup
                 android:id="@+id/rgPlantingMethod"
@@ -242,14 +272,29 @@
                     android:layout_marginStart="20dp"/>
             </RadioGroup>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Petsa ng Pagpupunla"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__semibold"
-                android:layout_marginBottom="8dp"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Petsa ng pagpupunla"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -286,14 +331,29 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kabuuang Timbang ng Binhi (kg)"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins__semibold"
-                android:layout_marginBottom="8dp"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Kabuuang timbang ng binhing palay (kg)"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutSeedWeight"
