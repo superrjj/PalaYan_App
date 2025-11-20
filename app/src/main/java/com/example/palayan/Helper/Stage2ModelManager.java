@@ -57,7 +57,7 @@ public class Stage2ModelManager {
     private boolean isModelLoaded = false;
 
     // Configuration constants
-    private static final float CONFIDENCE_THRESHOLD = 0.5f;
+    private static final float CONFIDENCE_THRESHOLD = 0.5f; // Balanced threshold - default to Healthy if below this
     private static final int INPUT_SIZE = 224;
     private static final int CHANNELS = 3;
     private static final int modelOutputSize = 3; // 3 diseases: Bacterial Leaf Blight, Brown Spot, Healthy
@@ -267,37 +267,45 @@ public class Stage2ModelManager {
     private float[] applyBiasCorrection(float[] predictions) {
         float[] corrected = new float[predictions.length];
         
-        // Strategy 1: Strongly reduce Bacterial Leaf Blight bias (more aggressive)
-        corrected[0] = predictions[0] * 0.5f; // Reduce Bacterial Leaf Blight by 50%
-        
-        // Strategy 2: Boost Brown Spot and Healthy more aggressively
-        corrected[1] = predictions[1] * 1.4f; // Boost Brown Spot by 40%
-        corrected[2] = predictions[2] * 1.5f; // Boost Healthy by 50% (most important)
-        
-        // Strategy 3: If Healthy has decent confidence (>0.25), strongly favor it
-        if (predictions[2] > 0.25f) {
-            corrected[2] = predictions[2] * 1.8f; // Extra strong boost for Healthy
-            corrected[0] = predictions[0] * 0.4f; // Extra reduction for Bacterial Leaf Blight
+        // Strategy 1: Moderate reduction of Bacterial Leaf Blight bias (balanced)
+        // Only reduce if BLB confidence is not very high - preserve high-confidence disease detections
+        if (predictions[0] > 0.75f) {
+            // If BLB is very confident (>0.75), don't reduce much - likely a real disease
+            corrected[0] = predictions[0] * 0.9f; // Only 10% reduction
+        } else {
+            // If BLB confidence is moderate/low, reduce more to prevent false positives
+            corrected[0] = predictions[0] * 0.5f; // 50% reduction
         }
         
-        // Strategy 4: If Brown Spot is close to Bacterial Leaf Blight, favor Brown Spot
+        // Strategy 2: Moderate boost for Healthy and Brown Spot
+        corrected[1] = predictions[1] * 1.3f; // Boost Brown Spot by 30%
+        corrected[2] = predictions[2] * 1.6f; // Boost Healthy by 60% (balanced)
+        
+        // Strategy 3: If Healthy has decent confidence (>0.25) and BLB is not very high, favor Healthy
+        if (predictions[2] > 0.25f && predictions[0] < 0.7f) {
+            corrected[2] = predictions[2] * 2.0f; // Strong boost for Healthy
+            corrected[0] = predictions[0] * 0.4f; // Strong reduction for Bacterial Leaf Blight
+        }
+        
+        // Strategy 4: If Healthy is close to Bacterial Leaf Blight and BLB is not very confident, favor Healthy
+        if (predictions[2] > 0.2f && predictions[0] < 0.65f && Math.abs(predictions[2] - predictions[0]) < 0.25f) {
+            corrected[2] = predictions[2] * 2.2f; // Strong boost for Healthy
+            corrected[0] = predictions[0] * 0.35f; // Strong reduction for Bacterial Leaf Blight
+        }
+        
+        // Strategy 5: If Brown Spot is close to Bacterial Leaf Blight, favor Brown Spot
         if (predictions[1] > 0.3f && Math.abs(predictions[1] - predictions[0]) < 0.2f) {
-            corrected[1] = predictions[1] * 1.6f; // Extra boost for Brown Spot
+            corrected[1] = predictions[1] * 1.5f; // Extra boost for Brown Spot
             corrected[0] = predictions[0] * 0.4f; // Extra reduction for Bacterial Leaf Blight
         }
         
-        // Strategy 5: If Healthy is close to Bacterial Leaf Blight, strongly favor Healthy
-        if (predictions[2] > 0.25f && Math.abs(predictions[2] - predictions[0]) < 0.25f) {
-            corrected[2] = predictions[2] * 2.0f; // Very strong boost for Healthy
-            corrected[0] = predictions[0] * 0.3f; // Very strong reduction for Bacterial Leaf Blight
-        }
-        
-        // Strategy 6: If all predictions are low confidence, favor Healthy (default to healthy)
+        // Strategy 6: If all predictions are low confidence, favor Healthy (default to healthy when uncertain)
         float maxRaw = Math.max(Math.max(predictions[0], predictions[1]), predictions[2]);
         if (maxRaw < 0.4f) {
-            corrected[2] = predictions[2] * 2.2f; // Very strong boost for Healthy when uncertain
-            corrected[0] = predictions[0] * 0.3f;
-            corrected[1] = predictions[1] * 0.8f;
+            // When very uncertain, default to Healthy
+            corrected[2] = predictions[2] * 2.0f; // Strong boost for Healthy when uncertain
+            corrected[0] = predictions[0] * 0.4f; // Strong reduction
+            corrected[1] = predictions[1] * 0.9f;
         }
         
         // Strategy 7: Normalize to ensure probabilities sum to 1
@@ -449,8 +457,28 @@ public class Stage2ModelManager {
             
             // IMPORTANT: If confidence is still very low after correction, default to Healthy
             // This prevents false positives for diseases when the model is uncertain
+            // BUT: Only override if BLB confidence is not very high (>0.7) to preserve real disease detections
             if (maxConfidence < CONFIDENCE_THRESHOLD && maxIndex != 2) {
-                Log.w("Stage2Model", "Low confidence (" + maxConfidence + ") for disease prediction. Defaulting to Healthy.");
+                // Only default to Healthy if the disease confidence is low AND it's not a very confident BLB detection
+                if (maxIndex == 0 && correctedPredictions[0] < 0.7f) {
+                    // BLB confidence is not very high, safe to default to Healthy
+                    Log.w("Stage2Model", "Low confidence (" + maxConfidence + ") for disease prediction. Defaulting to Healthy.");
+                    maxIndex = 2; // Healthy index
+                    diseaseName = (stage2Labels != null && stage2Labels.size() > 2) ? stage2Labels.get(2) : "Healthy";
+                    maxConfidence = correctedPredictions[2]; // Use Healthy confidence
+                } else if (maxIndex != 0) {
+                    // Other diseases (Brown Spot) with low confidence, default to Healthy
+                    Log.w("Stage2Model", "Low confidence (" + maxConfidence + ") for disease prediction. Defaulting to Healthy.");
+                    maxIndex = 2; // Healthy index
+                    diseaseName = (stage2Labels != null && stage2Labels.size() > 2) ? stage2Labels.get(2) : "Healthy";
+                    maxConfidence = correctedPredictions[2]; // Use Healthy confidence
+                }
+                // If BLB confidence is >0.7, keep it even if below threshold (likely real disease)
+            } else if (maxIndex == 0 && correctedPredictions[0] < 0.55f && correctedPredictions[2] > 0.25f) {
+                // If Bacterial Leaf Blight is selected but confidence is moderate (<0.55) 
+                // and Healthy has good confidence (>0.25), prefer Healthy
+                // BUT: Only if BLB is not very confident to avoid misclassifying real diseases
+                Log.w("Stage2Model", "Bacterial Leaf Blight confidence (" + correctedPredictions[0] + ") moderate. Preferring Healthy (" + correctedPredictions[2] + ").");
                 maxIndex = 2; // Healthy index
                 diseaseName = (stage2Labels != null && stage2Labels.size() > 2) ? stage2Labels.get(2) : "Healthy";
                 maxConfidence = correctedPredictions[2]; // Use Healthy confidence
