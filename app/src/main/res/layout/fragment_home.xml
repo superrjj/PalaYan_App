@@ -11,7 +11,7 @@
 
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:orientation="vertical"
       android:padding="15dp">
 
@@ -108,13 +108,14 @@
 </LinearLayout>
       <LinearLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="0dp"
+          android:layout_weight="1"
           android:orientation="vertical">
 
           <TextView
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:textSize="15sp"
+              android:textSize="16sp"
               android:layout_marginTop="10dp"
               android:text="Nakaraang resulta"
               android:textColor="@color/semi_black"
@@ -122,10 +123,11 @@
               android:fontFamily="@font/poppins__semibold"
               android:padding="10dp"/>
 
-          <LinearLayout
+          <FrameLayout
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:minHeight="200dp">
 
               <androidx.recyclerview.widget.RecyclerView
                   android:id="@+id/recycleViewer_HistoryResult"
@@ -136,16 +138,16 @@
 
               <TextView
                   android:id="@+id/tvNoData"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
                   android:text="No history found"
                   android:textSize="18sp"
-                  android:textColor="@android:color/darker_gray"
-                  android:layout_gravity="center"
+                  android:textColor="@color/black"
+                  android:gravity="center"
                   android:visibility="gone"
-                  android:fontFamily="@font/poppins__semibold" />
+                  android:fontFamily="@font/poppins__medium" />
 
-          </LinearLayout>
+          </FrameLayout>
 
       </LinearLayout>
 

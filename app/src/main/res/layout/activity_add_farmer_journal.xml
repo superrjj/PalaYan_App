@@ -57,24 +57,30 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pangalan ng Palayan"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:fontFamily="@font/poppins__regular"/>
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="*"
-                android:textColor="@color/dark_red"
-                android:textSize="15sp"
-                android:paddingStart="5dp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="-20dp"
-                android:layout_gravity="end"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Pangalan ng palayan"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutName"
@@ -339,25 +345,30 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sukat ng Palayan (Hektarya)"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="15dp"/>
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="*"
-                android:textColor="@color/dark_red"
-                android:textSize="15sp"
-                android:paddingStart="5dp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="-20dp"
-                android:layout_gravity="end"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Sukat ng Palayan (Hektarya)"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutSize"
@@ -381,25 +392,31 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Piliin ang klase ng lupa sa iyong palayan"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="15dp"/>
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="*"
-                android:textColor="@color/dark_red"
-                android:textSize="15sp"
-                android:paddingStart="5dp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginTop="-20dp"
-                android:layout_gravity="end"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Piliin ang klase ng lupa sa iyong palayan"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_red"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:paddingStart="5dp"
+                    android:fontFamily="@font/poppins__regular"/>
+
+            </LinearLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutSoilType"

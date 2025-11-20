@@ -2,6 +2,7 @@ package com.example.palayan.UserActivities.RegistrationFragment;
 
 import android.os.Bundle;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -83,6 +84,12 @@ public class FarmerInfo extends Fragment {
         TextInputEditText etAge = view.findViewById(R.id.txtEdad);
         TextInputEditText etPhone = view.findViewById(R.id.txtTelepono);
         TextInputEditText etEmail = view.findViewById(R.id.txtEmailAddress);
+
+        // Set input filters: letters only for names, numbers only for age
+        etFirst.setFilters(new InputFilter[] { new LettersOnlyFilter() });
+        etMiddle.setFilters(new InputFilter[] { new LettersOnlyFilter() });
+        etLast.setFilters(new InputFilter[] { new LettersOnlyFilter() });
+        etAge.setFilters(new InputFilter[] { new NumbersOnlyFilter() });
 
         // Province adapter (Tarlac only)
         ArrayAdapter<String> provinceAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, PROVINCES);
@@ -377,6 +384,58 @@ public class FarmerInfo extends Fragment {
 
         ArrayAdapter<String> barangayAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, barangays);
         actBarangay.setAdapter(barangayAdapter);
+    }
+
+    // InputFilter for letters only (including spaces for names like "Maria Clara")
+    private static class LettersOnlyFilter implements InputFilter {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            if (source == null || source.length() == 0) {
+                return null; // Accept deletion
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                if (Character.isLetter(c) || Character.isWhitespace(c)) {
+                    sb.append(c);
+                }
+            }
+
+            // If all characters are valid, return null to accept the input
+            if (sb.length() == (end - start)) {
+                return null;
+            }
+
+            // Return only valid characters
+            return sb.toString();
+        }
+    }
+
+    // InputFilter for numbers only
+    private static class NumbersOnlyFilter implements InputFilter {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            if (source == null || source.length() == 0) {
+                return null; // Accept deletion
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                if (Character.isDigit(c)) {
+                    sb.append(c);
+                }
+            }
+
+            // If all characters are valid, return null to accept the input
+            if (sb.length() == (end - start)) {
+                return null;
+            }
+
+            // Return only valid characters
+            return sb.toString();
+        }
     }
 }
 

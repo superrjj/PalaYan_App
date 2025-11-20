@@ -43,6 +43,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 public class AddFarmerJournal extends AppCompatActivity {
@@ -459,16 +460,53 @@ public class AddFarmerJournal extends AppCompatActivity {
             return;
         }
 
-        // Check if image is selected, if not, save directly without uploading
-        if (selectedBitmap == null && selectedImageUri == null) {
-            // No image selected, save directly with empty imageUrl
-            loadingDialog.show("Ini-save ang palayan...");
-            saveRiceFieldToFirestore(name, "", province, city, barangay, Double.parseDouble(sizeStr), soilType);
-        } else {
-            // Upload image first, then save
-            loadingDialog.show("Ini-upload ang larawan...");
-            uploadImageThenSave(name, province, city, barangay, Double.parseDouble(sizeStr), soilType);
-        }
+        // Check for duplicate name before saving
+        checkDuplicateNameAndSave(name, province, city, barangay, Double.parseDouble(sizeStr), soilType);
+    }
+
+    private void checkDuplicateNameAndSave(String name, String province, String city, String barangay, double size, String soilType) {
+        // Load existing rice fields to check for duplicates
+        JournalStorageHelper.loadRiceFields(this, new JournalStorageHelper.OnFieldsLoadedListener() {
+            @Override
+            public void onSuccess(List<RiceFieldProfile> fields) {
+                // Check if name already exists (case-insensitive)
+                boolean duplicateFound = false;
+                for (RiceFieldProfile field : fields) {
+                    // If editing, skip the current rice field from duplicate check
+                    if (riceFieldId != null && !riceFieldId.isEmpty() && field.getId().equals(riceFieldId)) {
+                        continue;
+                    }
+                    
+                    // Check if name matches (case-insensitive, trimmed)
+                    if (field.getName() != null && field.getName().trim().equalsIgnoreCase(name.trim())) {
+                        duplicateFound = true;
+                        break;
+                    }
+                }
+
+                if (duplicateFound) {
+                    layoutName.setError("Mayroon nang palayan na may ganitong pangalan");
+                    return;
+                }
+
+                // No duplicate found, proceed with save
+                // Check if image is selected, if not, save directly without uploading
+                if (selectedBitmap == null && selectedImageUri == null) {
+                    // No image selected, save directly with empty imageUrl
+                    loadingDialog.show("Ini-save ang palayan...");
+                    saveRiceFieldToFirestore(name, "", province, city, barangay, size, soilType);
+                } else {
+                    // Upload image first, then save
+                    loadingDialog.show("Ini-upload ang larawan...");
+                    uploadImageThenSave(name, province, city, barangay, size, soilType);
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                showSnackBar("Hindi ma-check ang duplicate: " + error, false, null);
+            }
+        });
     }
 
     private void uploadImageThenSave(String name, String province, String city, String barangay, double size, String soilType) {
@@ -519,6 +557,11 @@ public class AddFarmerJournal extends AppCompatActivity {
 
     private void saveRiceFieldToFirestore(String name, String imageUrl, String province, String city, String barangay, double size, String soilType) {
         RiceFieldProfile riceField = new RiceFieldProfile(name, imageUrl, province, city, barangay, size, soilType);
+        
+        // If editing, set the existing ID
+        if (riceFieldId != null && !riceFieldId.isEmpty()) {
+            riceField.setId(riceFieldId);
+        }
         
         JournalStorageHelper.saveRiceField(this, riceField, new JournalStorageHelper.OnSaveListener() {
             @Override

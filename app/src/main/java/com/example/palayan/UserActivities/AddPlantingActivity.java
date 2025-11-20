@@ -3,6 +3,8 @@ package com.example.palayan.UserActivities;
 import android.app.DatePickerDialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -222,6 +224,9 @@ public class AddPlantingActivity extends AppCompatActivity {
         );
         etRiceVariety.setAdapter(varietyAdapter);
         etRiceVariety.setThreshold(1);
+        
+        // Set input filter: letters and numbers only for rice variety
+        etRiceVariety.setFilters(new InputFilter[] { new LettersAndNumbersOnlyFilter() });
 
         initTaskCategoryOptions();
         populateExistingPlanting();
@@ -1880,6 +1885,32 @@ public class AddPlantingActivity extends AppCompatActivity {
         }
 
         snackbar.show();
+    }
+
+    // InputFilter for letters and numbers only (for rice variety)
+    private static class LettersAndNumbersOnlyFilter implements InputFilter {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            if (source == null || source.length() == 0) {
+                return null; // Accept deletion
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+                    sb.append(c);
+                }
+            }
+
+            // If all characters are valid, return null to accept the input
+            if (sb.length() == (end - start)) {
+                return null;
+            }
+
+            // Return only valid characters
+            return sb.toString();
+        }
     }
 }
 
