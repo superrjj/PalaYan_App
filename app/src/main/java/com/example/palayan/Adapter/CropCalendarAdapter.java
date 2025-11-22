@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ public class CropCalendarAdapter extends RecyclerView.Adapter<CropCalendarAdapte
 
     private List<List<CropCalendarTask>> weeksList; // Tasks grouped by week
     private OnTaskCheckListener listener;
+    private int maxUnlockedWeek = Integer.MAX_VALUE;
 
     public interface OnTaskCheckListener {
         void onTaskCheckRequested(CropCalendarTask task, boolean targetState);
@@ -68,17 +70,23 @@ public class CropCalendarAdapter extends RecyclerView.Adapter<CropCalendarAdapte
             cbTask.setChecked(task.isCompleted());
             tvTaskName.setText("➤ " + task.getTaskName());
 
+            boolean isEnabled = task.getWeekNumber() <= maxUnlockedWeek || task.isCompleted();
+            cbTask.setEnabled(isEnabled);
+            cbTask.setAlpha(isEnabled ? 1f : 0.5f);
+
             cbTask.setOnClickListener(v -> {
+                if (!isEnabled) {
+                    cbTask.setChecked(false);
+                    Toast.makeText(holder.itemView.getContext(), "Tapusin muna ang mga gawain sa kasalukuyang linggo.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (listener != null) {
                     if (task.isCompleted()) {
-                        // If already completed, just show the dialog with details (don't allow unchecking)
                         cbTask.setChecked(true); // Keep it checked
                         listener.onTaskCheckRequested(task, true);
                     } else {
-                        // If not completed, allow checking
-                        boolean targetState = true;
                         cbTask.setChecked(task.isCompleted()); // Revert temporarily
-                        listener.onTaskCheckRequested(task, targetState);
+                        listener.onTaskCheckRequested(task, true);
                     }
                 } else {
                     cbTask.setChecked(task.isCompleted());
@@ -128,6 +136,15 @@ public class CropCalendarAdapter extends RecyclerView.Adapter<CropCalendarAdapte
         }
 
         android.util.Log.d("CropCalendarAdapter", "Grouped into " + weeksList.size() + " weeks. getItemCount() will return: " + weeksList.size());
+        notifyDataSetChanged();
+    }
+
+    public void setMaxUnlockedWeek(int maxUnlockedWeek) {
+        if (maxUnlockedWeek <= 0) {
+            this.maxUnlockedWeek = Integer.MAX_VALUE;
+        } else {
+            this.maxUnlockedWeek = maxUnlockedWeek;
+        }
         notifyDataSetChanged();
     }
 

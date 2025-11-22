@@ -581,20 +581,116 @@
                 android:layout_marginBottom="8dp"/>
 
             <TextView
+                android:id="@+id/tvCurrentWeekSectionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sundin ang crop calendar na ito batay sa Sistemang PalaYan."
-                android:textColor="@color/dark_gray"
-                android:textSize="14sp"
-                android:fontFamily="@font/poppins__regular"
-                android:layout_marginBottom="20dp"/>
+                android:text="Listahan ng mga gawain"
+                android:textColor="@color/dark_green"
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_bold"
+                android:layout_marginBottom="12dp"/>
 
-            <com.example.palayan.Helper.NonScrollableRecyclerView
-                android:id="@+id/rvCropCalendar"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCurrentWeekTasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:nestedScrollingEnabled="false"/>
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:strokeColor="@color/light_gray"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvCurrentWeekRange"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Nov 16 – Nov 22"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins__semibold"
+                        android:background="@color/dark_green"
+                        android:gravity="center"
+                        android:padding="10dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCurrentWeekTasks"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp"/>
+
+                    <TextView
+                        android:id="@+id/tvCurrentWeekEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Walang nakatalagang gawain para sa linggong ito."
+                        android:textColor="@color/dark_gray"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins__regular"
+                        android:padding="12dp"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/tvShowFullCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tingnan ang buong crop calendar"
+                android:textColor="@color/orange"
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins__medium"
+                android:paddingTop="8dp"
+                android:paddingBottom="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:textAllCaps="true"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/layoutFullCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="12dp">
+
+
+                    <TextView
+                        android:id="@+id/tvHideFullCalendar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Isara ang crop calendar"
+                        android:textColor="@color/orange"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins__medium"
+                        android:clickable="true"
+                        android:gravity="end"
+                        android:textAllCaps="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+
+                <com.example.palayan.Helper.NonScrollableRecyclerView
+                    android:id="@+id/rvCropCalendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="16dp"
+                    android:nestedScrollingEnabled="false"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

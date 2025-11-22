@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -36,6 +37,7 @@ import com.example.palayan.Helper.RicePlanting;
 import com.example.palayan.Helper.JournalStorageHelper;
 import com.example.palayan.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -75,6 +77,11 @@ public class AddPlantingActivity extends AppCompatActivity {
     private RadioButton rbCombo1, rbCombo2, rbCombo3, rbCombo4;
     private Button btnSave, btnNext, btnBack;
     private RecyclerView rvCropCalendar, rvFertilizerSchedule;
+    private MaterialCardView cardCurrentWeekTasks;
+    private LinearLayout layoutCurrentWeekTasks, layoutFullCalendar;
+    private TextView tvCurrentWeekRange, tvCurrentWeekEmpty, tvShowFullCalendar, tvHideFullCalendar;
+    private boolean isFullCalendarVisible = false;
+    private int highlightedWeekNumber = 1;
     private CropCalendarAdapter cropCalendarAdapter;
     private CropCalendarPreviewAdapter cropCalendarPreviewAdapter;
     private int currentStep = 0; // 0 = Seed, 1 = Fertilizer, 2 = Crop Calendar
@@ -189,6 +196,20 @@ public class AddPlantingActivity extends AppCompatActivity {
         rvCropCalendar.setLayoutManager(layoutManager);
         rvCropCalendar.setHasFixedSize(false);
         rvCropCalendar.setNestedScrollingEnabled(false);
+
+        cardCurrentWeekTasks = findViewById(R.id.cardCurrentWeekTasks);
+        layoutCurrentWeekTasks = findViewById(R.id.layoutCurrentWeekTasks);
+        tvCurrentWeekRange = findViewById(R.id.tvCurrentWeekRange);
+        tvCurrentWeekEmpty = findViewById(R.id.tvCurrentWeekEmpty);
+        layoutFullCalendar = findViewById(R.id.layoutFullCalendar);
+        tvShowFullCalendar = findViewById(R.id.tvShowFullCalendar);
+        tvHideFullCalendar = findViewById(R.id.tvHideFullCalendar);
+        if (tvShowFullCalendar != null) {
+            tvShowFullCalendar.setOnClickListener(v -> setFullCalendarVisibility(true));
+        }
+        if (tvHideFullCalendar != null) {
+            tvHideFullCalendar.setOnClickListener(v -> setFullCalendarVisibility(false));
+        }
         
         // Preview adapter (for new plantings - informational only)
         cropCalendarPreviewAdapter = new CropCalendarPreviewAdapter();
@@ -205,6 +226,7 @@ public class AddPlantingActivity extends AppCompatActivity {
         // Determine if editing or adding new
         boolean isEditing = plantingId != null && !plantingId.isEmpty();
         isPreviewMode = !isEditing;
+        isFullCalendarVisible = isPreviewMode;
         
         // Set initial adapter
         if (isPreviewMode) {
@@ -656,6 +678,8 @@ public class AddPlantingActivity extends AppCompatActivity {
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
+        // Prevent selecting past dates
+        dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         dialog.show();
     }
 
@@ -741,11 +765,16 @@ public class AddPlantingActivity extends AppCompatActivity {
                 rvCropCalendar.setAdapter(cropCalendarPreviewAdapter);
             }
             cropCalendarPreviewAdapter.updateTasks(cropCalendarTasks);
+            if (cardCurrentWeekTasks != null) {
+                cardCurrentWeekTasks.setVisibility(View.GONE);
+            }
+            setFullCalendarVisibility(true);
         } else {
             if (rvCropCalendar.getAdapter() != cropCalendarAdapter) {
                 rvCropCalendar.setAdapter(cropCalendarAdapter);
             }
             cropCalendarAdapter.updateTasks(cropCalendarTasks);
+            refreshCropCalendarUIState();
         }
 
         rvCropCalendar.post(() -> {
@@ -754,6 +783,178 @@ public class AddPlantingActivity extends AppCompatActivity {
             }
             rvCropCalendar.requestLayout();
         });
+    }
+
+    private void refreshCropCalendarUIState() {
+        if (isPreviewMode) {
+            setFullCalendarVisibility(true);
+            return;
+        }
+
+        if (cardCurrentWeekTasks == null || layoutCurrentWeekTasks == null || tvShowFullCalendar == null) {
+            return;
+        }
+
+        Map<Integer, List<CropCalendarTask>> groupedTasks = groupTasksByWeek();
+        if (groupedTasks.isEmpty()) {
+            cardCurrentWeekTasks.setVisibility(View.GONE);
+            rvCropCalendar.setVisibility(View.GONE);
+            return;
+        }
+
+        int currentWeekByDate = getCurrentWeekNumberByDate(groupedTasks);
+        int firstIncompleteWeek = getFirstIncompleteWeekNumber(groupedTasks);
+        int targetWeek = currentWeekByDate > 0 ? currentWeekByDate
+                : (firstIncompleteWeek > 0 ? firstIncompleteWeek : groupedTasks.keySet().iterator().next());
+
+        highlightedWeekNumber = targetWeek;
+
+        if (cropCalendarAdapter != null) {
+            cropCalendarAdapter.setMaxUnlockedWeek(targetWeek);
+        }
+
+        updateCurrentWeekCard(groupedTasks, targetWeek);
+
+        if (!isFullCalendarVisible) {
+            setFullCalendarVisibility(false);
+        } else {
+            setFullCalendarVisibility(true);
+        }
+    }
+
+    private void updateCurrentWeekCard(Map<Integer, List<CropCalendarTask>> groupedTasks, int weekNumber) {
+        if (cardCurrentWeekTasks == null || layoutCurrentWeekTasks == null) {
+            return;
+        }
+
+        List<CropCalendarTask> tasksForWeek = groupedTasks.get(weekNumber);
+        if (tasksForWeek == null || tasksForWeek.isEmpty()) {
+            layoutCurrentWeekTasks.removeAllViews();
+            tvCurrentWeekEmpty.setVisibility(View.VISIBLE);
+            cardCurrentWeekTasks.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        tvCurrentWeekRange.setText(tasksForWeek.get(0).getWeekRange());
+        layoutCurrentWeekTasks.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        for (CropCalendarTask task : tasksForWeek) {
+            View taskView = inflater.inflate(R.layout.item_crop_calendar_task_item, layoutCurrentWeekTasks, false);
+            CheckBox cbTask = taskView.findViewById(R.id.cbTaskCompleted);
+            TextView tvTaskName = taskView.findViewById(R.id.tvTaskName);
+
+            cbTask.setChecked(task.isCompleted());
+            tvTaskName.setText("➤ " + task.getTaskName());
+
+            cbTask.setOnClickListener(v -> {
+                cbTask.setChecked(task.isCompleted());
+                showTaskCompletionDialog(task);
+            });
+
+            layoutCurrentWeekTasks.addView(taskView);
+        }
+
+        tvCurrentWeekEmpty.setVisibility(View.GONE);
+        cardCurrentWeekTasks.setVisibility(isFullCalendarVisible ? View.GONE : View.VISIBLE);
+    }
+
+    private Map<Integer, List<CropCalendarTask>> groupTasksByWeek() {
+        Map<Integer, List<CropCalendarTask>> grouped = new LinkedHashMap<>();
+        if (cropCalendarTasks == null) {
+            return grouped;
+        }
+
+        for (CropCalendarTask task : cropCalendarTasks) {
+            int weekNumber = task.getWeekNumber();
+            if (!grouped.containsKey(weekNumber)) {
+                grouped.put(weekNumber, new ArrayList<>());
+            }
+            grouped.get(weekNumber).add(task);
+        }
+
+        return grouped;
+    }
+
+    private int getFirstIncompleteWeekNumber(Map<Integer, List<CropCalendarTask>> groupedTasks) {
+        for (Map.Entry<Integer, List<CropCalendarTask>> entry : groupedTasks.entrySet()) {
+            List<CropCalendarTask> tasks = entry.getValue();
+            if (tasks == null) continue;
+            for (CropCalendarTask task : tasks) {
+                if (!task.isCompleted()) {
+                    return entry.getKey();
+                }
+            }
+        }
+        return -1;
+    }
+
+    private int getCurrentWeekNumberByDate(Map<Integer, List<CropCalendarTask>> groupedTasks) {
+        Calendar today = Calendar.getInstance();
+        int fallback = -1;
+
+        for (Map.Entry<Integer, List<CropCalendarTask>> entry : groupedTasks.entrySet()) {
+            List<CropCalendarTask> tasks = entry.getValue();
+            if (tasks == null || tasks.isEmpty()) {
+                continue;
+            }
+
+            CropCalendarTask referenceTask = tasks.get(0);
+            String scheduledDate = referenceTask.getScheduledDate();
+            if (TextUtils.isEmpty(scheduledDate)) {
+                fallback = entry.getKey();
+                continue;
+            }
+
+            try {
+                Date referenceDate = isoDateFormat.parse(scheduledDate);
+                if (referenceDate != null) {
+                    Calendar weekStart = Calendar.getInstance();
+                    weekStart.setTime(referenceDate);
+                    weekStart.add(Calendar.DAY_OF_YEAR, -3);
+
+                    Calendar weekEnd = (Calendar) weekStart.clone();
+                    weekEnd.add(Calendar.DAY_OF_YEAR, 6);
+
+                    if (today.before(weekStart)) {
+                        return entry.getKey();
+                    }
+
+                    if (!today.after(weekEnd)) {
+                        return entry.getKey();
+                    }
+                }
+            } catch (Exception e) {
+                fallback = entry.getKey();
+                continue;
+            }
+
+            fallback = entry.getKey();
+        }
+
+        return fallback;
+    }
+
+    private void setFullCalendarVisibility(boolean visible) {
+        isFullCalendarVisible = visible;
+        if (layoutFullCalendar != null) {
+            layoutFullCalendar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+        if (rvCropCalendar != null) {
+            rvCropCalendar.setVisibility(visible ? View.VISIBLE : View.GONE);
+            if (visible && !isPreviewMode) {
+                rvCropCalendar.post(() -> rvCropCalendar.smoothScrollToPosition(Math.max(0, highlightedWeekNumber - 1)));
+            }
+        }
+        if (cardCurrentWeekTasks != null) {
+            cardCurrentWeekTasks.setVisibility(visible ? View.GONE : View.VISIBLE);
+        }
+        if (tvShowFullCalendar != null) {
+            tvShowFullCalendar.setVisibility(visible ? View.GONE : View.VISIBLE);
+        }
+        if (tvHideFullCalendar != null) {
+            tvHideFullCalendar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void addWeekTask(Calendar weekStart, int weekNumber, int taskOrder, String taskName, String taskType) {
@@ -1420,6 +1621,25 @@ public class AddPlantingActivity extends AppCompatActivity {
         if (existingSeedWeight != null && !existingSeedWeight.isEmpty()) {
             etSeedWeight.setText(existingSeedWeight);
         }
+        
+        // Make "Pagpili ng Binhi" section read-only when editing existing planting
+        etRiceVariety.setEnabled(false);
+        etRiceVariety.setFocusable(false);
+        etRiceVariety.setClickable(false);
+        rbSabogTanim.setEnabled(false);
+        rbLipatTanim.setEnabled(false);
+        layoutPlantingDate.setClickable(false);
+        layoutPlantingDate.setEnabled(false);
+        etSeedWeight.setEnabled(false);
+        etSeedWeight.setFocusable(false);
+        
+        // Make "Pamamahala sa Pataba" section read-only when editing existing planting
+        rbAbonongSwak.setEnabled(false);
+        rbSarilingDiskarte.setEnabled(false);
+        rbCombo1.setEnabled(false);
+        rbCombo2.setEnabled(false);
+        rbCombo3.setEnabled(false);
+        rbCombo4.setEnabled(false);
         // Load existing crop calendar tasks and fertilizer info if editing
         if (plantingId != null && !plantingId.isEmpty()) {
             JournalStorageHelper.loadRicePlantings(this, riceFieldId, new JournalStorageHelper.OnPlantingsLoadedListener() {

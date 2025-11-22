@@ -32,6 +32,8 @@ import java.util.ArrayList;
 
 public class RiceFieldJournal extends AppCompatActivity {
 
+    private static final int MAX_ACTIVE_PLANTINGS = 2;
+
     private TextView tvRiceFieldName;
     private TextView tvEmpty;
     private TextView tvDeleteRiceField;
@@ -86,9 +88,9 @@ public class RiceFieldJournal extends AppCompatActivity {
                 Toast.makeText(RiceFieldJournal.this, "Hindi ma-load ang palayan.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Check if there's an incomplete planting
-            if (hasIncompletePlanting()) {
-                Toast.makeText(RiceFieldJournal.this, "Hindi ka makakapagdagdag ng bagong taniman hangga't hindi pa natatapos o na-aani ang kasalukuyang taniman.", Toast.LENGTH_LONG).show();
+            // Allow up to two active plantings
+            if (hasReachedPlantingLimit()) {
+                Toast.makeText(RiceFieldJournal.this, "Dalawang taniman lang ang maaaring aktibo sa bawat palayan.", Toast.LENGTH_LONG).show();
                 return;
             }
             Intent i = new Intent(RiceFieldJournal.this, AddPlantingActivity.class);
@@ -184,8 +186,8 @@ public class RiceFieldJournal extends AppCompatActivity {
                     tvEmpty.setVisibility(View.GONE);
                     rvPlantings.setVisibility(View.VISIBLE);
                     tvDeleteRiceField.setVisibility(View.VISIBLE);
-                    // Check if there's an incomplete planting
-                    if (hasIncompletePlanting()) {
+                    // Disable add button only when limit is reached
+                    if (hasReachedPlantingLimit()) {
                         btnAddPlanting.setEnabled(false);
                         btnAddPlanting.setAlpha(0.5f);
                     } else {
@@ -223,16 +225,21 @@ public class RiceFieldJournal extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private boolean hasIncompletePlanting() {
+    private boolean hasReachedPlantingLimit() {
         if (plantingList == null || plantingList.isEmpty()) {
             return false;
         }
 
+        int activePlantings = 0;
         for (RicePlanting planting : plantingList) {
             List<CropCalendarTask> tasks = planting.getCropCalendarTasks();
             if (tasks == null || tasks.isEmpty()) {
-                // If no tasks, consider it incomplete
-                return true;
+                // If no tasks, consider it active
+                activePlantings++;
+                if (activePlantings >= MAX_ACTIVE_PLANTINGS) {
+                    return true;
+                }
+                continue;
             }
 
             // Check if all tasks are completed
@@ -249,9 +256,12 @@ public class RiceFieldJournal extends AppCompatActivity {
                 }
             }
 
-            // If not all tasks are completed OR harvest is not completed, it's incomplete
+            // Count as active if tasks are incomplete or harvest not completed
             if (!allTasksCompleted || !harvestCompleted) {
-                return true;
+                activePlantings++;
+                if (activePlantings >= MAX_ACTIVE_PLANTINGS) {
+                    return true;
+                }
             }
         }
 
