@@ -398,7 +398,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Ilagay ang sukat ng taniman at ani o yield para makuha ang estimated ani."
+                        android:text="Ang estimated na ani ay awtomatikong makukuwenta base sa barayti ng palay, paraan ng pagtatanim, at sukat ng taniman."
                         android:justificationMode="inter_word"
                         android:textColor="@color/dark_gray"
                         android:textSize="14sp"
@@ -411,97 +411,39 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="8dp">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal"
-                            android:layout_marginEnd="8dp">
+                            android:text="Sukat (hektarya)"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/poppins__medium"/>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Sukat (hektarya)"
-                                android:textColor="@color/black"
-                                android:textSize="13sp"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="*"
-                                android:textColor="@color/dark_red"
-                                android:textSize="13sp"
-                                android:paddingStart="5dp"
-                                android:fontFamily="@font/poppins__regular"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal"
-                            android:layout_marginStart="8dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Sako per hektarya"
-                                android:textColor="@color/black"
-                                android:textSize="13sp"
-                                android:fontFamily="@font/poppins__medium"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="*"
-                                android:textColor="@color/dark_red"
-                                android:textSize="13sp"
-                                android:paddingStart="5dp"
-                                android:fontFamily="@font/poppins__regular"/>
-                        </LinearLayout>
+                            android:text="*"
+                            android:textColor="@color/dark_red"
+                            android:textSize="15sp"
+                            android:paddingStart="5dp"
+                            android:fontFamily="@font/poppins__regular"/>
                     </LinearLayout>
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutAreaHectares"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:hint="Hal. 1.5"
+                        app:boxStrokeColor="@color/green"
                         android:layout_marginBottom="12dp">
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/layoutAreaHectares"
-                            android:layout_width="0dp"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAreaHectares"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="Hal. 1.5"
-                            app:boxStrokeColor="@color/green"
-                            android:layout_marginEnd="8dp">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etAreaHectares"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="numberDecimal"
-                                android:fontFamily="@font/poppins__regular"/>
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/layoutYieldPerHectare"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="Hal. 100"
-                            app:boxStrokeColor="@color/green"
-                            android:layout_marginStart="8dp">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etYieldPerHectare"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="numberDecimal"
-                                android:fontFamily="@font/poppins__regular"/>
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
+                            android:inputType="numberDecimal"
+                            android:fontFamily="@font/poppins__regular"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"

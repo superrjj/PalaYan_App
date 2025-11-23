@@ -72,7 +72,7 @@ public class AddPlantingActivity extends AppCompatActivity {
     private View layoutFertilizerScheduleTableSarilingDiskarte;
     private LinearLayout layoutTableRows;
     private AutoCompleteTextView etRiceVariety;
-    private TextInputEditText etSeedWeight, etAreaHectares, etYieldPerHectare;
+    private TextInputEditText etSeedWeight, etAreaHectares;
     private TextView tvTotalKilograms, tvTotalSacks;
     private RadioGroup rgPlantingMethod, rgFertilizerStrategy, rgFertilizerCombo;
     private RadioButton rbSabogTanim, rbLipatTanim, rbAbonongSwak, rbSarilingDiskarte;
@@ -154,7 +154,6 @@ public class AddPlantingActivity extends AppCompatActivity {
         etRiceVariety = findViewById(R.id.etRiceVariety);
         etSeedWeight = findViewById(R.id.etSeedWeight);
         etAreaHectares = findViewById(R.id.etAreaHectares);
-        etYieldPerHectare = findViewById(R.id.etYieldPerHectare);
         tvTotalKilograms = findViewById(R.id.tvTotalKilograms);
         tvTotalSacks = findViewById(R.id.tvTotalSacks);
         rgPlantingMethod = findViewById(R.id.rgPlantingMethod);
@@ -532,27 +531,32 @@ public class AddPlantingActivity extends AppCompatActivity {
         // Track planting method changes
         rgPlantingMethod.setOnCheckedChangeListener((group, checkedId) -> checkForChanges());
         
-        // Yield computation - automatic calculation
-        android.text.TextWatcher yieldWatcher = new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(android.text.Editable s) {
-                computeYield();
-            }
-        };
+        // Yield computation - automatic calculation when area changes
         if (etAreaHectares != null) {
-            etAreaHectares.addTextChangedListener(yieldWatcher);
+            etAreaHectares.addTextChangedListener(new android.text.TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(android.text.Editable s) {
+                    computeYield();
+                }
+            });
             // Prevent leading zeros (like 01, 02, etc.)
             etAreaHectares.setFilters(new InputFilter[] { new NoLeadingZeroFilter() });
         }
-        if (etYieldPerHectare != null) {
-            etYieldPerHectare.addTextChangedListener(yieldWatcher);
-            // Prevent leading zeros (like 01, 02, etc.)
-            etYieldPerHectare.setFilters(new InputFilter[] { new NoLeadingZeroFilter() });
-        }
+        
+        // Auto-compute yield when variety or method changes
+        etRiceVariety.setOnItemClickListener((parent, view, position, id) -> {
+            checkForChanges();
+            computeYield();
+        });
+        
+        rgPlantingMethod.setOnCheckedChangeListener((group, checkedId) -> {
+            checkForChanges();
+            computeYield();
+        });
 
         // Initialize fertilizer UI state
         if (rbAbonongSwak.isChecked()) {
@@ -673,25 +677,6 @@ public class AddPlantingActivity extends AppCompatActivity {
                 }
             } catch (NumberFormatException e) {
                 showSnackBar("Hindi wasto ang sukat (hektarya).", false, null);
-                return false;
-            }
-        }
-        
-        // Validate yield per hectare (required, must not be empty or 0)
-        if (etYieldPerHectare != null) {
-            String yieldStr = etYieldPerHectare.getText() != null ? etYieldPerHectare.getText().toString().trim() : "";
-            if (yieldStr.isEmpty()) {
-                showSnackBar("Ilalagay ang ani kada hektarya (sako).", false, null);
-                return false;
-            }
-            try {
-                double yield = Double.parseDouble(yieldStr);
-                if (yield <= 0) {
-                    showSnackBar("Ang ani kada hektarya ay dapat mas malaki sa 0.", false, null);
-                    return false;
-                }
-            } catch (NumberFormatException e) {
-                showSnackBar("Hindi wasto ang ani kada hektarya.", false, null);
                 return false;
             }
         }
@@ -1619,13 +1604,10 @@ public class AddPlantingActivity extends AppCompatActivity {
         planting.setSeedWeight(seedWeight);
         planting.setPlantingMethod(rbSabogTanim.isChecked() ? "Sabog-tanim" : "Lipat-tanim");
         
-        // Save yield data
+        // Save area data (yield is computed automatically based on variety + method + area)
         String areaHectares = etAreaHectares != null && etAreaHectares.getText() != null 
                 ? etAreaHectares.getText().toString().trim() : "";
-        String yieldPerHectare = etYieldPerHectare != null && etYieldPerHectare.getText() != null 
-                ? etYieldPerHectare.getText().toString().trim() : "";
         planting.setAreaHectares(areaHectares);
-        planting.setYieldPerHectare(yieldPerHectare);
         
         // Fertilizer info - if editing and on crop calendar step, load existing fertilizer info
         if (isEditing && isOnCropCalendarStep) {
@@ -1758,10 +1740,6 @@ public class AddPlantingActivity extends AppCompatActivity {
             etAreaHectares.setEnabled(false);
             etAreaHectares.setFocusable(false);
         }
-        if (etYieldPerHectare != null) {
-            etYieldPerHectare.setEnabled(false);
-            etYieldPerHectare.setFocusable(false);
-        }
         // Load existing crop calendar tasks and fertilizer info if editing
         if (plantingId != null && !plantingId.isEmpty()) {
             JournalStorageHelper.loadRicePlantings(this, riceFieldId, new JournalStorageHelper.OnPlantingsLoadedListener() {
@@ -1793,14 +1771,11 @@ public class AddPlantingActivity extends AppCompatActivity {
                                 }
                             }
                             
-                            // Load yield data
+                            // Load area data (yield is computed automatically)
                             if (p.getAreaHectares() != null && !p.getAreaHectares().isEmpty() && etAreaHectares != null) {
                                 etAreaHectares.setText(p.getAreaHectares());
                             }
-                            if (p.getYieldPerHectare() != null && !p.getYieldPerHectare().isEmpty() && etYieldPerHectare != null) {
-                                etYieldPerHectare.setText(p.getYieldPerHectare());
-                            }
-                            // Compute yield to update display
+                            // Compute yield to update display (based on variety + method + area)
                             computeYield();
                             
                             if (p.getCropCalendarTasks() != null && !p.getCropCalendarTasks().isEmpty()) {
@@ -2215,31 +2190,111 @@ public class AddPlantingActivity extends AppCompatActivity {
         return schedule;
     }
 
+    /**
+     * Get default yield per hectare in kg/ha based on variety name
+     * Returns default value if variety not found in mapping
+     */
+    private double getDefaultYieldPerHectare(String varietyName) {
+        if (varietyName == null || varietyName.trim().isEmpty()) {
+            return 4500.0; // Standard default: 4.5 tons/ha = 4500 kg/ha
+        }
+        
+        String variety = varietyName.trim().toUpperCase();
+        
+        // Predefined varieties from sample_variety_array and their typical yields (in kg/ha)
+        // Based on average yields from Philippine rice varieties
+        
+        // NSIC Rc 222
+        if (variety.contains("RC 222") || variety.contains("RC222") || variety.contains("NSIC RC 222") || variety.contains("NSIC RC222")) {
+            return 4500.0; // ~4.5 tons/ha
+        }
+        // NSIC Rc 160
+        else if (variety.contains("RC 160") || variety.contains("RC160") || variety.contains("NSIC RC 160") || variety.contains("NSIC RC160")) {
+            return 5000.0; // ~5.0 tons/ha
+        }
+        // NSIC Rc 216
+        else if (variety.contains("RC 216") || variety.contains("RC216") || variety.contains("NSIC RC 216") || variety.contains("NSIC RC216")) {
+            return 4800.0; // ~4.8 tons/ha
+        }
+        // RC 480 (Tubigan 28)
+        else if (variety.contains("RC 480") || variety.contains("RC480") || variety.contains("TUBIGAN 28") || variety.contains("TUBIGAN28")) {
+            return 4700.0; // ~4.7 tons/ha
+        }
+        // RC 518
+        else if (variety.contains("RC 518") || variety.contains("RC518")) {
+            return 4600.0; // ~4.6 tons/ha
+        }
+        // RC 300
+        else if (variety.contains("RC 300") || variety.contains("RC300") || variety.contains("NSIC RC 300") || variety.contains("NSIC RC300")) {
+            return 4600.0; // ~4.6 tons/ha
+        }
+        // Other common NSIC varieties
+        else if (variety.contains("RC 218") || variety.contains("RC218") || variety.contains("NSIC RC 218") || variety.contains("NSIC RC218")) {
+            return 4700.0; // ~4.7 tons/ha
+        }
+        else if (variety.contains("RC 154") || variety.contains("RC154") || variety.contains("NSIC RC 154") || variety.contains("NSIC RC154")) {
+            return 4900.0; // ~4.9 tons/ha
+        }
+        else if (variety.contains("RC 158") || variety.contains("RC158") || variety.contains("NSIC RC 158") || variety.contains("NSIC RC158")) {
+            return 4800.0; // ~4.8 tons/ha
+        }
+        else if (variety.contains("RC 238") || variety.contains("RC238") || variety.contains("NSIC RC 238") || variety.contains("NSIC RC238")) {
+            return 4600.0; // ~4.6 tons/ha
+        }
+        
+        // Standard default for unknown/custom varieties: 4.5 tons/ha (4500 kg/ha)
+        // This is the average yield for most Philippine rice varieties
+        return 4500.0;
+    }
+    
     private void computeYield() {
         if (tvTotalKilograms == null || tvTotalSacks == null) {
             return;
         }
         
         try {
+            // Get area
             String areaStr = etAreaHectares != null && etAreaHectares.getText() != null 
                     ? etAreaHectares.getText().toString().trim() : "";
-            String yieldStr = etYieldPerHectare != null && etYieldPerHectare.getText() != null 
-                    ? etYieldPerHectare.getText().toString().trim() : "";
             
-            if (areaStr.isEmpty() || yieldStr.isEmpty()) {
+            if (areaStr.isEmpty()) {
                 tvTotalKilograms.setText("0 kg");
                 tvTotalSacks.setText("0 sako");
                 return;
             }
             
             double area = Double.parseDouble(areaStr);
-            double sacksPerHectare = Double.parseDouble(yieldStr); // Input is in sacks per hectare
+            if (area <= 0) {
+                tvTotalKilograms.setText("0 kg");
+                tvTotalSacks.setText("0 sako");
+                return;
+            }
             
-            // Calculate total sacks: sacks per hectare × area in hectares
-            double totalSacks = sacksPerHectare * area;
+            // Get variety name
+            String varietyName = etRiceVariety != null && etRiceVariety.getText() != null 
+                    ? etRiceVariety.getText().toString().trim() : "";
             
-            // Calculate total kilograms: total sacks × 50 kg per sack
-            double totalKilograms = totalSacks * 50.0; // 1 sack = 50 kg in Philippines
+            // Get base yield per hectare (in kg/ha) based on variety
+            double baseYieldPerHectareKg = getDefaultYieldPerHectare(varietyName);
+            
+            // Apply method adjustment
+            double adjustedYieldPerHectareKg = baseYieldPerHectareKg;
+            if (rgPlantingMethod != null) {
+                int selectedMethodId = rgPlantingMethod.getCheckedRadioButtonId();
+                if (selectedMethodId == R.id.rbLipatTanim) {
+                    // Lipat-tanim: +10%
+                    adjustedYieldPerHectareKg = baseYieldPerHectareKg * 1.10;
+                } else if (selectedMethodId == R.id.rbSabogTanim) {
+                    // Sabog-tanim: -5%
+                    adjustedYieldPerHectareKg = baseYieldPerHectareKg * 0.95;
+                }
+            }
+            
+            // Calculate total yield in kg: adjusted yield per hectare × area
+            double totalKilograms = adjustedYieldPerHectareKg * area;
+            
+            // Calculate total sacks: total kg ÷ 50 kg per sack
+            double totalSacks = totalKilograms / 50.0;
             
             // Format and display
             if (totalKilograms >= 1000) {
