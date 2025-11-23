@@ -53,6 +53,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class AddPlantingActivity extends AppCompatActivity {
 
@@ -71,7 +72,8 @@ public class AddPlantingActivity extends AppCompatActivity {
     private View layoutFertilizerScheduleTableSarilingDiskarte;
     private LinearLayout layoutTableRows;
     private AutoCompleteTextView etRiceVariety;
-    private TextInputEditText etSeedWeight;
+    private TextInputEditText etSeedWeight, etAreaHectares, etYieldPerHectare;
+    private TextView tvTotalKilograms, tvTotalSacks;
     private RadioGroup rgPlantingMethod, rgFertilizerStrategy, rgFertilizerCombo;
     private RadioButton rbSabogTanim, rbLipatTanim, rbAbonongSwak, rbSarilingDiskarte;
     private RadioButton rbCombo1, rbCombo2, rbCombo3, rbCombo4;
@@ -151,6 +153,10 @@ public class AddPlantingActivity extends AppCompatActivity {
         layoutPlantingDate = findViewById(R.id.layoutPlantingDate);
         etRiceVariety = findViewById(R.id.etRiceVariety);
         etSeedWeight = findViewById(R.id.etSeedWeight);
+        etAreaHectares = findViewById(R.id.etAreaHectares);
+        etYieldPerHectare = findViewById(R.id.etYieldPerHectare);
+        tvTotalKilograms = findViewById(R.id.tvTotalKilograms);
+        tvTotalSacks = findViewById(R.id.tvTotalSacks);
         rgPlantingMethod = findViewById(R.id.rgPlantingMethod);
         rbSabogTanim = findViewById(R.id.rbSabogTanim);
         rbLipatTanim = findViewById(R.id.rbLipatTanim);
@@ -525,6 +531,28 @@ public class AddPlantingActivity extends AppCompatActivity {
         
         // Track planting method changes
         rgPlantingMethod.setOnCheckedChangeListener((group, checkedId) -> checkForChanges());
+        
+        // Yield computation - automatic calculation
+        android.text.TextWatcher yieldWatcher = new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                computeYield();
+            }
+        };
+        if (etAreaHectares != null) {
+            etAreaHectares.addTextChangedListener(yieldWatcher);
+            // Prevent leading zeros (like 01, 02, etc.)
+            etAreaHectares.setFilters(new InputFilter[] { new NoLeadingZeroFilter() });
+        }
+        if (etYieldPerHectare != null) {
+            etYieldPerHectare.addTextChangedListener(yieldWatcher);
+            // Prevent leading zeros (like 01, 02, etc.)
+            etYieldPerHectare.setFilters(new InputFilter[] { new NoLeadingZeroFilter() });
+        }
 
         // Initialize fertilizer UI state
         if (rbAbonongSwak.isChecked()) {
@@ -629,6 +657,45 @@ public class AddPlantingActivity extends AppCompatActivity {
             showSnackBar("Ilalagay ang kabuuang timbang ng binhi.", false, null);
             return false;
         }
+        
+        // Validate area hectares (required, must not be empty or 0)
+        if (etAreaHectares != null) {
+            String areaStr = etAreaHectares.getText() != null ? etAreaHectares.getText().toString().trim() : "";
+            if (areaStr.isEmpty()) {
+                showSnackBar("Ilalagay ang sukat (hektarya).", false, null);
+                return false;
+            }
+            try {
+                double area = Double.parseDouble(areaStr);
+                if (area <= 0) {
+                    showSnackBar("Ang sukat (hektarya) ay dapat mas malaki sa 0.", false, null);
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                showSnackBar("Hindi wasto ang sukat (hektarya).", false, null);
+                return false;
+            }
+        }
+        
+        // Validate yield per hectare (required, must not be empty or 0)
+        if (etYieldPerHectare != null) {
+            String yieldStr = etYieldPerHectare.getText() != null ? etYieldPerHectare.getText().toString().trim() : "";
+            if (yieldStr.isEmpty()) {
+                showSnackBar("Ilalagay ang ani kada hektarya (sako).", false, null);
+                return false;
+            }
+            try {
+                double yield = Double.parseDouble(yieldStr);
+                if (yield <= 0) {
+                    showSnackBar("Ang ani kada hektarya ay dapat mas malaki sa 0.", false, null);
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                showSnackBar("Hindi wasto ang ani kada hektarya.", false, null);
+                return false;
+            }
+        }
+        
         return true;
     }
 
@@ -662,7 +729,8 @@ public class AddPlantingActivity extends AppCompatActivity {
     }
 
     private void showDatePicker() {
-        final Calendar calendar = Calendar.getInstance();
+        // Use Philippines timezone (Asia/Manila, UTC+8)
+        final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
         DatePickerDialog dialog = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
@@ -697,7 +765,8 @@ public class AddPlantingActivity extends AppCompatActivity {
             Date plantingDate = sdf.parse(plantingDateStr);
             if (plantingDate == null) return;
 
-            Calendar plantingCal = Calendar.getInstance();
+            // Use Philippines timezone (Asia/Manila, UTC+8)
+            Calendar plantingCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
             plantingCal.setTime(plantingDate);
 
             cropCalendarTasks.clear();
@@ -890,8 +959,16 @@ public class AddPlantingActivity extends AppCompatActivity {
     }
 
     private int getCurrentWeekNumberByDate(Map<Integer, List<CropCalendarTask>> groupedTasks) {
-        Calendar today = Calendar.getInstance();
-        int fallback = -1;
+        // Use Philippines timezone (Asia/Manila, UTC+8)
+        Calendar today = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+        // Set today to start of day for accurate comparison
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+        
+        int firstWeekAfterToday = -1;
+        int lastWeek = -1;
 
         for (Map.Entry<Integer, List<CropCalendarTask>> entry : groupedTasks.entrySet()) {
             List<CropCalendarTask> tasks = entry.getValue();
@@ -902,37 +979,61 @@ public class AddPlantingActivity extends AppCompatActivity {
             CropCalendarTask referenceTask = tasks.get(0);
             String scheduledDate = referenceTask.getScheduledDate();
             if (TextUtils.isEmpty(scheduledDate)) {
-                fallback = entry.getKey();
+                if (lastWeek == -1) {
+                    lastWeek = entry.getKey();
+                }
                 continue;
             }
 
             try {
                 Date referenceDate = isoDateFormat.parse(scheduledDate);
                 if (referenceDate != null) {
-                    Calendar weekStart = Calendar.getInstance();
+                    // Use Philippines timezone for consistency
+                    Calendar weekStart = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
                     weekStart.setTime(referenceDate);
                     weekStart.add(Calendar.DAY_OF_YEAR, -3);
+                    // Set time to start of day for accurate comparison
+                    weekStart.set(Calendar.HOUR_OF_DAY, 0);
+                    weekStart.set(Calendar.MINUTE, 0);
+                    weekStart.set(Calendar.SECOND, 0);
+                    weekStart.set(Calendar.MILLISECOND, 0);
 
                     Calendar weekEnd = (Calendar) weekStart.clone();
                     weekEnd.add(Calendar.DAY_OF_YEAR, 6);
+                    // Set time to end of day for accurate comparison
+                    weekEnd.set(Calendar.HOUR_OF_DAY, 23);
+                    weekEnd.set(Calendar.MINUTE, 59);
+                    weekEnd.set(Calendar.SECOND, 59);
+                    weekEnd.set(Calendar.MILLISECOND, 999);
 
-                    if (today.before(weekStart)) {
-                        return entry.getKey();
+                    // Check if today falls within this week (weekStart <= today <= weekEnd)
+                    if (!today.before(weekStart) && !today.after(weekEnd)) {
+                        return entry.getKey(); // Today is within this week - return immediately
                     }
-
-                    if (!today.after(weekEnd)) {
-                        return entry.getKey();
+                    
+                    // Track first week that starts after today (for fallback)
+                    if (today.before(weekStart) && firstWeekAfterToday == -1) {
+                        firstWeekAfterToday = entry.getKey();
                     }
+                    
+                    // Track last week
+                    lastWeek = entry.getKey();
                 }
             } catch (Exception e) {
-                fallback = entry.getKey();
+                if (lastWeek == -1) {
+                    lastWeek = entry.getKey();
+                }
                 continue;
             }
-
-            fallback = entry.getKey();
         }
 
-        return fallback;
+        // If today is before all weeks, return first week
+        // If today is after all weeks, return last week
+        // Otherwise return first week after today
+        if (firstWeekAfterToday != -1) {
+            return firstWeekAfterToday;
+        }
+        return lastWeek != -1 ? lastWeek : -1;
     }
 
     private void setFullCalendarVisibility(boolean visible) {
@@ -1169,7 +1270,8 @@ public class AddPlantingActivity extends AppCompatActivity {
         actTaskName.setOnItemClickListener((parent, view, position, id) -> layoutTaskName.setError(null));
 
         View.OnClickListener dateClickListener = v -> {
-            Calendar calendar = Calendar.getInstance();
+            // Use Philippines timezone (Asia/Manila, UTC+8)
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
             String current = etTaskDate.getText() != null ? etTaskDate.getText().toString() : "";
             if (!TextUtils.isEmpty(current)) {
                 try {
@@ -1191,6 +1293,8 @@ public class AddPlantingActivity extends AppCompatActivity {
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)
             );
+            // Prevent selecting past dates
+            dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             dialog.show();
         };
 
@@ -1515,6 +1619,14 @@ public class AddPlantingActivity extends AppCompatActivity {
         planting.setSeedWeight(seedWeight);
         planting.setPlantingMethod(rbSabogTanim.isChecked() ? "Sabog-tanim" : "Lipat-tanim");
         
+        // Save yield data
+        String areaHectares = etAreaHectares != null && etAreaHectares.getText() != null 
+                ? etAreaHectares.getText().toString().trim() : "";
+        String yieldPerHectare = etYieldPerHectare != null && etYieldPerHectare.getText() != null 
+                ? etYieldPerHectare.getText().toString().trim() : "";
+        planting.setAreaHectares(areaHectares);
+        planting.setYieldPerHectare(yieldPerHectare);
+        
         // Fertilizer info - if editing and on crop calendar step, load existing fertilizer info
         if (isEditing && isOnCropCalendarStep) {
             // Load existing planting to get fertilizer info
@@ -1640,6 +1752,16 @@ public class AddPlantingActivity extends AppCompatActivity {
         rbCombo2.setEnabled(false);
         rbCombo3.setEnabled(false);
         rbCombo4.setEnabled(false);
+        
+        // Make yield computation fields read-only when editing existing planting
+        if (etAreaHectares != null) {
+            etAreaHectares.setEnabled(false);
+            etAreaHectares.setFocusable(false);
+        }
+        if (etYieldPerHectare != null) {
+            etYieldPerHectare.setEnabled(false);
+            etYieldPerHectare.setFocusable(false);
+        }
         // Load existing crop calendar tasks and fertilizer info if editing
         if (plantingId != null && !plantingId.isEmpty()) {
             JournalStorageHelper.loadRicePlantings(this, riceFieldId, new JournalStorageHelper.OnPlantingsLoadedListener() {
@@ -1670,6 +1792,16 @@ public class AddPlantingActivity extends AppCompatActivity {
                                     showSarilingDiskarteSchedule();
                                 }
                             }
+                            
+                            // Load yield data
+                            if (p.getAreaHectares() != null && !p.getAreaHectares().isEmpty() && etAreaHectares != null) {
+                                etAreaHectares.setText(p.getAreaHectares());
+                            }
+                            if (p.getYieldPerHectare() != null && !p.getYieldPerHectare().isEmpty() && etYieldPerHectare != null) {
+                                etYieldPerHectare.setText(p.getYieldPerHectare());
+                            }
+                            // Compute yield to update display
+                            computeYield();
                             
                             if (p.getCropCalendarTasks() != null && !p.getCropCalendarTasks().isEmpty()) {
                                 cropCalendarTasks = p.getCropCalendarTasks();
@@ -1753,7 +1885,8 @@ public class AddPlantingActivity extends AppCompatActivity {
                 return;
             }
             
-            Calendar plantingCal = Calendar.getInstance();
+            // Use Philippines timezone (Asia/Manila, UTC+8)
+            Calendar plantingCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
             plantingCal.setTime(plantingDateObj);
             
             // Find seedling week (week 2)
@@ -2082,6 +2215,49 @@ public class AddPlantingActivity extends AppCompatActivity {
         return schedule;
     }
 
+    private void computeYield() {
+        if (tvTotalKilograms == null || tvTotalSacks == null) {
+            return;
+        }
+        
+        try {
+            String areaStr = etAreaHectares != null && etAreaHectares.getText() != null 
+                    ? etAreaHectares.getText().toString().trim() : "";
+            String yieldStr = etYieldPerHectare != null && etYieldPerHectare.getText() != null 
+                    ? etYieldPerHectare.getText().toString().trim() : "";
+            
+            if (areaStr.isEmpty() || yieldStr.isEmpty()) {
+                tvTotalKilograms.setText("0 kg");
+                tvTotalSacks.setText("0 sako");
+                return;
+            }
+            
+            double area = Double.parseDouble(areaStr);
+            double sacksPerHectare = Double.parseDouble(yieldStr); // Input is in sacks per hectare
+            
+            // Calculate total sacks: sacks per hectare × area in hectares
+            double totalSacks = sacksPerHectare * area;
+            
+            // Calculate total kilograms: total sacks × 50 kg per sack
+            double totalKilograms = totalSacks * 50.0; // 1 sack = 50 kg in Philippines
+            
+            // Format and display
+            if (totalKilograms >= 1000) {
+                // Show in tons if >= 1000 kg
+                double tons = totalKilograms / 1000.0;
+                tvTotalKilograms.setText(String.format(Locale.getDefault(), "%.2f tonelada (%.0f kg)", tons, totalKilograms));
+            } else {
+                tvTotalKilograms.setText(String.format(Locale.getDefault(), "%.0f kg", totalKilograms));
+            }
+            
+            tvTotalSacks.setText(String.format(Locale.getDefault(), "%.1f sako", totalSacks));
+            
+        } catch (NumberFormatException e) {
+            tvTotalKilograms.setText("0 kg");
+            tvTotalSacks.setText("0 sako");
+        }
+    }
+
     private void showSnackBar(String message, boolean isSuccess, @Nullable Runnable onDismiss) {
         View root = findViewById(android.R.id.content);
         Snackbar snackbar = Snackbar.make(root, message, Snackbar.LENGTH_LONG);
@@ -2132,5 +2308,47 @@ public class AddPlantingActivity extends AppCompatActivity {
             return sb.toString();
         }
     }
+
+    // InputFilter to prevent leading zeros (except for decimal like 0.5)
+    private static class NoLeadingZeroFilter implements InputFilter {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            if (source == null || source.length() == 0) {
+                return null; // Accept deletion
+            }
+
+            String currentText = dest.toString();
+            String newValue = currentText.substring(0, dstart) + source.toString() + currentText.substring(dend);
+            
+            // Allow empty or just decimal point
+            if (newValue.isEmpty() || newValue.equals(".")) {
+                return null;
+            }
+            
+            // Allow decimal point and numbers after it (like 0.5, 0.1)
+            if (newValue.contains(".")) {
+                String[] parts = newValue.split("\\.");
+                if (parts.length == 2) {
+                    // If there's a decimal part, allow "0." or single "0" before decimal
+                    if (parts[0].isEmpty() || parts[0].equals("0")) {
+                        return null; // Allow 0.5, 0.1, etc.
+                    }
+                    // Check if integer part starts with 0 and has more digits (like 01.5)
+                    if (parts[0].length() > 1 && parts[0].startsWith("0")) {
+                        return ""; // Reject 01.5, 02.5, etc.
+                    }
+                }
+            } else {
+                // No decimal point - check for leading zeros
+                // Allow single "0" but reject "01", "02", "03", etc.
+                if (newValue.length() > 1 && newValue.startsWith("0")) {
+                    return ""; // Reject 01, 02, 03, etc.
+                }
+            }
+            
+            return null; // Accept the input
+        }
+    }
+
 }
 

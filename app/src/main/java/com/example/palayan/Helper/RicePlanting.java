@@ -19,6 +19,8 @@ public class RicePlanting implements Serializable {
     private String fertilizerAmount;
     private String fertilizerStrategy; // "Abonong Swak" or "Sariling diskarte"
     private String fertilizerCombo; // "Combo 1", "Combo 2", "Combo 3", "Combo 4"
+    private String areaHectares; // Area in hectares for yield computation
+    private String yieldPerHectare; // Yield per hectare in tons
     private List<CropCalendarTask> cropCalendarTasks; // List of tasks for crop calendar
 
     public RicePlanting() {
@@ -149,6 +151,22 @@ public class RicePlanting implements Serializable {
 
     public void setCropCalendarTasks(List<CropCalendarTask> cropCalendarTasks) {
         this.cropCalendarTasks = cropCalendarTasks;
+    }
+
+    public String getAreaHectares() {
+        return areaHectares;
+    }
+
+    public void setAreaHectares(String areaHectares) {
+        this.areaHectares = areaHectares;
+    }
+
+    public String getYieldPerHectare() {
+        return yieldPerHectare;
+    }
+
+    public void setYieldPerHectare(String yieldPerHectare) {
+        this.yieldPerHectare = yieldPerHectare;
     }
 }
 
