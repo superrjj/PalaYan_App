@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:cursorVisible="false"
-                android:hint="Petsa ng gawain"
+                android:hint="Petsa kung kailan ginawa"
                 android:inputType="none"
                 android:fontFamily="@font/poppins__regular"
                 android:textSize="15sp" />

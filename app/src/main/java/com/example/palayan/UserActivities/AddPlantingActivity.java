@@ -30,6 +30,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.example.palayan.Adapter.CropCalendarAdapter;
 import com.example.palayan.Adapter.CropCalendarPreviewAdapter;
+import com.example.palayan.Adapter.TaskHistoryAdapter;
 import com.example.palayan.Helper.CropCalendarTask;
 import com.example.palayan.Helper.FertilizerScheduleEntry;
 import com.example.palayan.Helper.NonScrollableRecyclerView;
@@ -80,8 +81,12 @@ public class AddPlantingActivity extends AppCompatActivity {
     private Button btnSave, btnNext, btnBack;
     private RecyclerView rvCropCalendar, rvFertilizerSchedule;
     private MaterialCardView cardCurrentWeekTasks;
-    private LinearLayout layoutCurrentWeekTasks, layoutFullCalendar;
+    private LinearLayout layoutCurrentWeekTasks, layoutFullCalendar, layoutTaskHistory, layoutCalendarButtons;
     private TextView tvCurrentWeekRange, tvCurrentWeekEmpty, tvShowFullCalendar, tvHideFullCalendar;
+    private TextView tvShowTaskHistory, tvHideTaskHistory, tvHistoryEmpty;
+    private NonScrollableRecyclerView rvTaskHistory;
+    private TaskHistoryAdapter taskHistoryAdapter;
+    private boolean isHistoryVisible = false;
     private boolean isFullCalendarVisible = false;
     private int highlightedWeekNumber = 1;
     private CropCalendarAdapter cropCalendarAdapter;
@@ -207,6 +212,7 @@ public class AddPlantingActivity extends AppCompatActivity {
         tvCurrentWeekRange = findViewById(R.id.tvCurrentWeekRange);
         tvCurrentWeekEmpty = findViewById(R.id.tvCurrentWeekEmpty);
         layoutFullCalendar = findViewById(R.id.layoutFullCalendar);
+        layoutCalendarButtons = findViewById(R.id.layoutCalendarButtons);
         tvShowFullCalendar = findViewById(R.id.tvShowFullCalendar);
         tvHideFullCalendar = findViewById(R.id.tvHideFullCalendar);
         if (tvShowFullCalendar != null) {
@@ -214,6 +220,25 @@ public class AddPlantingActivity extends AppCompatActivity {
         }
         if (tvHideFullCalendar != null) {
             tvHideFullCalendar.setOnClickListener(v -> setFullCalendarVisibility(false));
+        }
+        
+        // Task History views
+        layoutTaskHistory = findViewById(R.id.layoutTaskHistory);
+        tvShowTaskHistory = findViewById(R.id.tvShowTaskHistory);
+        tvHideTaskHistory = findViewById(R.id.tvHideTaskHistory);
+        tvHistoryEmpty = findViewById(R.id.tvHistoryEmpty);
+        rvTaskHistory = findViewById(R.id.rvTaskHistory);
+        
+        // Initialize task history RecyclerView
+        rvTaskHistory.setLayoutManager(new LinearLayoutManager(this));
+        taskHistoryAdapter = new TaskHistoryAdapter(this, new ArrayList<>());
+        rvTaskHistory.setAdapter(taskHistoryAdapter);
+        
+        if (tvShowTaskHistory != null) {
+            tvShowTaskHistory.setOnClickListener(v -> setTaskHistoryVisibility(true));
+        }
+        if (tvHideTaskHistory != null) {
+            tvHideTaskHistory.setOnClickListener(v -> setTaskHistoryVisibility(false));
         }
         
         // Preview adapter (for new plantings - informational only)
@@ -845,7 +870,7 @@ public class AddPlantingActivity extends AppCompatActivity {
             return;
         }
 
-        if (cardCurrentWeekTasks == null || layoutCurrentWeekTasks == null || tvShowFullCalendar == null) {
+        if (cardCurrentWeekTasks == null || layoutCurrentWeekTasks == null || tvShowFullCalendar == null || layoutCalendarButtons == null) {
             return;
         }
 
@@ -1035,12 +1060,118 @@ public class AddPlantingActivity extends AppCompatActivity {
         if (cardCurrentWeekTasks != null) {
             cardCurrentWeekTasks.setVisibility(visible ? View.GONE : View.VISIBLE);
         }
+        if (layoutCalendarButtons != null) {
+            layoutCalendarButtons.setVisibility(visible ? View.GONE : View.VISIBLE);
+        }
         if (tvShowFullCalendar != null) {
             tvShowFullCalendar.setVisibility(visible ? View.GONE : View.VISIBLE);
         }
         if (tvHideFullCalendar != null) {
             tvHideFullCalendar.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
+        
+        // Hide history when showing full calendar
+        if (visible) {
+            setTaskHistoryVisibility(false);
+        }
+    }
+    
+    private void setTaskHistoryVisibility(boolean visible) {
+        isHistoryVisible = visible;
+        if (layoutTaskHistory != null) {
+            layoutTaskHistory.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+        
+        // Hide current week card when showing history (like full calendar)
+        if (cardCurrentWeekTasks != null) {
+            cardCurrentWeekTasks.setVisibility(visible ? View.GONE : View.VISIBLE);
+        }
+        
+        if (layoutCalendarButtons != null) {
+            layoutCalendarButtons.setVisibility(visible ? View.GONE : View.VISIBLE);
+        }
+        
+        if (tvShowTaskHistory != null) {
+            tvShowTaskHistory.setVisibility(visible ? View.GONE : View.VISIBLE);
+        }
+        
+        if (tvHideTaskHistory != null) {
+            tvHideTaskHistory.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+        
+        // Hide full calendar when showing history
+        if (visible) {
+            setFullCalendarVisibility(false);
+            updateTaskHistory();
+        }
+    }
+    
+    private void updateTaskHistory() {
+        if (taskHistoryAdapter == null || cropCalendarTasks == null) {
+            return;
+        }
+        
+        // Filter completed tasks
+        List<CropCalendarTask> completedTasks = new ArrayList<>();
+        for (CropCalendarTask task : cropCalendarTasks) {
+            if (task.isCompleted()) {
+                completedTasks.add(task);
+            }
+        }
+        
+        // Sort by completion date (newest first - descending order)
+        completedTasks.sort((t1, t2) -> {
+            String date1Str = t1.getActualCompletionDate();
+            String date2Str = t2.getActualCompletionDate();
+            
+            if (date1Str == null || date1Str.isEmpty()) {
+                return 1; // Put null dates at the end
+            }
+            if (date2Str == null || date2Str.isEmpty()) {
+                return -1;
+            }
+            
+            // Parse dates and compare as Date objects for accurate comparison
+            try {
+                Date date1 = isoDateFormat.parse(date1Str);
+                Date date2 = isoDateFormat.parse(date2Str);
+                
+                if (date1 == null || date2 == null) {
+                    // Fallback to string comparison if parsing fails
+                    return date2Str.compareTo(date1Str);
+                }
+                
+                // Compare dates - descending order (newest first)
+                int dateCompare = date2.compareTo(date1);
+                
+                // If dates are the same, sort by week number (higher week first)
+                if (dateCompare == 0) {
+                    return Integer.compare(t2.getWeekNumber(), t1.getWeekNumber());
+                }
+                
+                return dateCompare; // Descending order (newest first)
+            } catch (Exception e) {
+                // Fallback to string comparison if parsing fails
+                return date2Str.compareTo(date1Str);
+            }
+        });
+        
+        // Update adapter
+        taskHistoryAdapter = new TaskHistoryAdapter(this, completedTasks);
+        rvTaskHistory.setAdapter(taskHistoryAdapter);
+        
+        // Show/hide empty message
+        if (tvHistoryEmpty != null) {
+            tvHistoryEmpty.setVisibility(completedTasks.isEmpty() ? View.VISIBLE : View.GONE);
+        }
+        
+        // Force RecyclerView to measure and show all items (similar to crop calendar)
+        rvTaskHistory.post(() -> {
+            if (rvTaskHistory instanceof NonScrollableRecyclerView) {
+                ((NonScrollableRecyclerView) rvTaskHistory).forceMeasure();
+            }
+            rvTaskHistory.requestLayout();
+        });
     }
 
     private void addWeekTask(Calendar weekStart, int weekNumber, int taskOrder, String taskName, String taskType) {
@@ -1230,11 +1361,18 @@ public class AddPlantingActivity extends AppCompatActivity {
             etTaskDetails.setText(task.getAdditionalNotes());
         }
 
-        String initialDate = !TextUtils.isEmpty(task.getActualCompletionDate())
-                ? task.getActualCompletionDate()
-                : task.getScheduledDate();
-        if (TextUtils.isEmpty(initialDate)) {
-            initialDate = isoDateFormat.format(new Date());
+        // Default to current date (today) in Philippines timezone
+        String initialDate;
+        if (!TextUtils.isEmpty(task.getActualCompletionDate())) {
+            // If task already has a completion date, use it
+            initialDate = task.getActualCompletionDate();
+        } else {
+            // Otherwise, use current date (today) - format directly from Calendar to avoid timezone issues
+            Calendar today = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+            initialDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", 
+                    today.get(Calendar.YEAR), 
+                    today.get(Calendar.MONTH) + 1, 
+                    today.get(Calendar.DAY_OF_MONTH));
         }
         etTaskDate.setText(initialDate);
 
@@ -1255,16 +1393,62 @@ public class AddPlantingActivity extends AppCompatActivity {
         actTaskName.setOnItemClickListener((parent, view, position, id) -> layoutTaskName.setError(null));
 
         View.OnClickListener dateClickListener = v -> {
+            // Get current week date range for this task
+            Calendar weekStart = null;
+            Calendar weekEnd = null;
+            
+            String scheduledDate = task.getScheduledDate();
+            if (!TextUtils.isEmpty(scheduledDate)) {
+                try {
+                    Date referenceDate = isoDateFormat.parse(scheduledDate);
+                    if (referenceDate != null) {
+                        // Calculate week start (3 days before scheduled date) and end (3 days after)
+                        weekStart = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+                        weekStart.setTime(referenceDate);
+                        weekStart.add(Calendar.DAY_OF_YEAR, -3);
+                        weekStart.set(Calendar.HOUR_OF_DAY, 0);
+                        weekStart.set(Calendar.MINUTE, 0);
+                        weekStart.set(Calendar.SECOND, 0);
+                        weekStart.set(Calendar.MILLISECOND, 0);
+                        
+                        weekEnd = (Calendar) weekStart.clone();
+                        weekEnd.add(Calendar.DAY_OF_YEAR, 6);
+                        weekEnd.set(Calendar.HOUR_OF_DAY, 23);
+                        weekEnd.set(Calendar.MINUTE, 59);
+                        weekEnd.set(Calendar.SECOND, 59);
+                        weekEnd.set(Calendar.MILLISECOND, 999);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            
             // Use Philippines timezone (Asia/Manila, UTC+8)
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
             String current = etTaskDate.getText() != null ? etTaskDate.getText().toString() : "";
             if (!TextUtils.isEmpty(current)) {
                 try {
-                    Date parsed = isoDateFormat.parse(current);
-                    if (parsed != null) {
-                        calendar.setTime(parsed);
+                    // Parse date string directly (yyyy-MM-dd format) to avoid timezone issues
+                    // Extract year, month, day directly from string instead of parsing as Date
+                    String[] parts = current.split("-");
+                    if (parts.length == 3) {
+                        int year = Integer.parseInt(parts[0]);
+                        int month = Integer.parseInt(parts[1]) - 1; // Calendar.MONTH is 0-based
+                        int day = Integer.parseInt(parts[2]);
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, day);
+                    } else {
+                        // If format is wrong, use current date (today)
+                        calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
                     }
-                } catch (Exception ignored) { }
+                } catch (Exception ignored) {
+                    // If parsing fails, use current date (today)
+                    calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+                }
+            } else {
+                // If empty, use current date (today) in Philippines timezone
+                calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
             }
 
             DatePickerDialog dialog = new DatePickerDialog(
@@ -1278,8 +1462,27 @@ public class AddPlantingActivity extends AppCompatActivity {
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)
             );
-            // Prevent selecting past dates
-            dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            
+            // Always prevent selecting past dates - use same approach as planting date picker
+            // This will disable past dates in the date picker UI itself
+            long minDateMillis = System.currentTimeMillis() - 1000;
+            
+            // Limit date picker to current week only
+            if (weekStart != null && weekEnd != null) {
+                // Ensure min date is at least today (to disable past dates)
+                // But allow week start if it's in the future
+                long minDate = minDateMillis;
+                if (weekStart.getTimeInMillis() > minDateMillis) {
+                    minDate = weekStart.getTimeInMillis();
+                }
+                
+                dialog.getDatePicker().setMinDate(minDate);
+                dialog.getDatePicker().setMaxDate(weekEnd.getTimeInMillis());
+            } else {
+                // Fallback: prevent selecting past dates - same as planting date picker
+                dialog.getDatePicker().setMinDate(minDateMillis);
+            }
+            
             dialog.show();
         };
 
@@ -1376,6 +1579,12 @@ public class AddPlantingActivity extends AppCompatActivity {
             displayCropCalendarTasks();
             updateCropCalendarTasks();
             checkForChanges();
+            
+            // Update task history if visible
+            if (isHistoryVisible) {
+                updateTaskHistory();
+            }
+            
             Toast.makeText(this, "Na-save ang detalye ng gawain.", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
@@ -1392,6 +1601,12 @@ public class AddPlantingActivity extends AppCompatActivity {
         displayCropCalendarTasks();
         updateCropCalendarTasks();
         checkForChanges();
+        
+        // Update task history if visible
+        if (isHistoryVisible) {
+            updateTaskHistory();
+        }
+        
         Toast.makeText(this, "Tinanggal ang pagkaka-check ng gawain.", Toast.LENGTH_SHORT).show();
     }
 
