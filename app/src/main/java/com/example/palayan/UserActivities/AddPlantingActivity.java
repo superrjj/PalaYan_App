@@ -1144,9 +1144,17 @@ public class AddPlantingActivity extends AppCompatActivity {
                 // Compare dates - descending order (newest first)
                 int dateCompare = date2.compareTo(date1);
                 
-                // If dates are the same, sort by week number (higher week first)
+                // If dates are the same, sort by task ID (creation timestamp) - newest first
+                // Task ID is System.currentTimeMillis() when created, so higher ID = newer task
                 if (dateCompare == 0) {
-                    return Integer.compare(t2.getWeekNumber(), t1.getWeekNumber());
+                    try {
+                        long id1 = Long.parseLong(t1.getId());
+                        long id2 = Long.parseLong(t2.getId());
+                        return Long.compare(id2, id1); // Descending order (newest first)
+                    } catch (NumberFormatException e) {
+                        // Fallback to week number if ID parsing fails
+                        return Integer.compare(t2.getWeekNumber(), t1.getWeekNumber());
+                    }
                 }
                 
                 return dateCompare; // Descending order (newest first)
