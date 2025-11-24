@@ -725,15 +725,80 @@ public class AddPlantingActivity extends AppCompatActivity {
             return;
         }
         
-        JournalStorageHelper.deleteRicePlanting(this, riceFieldId, plantingId, new JournalStorageHelper.OnDeleteListener() {
+        // Instead of deleting, mark as deleted (move to history)
+        markPlantingAsDeleted();
+    }
+    
+    private void markPlantingAsCompleted() {
+        if (plantingId == null || plantingId.isEmpty() || riceFieldId == null || riceFieldId.isEmpty()) {
+            return;
+        }
+        
+        JournalStorageHelper.loadRicePlantings(this, riceFieldId, new JournalStorageHelper.OnPlantingsLoadedListener() {
             @Override
-            public void onSuccess() {
-                showSnackBar("Matagumpay na natanggal ang taniman!", true, AddPlantingActivity.this::finish);
+            public void onSuccess(List<RicePlanting> plantings) {
+                for (RicePlanting planting : plantings) {
+                    if (planting.getId().equals(plantingId)) {
+                        planting.setCompletedAt(new Date());
+                        JournalStorageHelper.saveRicePlanting(AddPlantingActivity.this, riceFieldId, planting, null);
+                        break;
+                    }
+                }
             }
-
+            
             @Override
             public void onFailure(String error) {
-                showSnackBar("Hindi natanggal: " + error, false, null);
+                // Ignore error
+            }
+        });
+    }
+    
+    private void clearPlantingCompleted() {
+        if (plantingId == null || plantingId.isEmpty() || riceFieldId == null || riceFieldId.isEmpty()) {
+            return;
+        }
+        
+        JournalStorageHelper.loadRicePlantings(this, riceFieldId, new JournalStorageHelper.OnPlantingsLoadedListener() {
+            @Override
+            public void onSuccess(List<RicePlanting> plantings) {
+                for (RicePlanting planting : plantings) {
+                    if (planting.getId().equals(plantingId)) {
+                        planting.setCompletedAt(null);
+                        JournalStorageHelper.saveRicePlanting(AddPlantingActivity.this, riceFieldId, planting, null);
+                        break;
+                    }
+                }
+            }
+            
+            @Override
+            public void onFailure(String error) {
+                // Ignore error
+            }
+        });
+    }
+    
+    private void markPlantingAsDeleted() {
+        if (plantingId == null || plantingId.isEmpty() || riceFieldId == null || riceFieldId.isEmpty()) {
+            return;
+        }
+        
+        JournalStorageHelper.loadRicePlantings(this, riceFieldId, new JournalStorageHelper.OnPlantingsLoadedListener() {
+            @Override
+            public void onSuccess(List<RicePlanting> plantings) {
+                for (RicePlanting planting : plantings) {
+                    if (planting.getId().equals(plantingId)) {
+                        planting.setDeletedAt(new Date());
+                        JournalStorageHelper.saveRicePlanting(AddPlantingActivity.this, riceFieldId, planting, null);
+                        showSnackBar("Matagumpay na inalis ang taniman!", true, AddPlantingActivity.this::finish);
+                        return;
+                    }
+                }
+                showSnackBar("Hindi mahanap ang taniman.", false, null);
+            }
+            
+            @Override
+            public void onFailure(String error) {
+                showSnackBar("Hindi maalis: " + error, false, null);
             }
         });
     }
@@ -1584,6 +1649,11 @@ public class AddPlantingActivity extends AppCompatActivity {
             task.setActualCompletionDate(dateValue);
             task.setCompleted(true);
 
+            // Check if this is a harvest task - if so, mark planting as completed
+            if ("harvest".equals(task.getTaskType()) && plantingId != null && !plantingId.isEmpty()) {
+                markPlantingAsCompleted();
+            }
+
             displayCropCalendarTasks();
             updateCropCalendarTasks();
             checkForChanges();
@@ -1605,6 +1675,11 @@ public class AddPlantingActivity extends AppCompatActivity {
         task.setCompleted(false);
         task.setActualCompletionDate("");
         task.setAdditionalNotes("");
+
+        // If this is a harvest task being unchecked, clear completedAt
+        if ("harvest".equals(task.getTaskType()) && plantingId != null && !plantingId.isEmpty()) {
+            clearPlantingCompleted();
+        }
 
         displayCropCalendarTasks();
         updateCropCalendarTasks();

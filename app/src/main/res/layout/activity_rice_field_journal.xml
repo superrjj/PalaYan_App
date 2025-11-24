@@ -109,6 +109,18 @@
             android:textSize="15sp"
             android:layout_marginBottom="10dp"/>
 
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="KASAYSAYAN NG MGA NATAPOS NA TANIMAN"
+            android:textColor="@color/white"
+            android:background="@drawable/btn_outline_blue"
+            app:backgroundTint="@color/orange"
+            android:fontFamily="@font/poppins__medium"
+            android:textSize="15sp"
+            android:layout_marginBottom="10dp"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPlantings"
             android:layout_width="match_parent"

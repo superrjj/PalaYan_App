@@ -18,6 +18,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.palayan.Adapter.PlantingHistoryAdapter;
 import com.example.palayan.Adapter.RicePlantingAdapter;
 import com.example.palayan.Helper.CropCalendarTask;
 import com.example.palayan.Helper.RiceFieldProfile;
@@ -29,6 +30,9 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 public class RiceFieldJournal extends AppCompatActivity {
 
@@ -41,6 +45,7 @@ public class RiceFieldJournal extends AppCompatActivity {
     private LinearLayout layoutBack;
     private String riceFieldId;
     private Button btnAddPlanting;
+    private Button btnHistory;
     private RecyclerView rvPlantings;
     private RicePlantingAdapter plantingAdapter;
     private List<RicePlanting> plantingList;
@@ -62,6 +67,7 @@ public class RiceFieldJournal extends AppCompatActivity {
         ivBack = findViewById(R.id.ivBack);
         layoutBack = findViewById(R.id.layoutBack);
         btnAddPlanting = findViewById(R.id.btnAddPlanting);
+        btnHistory = findViewById(R.id.btnHistory);
         tvEmpty = findViewById(R.id.tvEmpty);
         tvDeleteRiceField = findViewById(R.id.tvDeleteRiceField);
         rvPlantings = findViewById(R.id.rvPlantings);
@@ -102,6 +108,12 @@ public class RiceFieldJournal extends AppCompatActivity {
         tvDeleteRiceField.setOnClickListener(v -> {
             if (riceFieldId != null && !riceFieldId.isEmpty()) {
                 showDeleteDialog();
+            }
+        });
+        
+        btnHistory.setOnClickListener(v -> {
+            if (riceFieldId != null && !riceFieldId.isEmpty()) {
+                showHistoryDialog();
             }
         });
     }
@@ -166,10 +178,14 @@ public class RiceFieldJournal extends AppCompatActivity {
             @Override
             public void onSuccess(List<RicePlanting> plantings) {
                 // Filter plantings to ensure they belong to this rice field (double check)
+                // Also filter out history plantings (only show active ones)
                 List<RicePlanting> filteredPlantings = new ArrayList<>();
                 for (RicePlanting planting : plantings) {
                     if (planting.getRiceFieldId() != null && planting.getRiceFieldId().equals(riceFieldId)) {
-                        filteredPlantings.add(planting);
+                        // Only show active plantings (not in history)
+                        if (!planting.isInHistory()) {
+                            filteredPlantings.add(planting);
+                        }
                     }
                 }
                 
@@ -232,6 +248,11 @@ public class RiceFieldJournal extends AppCompatActivity {
 
         int activePlantings = 0;
         for (RicePlanting planting : plantingList) {
+            // Skip if planting is in history
+            if (planting.isInHistory()) {
+                continue;
+            }
+            
             List<CropCalendarTask> tasks = planting.getCropCalendarTasks();
             if (tasks == null || tasks.isEmpty()) {
                 // If no tasks, consider it active
@@ -294,6 +315,93 @@ public class RiceFieldJournal extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private void showHistoryDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_planting_history, null);
+        TextView tvDialogTitle = dialogView.findViewById(R.id.tvDialogTitle);
+        TextView tvHistoryEmpty = dialogView.findViewById(R.id.tvHistoryEmpty);
+        ImageView ivCloseDialog = dialogView.findViewById(R.id.ivCloseDialog);
+        RecyclerView rvHistory = dialogView.findViewById(R.id.rvHistory);
+        
+        rvHistory.setLayoutManager(new LinearLayoutManager(this));
+        
+        // Load history plantings
+        JournalStorageHelper.loadRicePlantings(this, riceFieldId, new JournalStorageHelper.OnPlantingsLoadedListener() {
+            @Override
+            public void onSuccess(List<RicePlanting> plantings) {
+                // Filter history plantings only
+                List<RicePlanting> historyPlantings = new ArrayList<>();
+                for (RicePlanting planting : plantings) {
+                    if (planting.getRiceFieldId() != null && planting.getRiceFieldId().equals(riceFieldId)) {
+                        if (planting.isInHistory()) {
+                            historyPlantings.add(planting);
+                        }
+                    }
+                }
+                
+                // Sort by newest first (completedAt or deletedAt)
+                Collections.sort(historyPlantings, (p1, p2) -> {
+                    Date date1 = p1.getCompletedAt() != null ? p1.getCompletedAt() : p1.getDeletedAt();
+                    Date date2 = p2.getCompletedAt() != null ? p2.getCompletedAt() : p2.getDeletedAt();
+                    
+                    if (date1 == null && date2 == null) return 0;
+                    if (date1 == null) return 1;
+                    if (date2 == null) return -1;
+                    
+                    // Descending order (newest first)
+                    return date2.compareTo(date1);
+                });
+                
+                PlantingHistoryAdapter historyAdapter = new PlantingHistoryAdapter(historyPlantings);
+                rvHistory.setAdapter(historyAdapter);
+                
+                if (historyPlantings.isEmpty()) {
+                    tvHistoryEmpty.setVisibility(View.VISIBLE);
+                    rvHistory.setVisibility(View.GONE);
+                } else {
+                    tvHistoryEmpty.setVisibility(View.GONE);
+                    rvHistory.setVisibility(View.VISIBLE);
+                }
+            }
+            
+            @Override
+            public void onFailure(String error) {
+                tvHistoryEmpty.setVisibility(View.VISIBLE);
+                rvHistory.setVisibility(View.GONE);
+                Toast.makeText(RiceFieldJournal.this, "Error loading history: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+        
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+        
+        // Show dialog first to get window
+        dialog.show();
+        
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            
+            // Set fixed size and center the dialog
+            android.view.WindowManager.LayoutParams layoutParams = new android.view.WindowManager.LayoutParams();
+            layoutParams.copyFrom(dialog.getWindow().getAttributes());
+            layoutParams.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
+            // Fixed height: 900dp converted to pixels
+            float density = getResources().getDisplayMetrics().density;
+            layoutParams.height = (int) (900 * density);
+            layoutParams.gravity = android.view.Gravity.CENTER;
+            layoutParams.x = 0;
+            layoutParams.y = 0;
+            dialog.getWindow().setAttributes(layoutParams);
+            
+            // Dim the background
+            dialog.getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND, 
+                    android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            dialog.getWindow().setDimAmount(0.5f);
+        }
+        
+        ivCloseDialog.setOnClickListener(v -> dialog.dismiss());
     }
 
     private void deleteRiceField() {

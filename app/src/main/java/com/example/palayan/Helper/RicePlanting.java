@@ -22,6 +22,8 @@ public class RicePlanting implements Serializable {
     private String areaHectares; // Area in hectares for yield computation
     private String yieldPerHectare; // Yield per hectare in tons
     private List<CropCalendarTask> cropCalendarTasks; // List of tasks for crop calendar
+    private Date completedAt; // Date when harvest is completed (moves to history)
+    private Date deletedAt; // Date when planting is removed (moves to history)
 
     public RicePlanting() {
         this.createdAt = new Date();
@@ -167,6 +169,27 @@ public class RicePlanting implements Serializable {
 
     public void setYieldPerHectare(String yieldPerHectare) {
         this.yieldPerHectare = yieldPerHectare;
+    }
+
+    public Date getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Date completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    // Helper method to check if planting is in history
+    public boolean isInHistory() {
+        return completedAt != null || deletedAt != null;
     }
 }
 
